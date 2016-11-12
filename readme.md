@@ -12,6 +12,10 @@ ffbinaries('windows-64', function () {
 });
 ``
 
+Binaries will be stored in `node_modules/ffbinaries/bin`
+This will currently only download an archive containing the binaries.
+Future versions will extract them automatically.
+
 # Platforms
 
 The first argument is platform/package to download. OS X suite is available

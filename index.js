@@ -4,7 +4,7 @@ var _get = require('lodash.get');
 var request = require('request');
 
 var DATA_URL = 'http://ffbinaries.com/';
-var DESTINATION = __dirname + '/binaries';
+var DESTINATION = __dirname + '/bin';
 var DATA_CACHE;
 
 function ensureDirSync (dir) {
@@ -63,7 +63,6 @@ function getData (callback) {
 }
 
 function downloadFile (url, destination, callback) {
-  console.log(url);
   var filename = url.split('/').pop();
   var runningTotal = 0;
   var totalFilesize;
@@ -81,6 +80,7 @@ function downloadFile (url, destination, callback) {
   try {
     fs.accessSync(destination + '/' + filename);
     console.log('File already downloaded.');
+    clearInterval(interval);
   } catch (e) {
     console.log(e);
     console.log('Downloading', filename, 'to', destination);
