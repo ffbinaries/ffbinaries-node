@@ -1,0 +1,13 @@
+{
+  "name": "ffbinaries",
+  "version": "0.0.1",
+  "description": "Download binaries for ffmpeg, ffprobe, ffserver and ffplay",
+  "main": "index.js",
+  "scripts": {},
+  "author": "Vot Z <http://vot-z.com>",
+  "license": "ISC",
+  "dependencies": {
+    "lodash.get": "^4.4.2",
+    "request": "^2.78.0"
+  }
+}
