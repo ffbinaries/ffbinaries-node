@@ -4,13 +4,12 @@ This is meant to be used programatically.
 
 # Usage
 
-``
+```
 var ffbinaries = require('ffbinaries');
-
 ffbinaries('windows-64', function () {
   console.log('Download complete.');
 });
-``
+```
 
 Binaries will be stored in `node_modules/ffbinaries/bin`
 This will currently only download an archive containing the binaries.
@@ -39,17 +38,13 @@ The components of the ffmpeg suite are: ffmpeg, ffprobe, ffserver and ffplay.
 
 OS X version ships in individually packaged components. Linux and Windows ship in bundles.
 
-## Linux bundle contents
+|          | Mac | Linux | Windows |
+|----------|-----|-------|---------|
+| ffmpeg   | v   | v     | v       |
+| ffprobe  | v   | v     | v       |
+| ffserver | v   | v     |         |
+| ffplay   | v   |       | v       |
 
-* ffmpeg
-* ffprobe
-* ffserver
-
-## Windows bundle contents
-
-* ffmpeg
-* ffprobe
-* ffplay
 
 # Credits
 
