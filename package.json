@@ -1,8 +1,11 @@
 {
   "name": "ffbinaries",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Download binaries for ffmpeg, ffprobe, ffserver and ffplay",
   "main": "index.js",
+  "bin": {
+    "ffbinaries": "cli.js"
+  },
   "scripts": {},
   "author": "Vot Z <http://vot-z.com>",
   "license": "ISC",
