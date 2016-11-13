@@ -7,11 +7,11 @@ function displayHelp () {
   var lines = [
     '',
     'Available platforms:',
-    platforms.join(', '),
+    ffbinaries.listPlatforms().join(', '),
     '',
     'Examples:',
-    'ffbinaries',
-    'ffbinaries linux-32 --output=/home/user/ffmpeg'
+    ' ffbinaries',
+    ' ffbinaries linux-64 --output=/home/user/ffmpeg --quiet'
   ];
   console.log(lines.join('\n'));
 }

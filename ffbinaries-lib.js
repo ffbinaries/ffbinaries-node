@@ -92,6 +92,9 @@ function detectPlatform () {
   return null;
 }
 
+function listPlatforms() {
+  return ['osx-64', 'linux-32', 'linux-64', 'linux-armel', 'linux-armhf', 'windows-32', 'windows-64'];
+}
 /**
  * Gets full data set from ffbinaries.com
  */
@@ -203,5 +206,6 @@ module.exports = {
   get: getBinary,
   getData: getData,
   detectPlatform: detectPlatform,
-  resolvePlatform: resolvePlatform
+  resolvePlatform: resolvePlatform,
+  listPlatforms: listPlatforms
 };
