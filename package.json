@@ -1,6 +1,6 @@
 {
   "name": "ffbinaries",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Download binaries for ffmpeg, ffprobe, ffserver and ffplay",
   "main": "index.js",
   "bin": {

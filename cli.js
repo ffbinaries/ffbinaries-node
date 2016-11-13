@@ -3,8 +3,6 @@ var ffbinaries = require('./ffbinaries-lib');
 var _get = require('lodash.get');
 var cliArgs = require('clarg')();
 
-var platforms = ['windows-32', 'windows-64', 'linux-32', 'linux-64', 'linux-armhf', 'linux-armel', 'osx-64'];
-
 function displayHelp () {
   var lines = [
     '',
@@ -19,22 +17,23 @@ function displayHelp () {
 }
 
 function download(platform, output) {
+  var resolved = ffbinaries.resolvePlatform(platform);
+
   if (!platform) {
-    console.log('Platform not specified. Downloading binaries for current platform.');
+    console.log('Platform not specified. Downloading binaries for current platform: ' + ffbinaries.detectPlatform());
   } else {
-    if (platforms.indexOf(platform) === -1) {
+    if (!resolved) {
       console.log('Specified platform "' + platform + '" not supported. Type "ffbinaries help" to see the list of available binaries or run "ffbinaries" without -p switch.');
       return process.exit(1);
     }
-    console.log('Platform selected:', platform);
+    console.log('Platform selected:', resolved);
   }
 
   var destination = output || process.cwd();
 
-  ffbinaries.get(platform, destination, function () {
+  ffbinaries.get(resolved, {destination: destination}, function () {
     console.log('All done.');
-  })
-
+  });
 }
 
 

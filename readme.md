@@ -11,14 +11,30 @@ Downloads a precompiled ffmpeg binaries from ffbinaries.com.
 This module is meant to be used programatically, i.e. as a build step.
 
 
+# Important info
+
+**This project is not stable just yet.**
+
+I noticed quite a few downloads of this in the first day already.
+Please be aware that this is just something I started last night
+and I'm still introducing many breaking changes before I decide how this should
+work.
+
+Please raise issues on GitHub or even pull requests for features you'd like to see.
+I also just created ffbinaries.com at the same time as this module
+so there will be changes in data structure as well.
+
+Documentation may also be slightly inaccurate at the moment - apologies,
+if in doubt please refer to the code for now.
+
 # Usage
 
 You can run it from your code or through CLI.
 
-All binaries will be stored in `node_modules/ffbinaries/bin` folder to allow
-for caching the files.
+If `output` argument is specified the binary will be placed there.
+Otherwise it will default to `bin/{platform}` folder inside of ffbinaries module
+(which may be a global or local install).
 
-If `output` argument is specified the binary will be copied there.
 
 If `platform` argument is missing the binary for current platform will be downloaded.
 
@@ -35,7 +51,7 @@ Examples:
 
 ```
 ffbinaries
-ffbinaries linux-32 --output=/home/user/ffmpeg
+ffbinaries linux --output=/home/user/ffmpeg
 ```
 
 
@@ -49,6 +65,8 @@ ffbinaries linux-32 --output=/home/user/ffmpeg
 
 `detectPlatform()` returns the platform code of the machine as detected by the module.
 
+`resolvePlatform(input)` resolves input to a platform code (matches aliases).
+
 Example:
 
 ```
@@ -60,21 +78,26 @@ ffbinaries.get(platform, output, function () {
 });
 ```
 
+
 # Platforms
 
 The first argument is platform/package to download. OS X suite is available
 in individually packaged components which currently require downloading
 each needed component separately.
 
-* windows-32
-* windows-64
+## Windows
+* windows-32 (aliases: win, windows, win-32)
+* windows-64 (alias: win-64)
 
-* linux-32
+## Linux
+* linux-32 (alias: linux)
 * linux-64
-* linux-armhf
+* linux-armhf (alias: linux-arm)
 * linux-armel
 
-* osx-64
+## OS X
+* osx-64 (aliases: mac, osx, mac-64)
+
 
 # Components
 
@@ -97,6 +120,7 @@ Binaries compiled by:
 * OS X version: [https://evermeet.cx/ffmpeg/](https://evermeet.cx/ffmpeg/)
 * Linux version: [http://johnvansickle.com/ffmpeg/](http://johnvansickle.com/ffmpeg/)
 * Windows version: [http://ffmpeg.zeranoe.com/builds/](http://ffmpeg.zeranoe.com/builds/)
+
 
 # Online documentation
 

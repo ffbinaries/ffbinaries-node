@@ -21,13 +21,57 @@ function ensureDirSync (dir) {
 ensureDirSync(DEFAULT_DESTINATION);
 
 /**
+ * Resolves the platform key based on input string
+ */
+function resolvePlatform (input) {
+  switch (input) {
+    case 'mac':
+    case 'osx':
+    case 'mac-64':
+    case 'osx-64':
+        return 'osx-64';
+        break;
+
+    case 'linux':
+    case 'linux-32':
+        return 'linux-32';
+        break;
+
+    case 'linux-64':
+        return 'linux-64';
+        break;
+
+    case 'linux-arm':
+    case 'linux-armel':
+        return 'linux-armel';
+        break;
+
+    case 'linux-armhf':
+        return 'linux-armhf';
+        break;
+
+    case 'win':
+    case 'win-32':
+    case 'windows':
+    case 'windows-32':
+        return 'windows-32';
+        break;
+
+    case 'win-64':
+    case 'windows-64':
+        return 'windows-64';
+        break;
+
+    default:
+        return null;
+  }
+}
+/**
  * Detects the platform of the machine the script is executed on
  */
 function detectPlatform () {
   var type = os.type();
   var arch = os.arch();
-
-  // windows-32, windows-64, linux-32, linux-64, linux-armhf, linux-armel, osx-64
 
   if (type === 'Darwin') {
     return 'osx-64';
@@ -44,7 +88,7 @@ function detectPlatform () {
     return arch == 'x64' ? 'linux-64' : 'linux-32';
   }
 
-  return;
+  return null;
 }
 
 /**
@@ -120,20 +164,20 @@ function download (urls, destination, callback) {
  * It will get the data from ffbinaries, pick the correct file
  * and save it to the specified directory
  */
-function getBinary (platform, destination, callback) {
+function getBinary (platform, opts, callback) {
   if (!callback) {
-    if (!destination && typeof platform === 'function') {
+    if (!opts && typeof platform === 'function') {
       callback = platform;
       platform = null;
     }
-    if (typeof destination === 'function') {
-      callback = destination;
-      destination = null;
+    if (typeof opts === 'function') {
+      callback = opts;
+      opts = null;
     }
   }
 
-  platform = platform || detectPlatform();
-  destination = path.resolve(destination) || (DEFAULT_DESTINATION + '/' + platform);
+  platform = resolvePlatform(platform) || detectPlatform();
+  var destination = path.resolve(opts.destination) || (DEFAULT_DESTINATION + '/' + platform);
 
   ensureDirSync(destination);
 
@@ -150,5 +194,6 @@ function getBinary (platform, destination, callback) {
 module.exports = {
   get: getBinary,
   getData: getData,
-  detectPlatform: detectPlatform
+  detectPlatform: detectPlatform,
+  resolvePlatform: resolvePlatform
 };
