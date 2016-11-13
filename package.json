@@ -1,16 +1,26 @@
 {
   "name": "ffbinaries",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Download binaries for ffmpeg, ffprobe, ffserver and ffplay",
   "main": "index.js",
   "bin": {
     "ffbinaries": "cli.js"
   },
   "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vot/ffbinaries-node.git"
+  },
   "author": "Vot Z <http://vot-z.com>",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vot/ffbinaries-node/issues"
+  },
+  "homepage": "https://github.com/vot/ffbinaries-node",
   "dependencies": {
+    "async": "^2.1.2",
     "lodash.get": "^4.4.2",
+    "lodash.map": "^4.6.0",
     "request": "^2.78.0"
   }
 }

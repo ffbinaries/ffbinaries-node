@@ -19,6 +19,7 @@ All binaries will be stored in `node_modules/ffbinaries/bin` folder to allow
 for caching the files.
 
 If `output` argument is specified the binary will be copied there.
+
 If `platform` argument is missing the binary for current platform will be downloaded.
 
 Currently only archives with binaries are downloaded without
@@ -79,7 +80,7 @@ each needed component separately.
 
 The components of the ffmpeg suite are: ffmpeg, ffprobe, ffserver and ffplay.
 
-OS X version ships in individually packaged components. Linux and Windows ship in bundles.
+OS X version ships in individually packaged components, Linux and Windows in bundles.
 
 |          | Mac | Linux | Windows |
 |----------|-----|-------|---------|
