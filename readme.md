@@ -29,7 +29,7 @@ so there will be changes in data structure as well.
 Documentation may also be slightly inaccurate at the moment - apologies,
 if in doubt please refer to the code for now.
 
-## New API (new link structure from 0.0.6) - please allow for DNS updates.**
+## New API (new link structure from 0.0.6) - please allow for DNS updates.
 To see if you're connecting to new API already go to http://ffbinaries.com and see
 if you see a JSON data file or an actual webpage.
 
