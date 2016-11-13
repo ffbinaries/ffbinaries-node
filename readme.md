@@ -47,7 +47,7 @@ ffbinaries linux-32 --output=/home/user/ffmpeg
 
 `getData(callback)` fetches the full data set without downloading any binaries.
 
-`detectPlatform()` returns the platform code of the machine.
+`detectPlatform()` returns the platform code of the machine as detected by the module.
 
 Example:
 

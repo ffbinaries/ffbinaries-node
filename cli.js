@@ -29,7 +29,7 @@ function download(platform, output) {
     console.log('Platform selected:', platform);
   }
 
-  var destination = output || __dirname;
+  var destination = output || process.cwd();
 
   ffbinaries.get(platform, destination, function () {
     console.log('All done.');
