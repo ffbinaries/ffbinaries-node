@@ -126,6 +126,9 @@ function download (urls, opts, callback) {
   var destination = opts.destination;
 
   async.each(urls, function (url, cb) {
+    if (!url) {
+      return cb();
+    }
     var filename = url.split('/').pop();
     var runningTotal = 0;
     var totalFilesize;
