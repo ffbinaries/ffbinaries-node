@@ -6,7 +6,8 @@ var _map = require('lodash.map');
 var request = require('request');
 var async = require('async');
 
-var DATA_URL = 'http://ffbinaries.com/';
+var DATA_URL = 'http://ffbinaries.com/api/latest';
+// var DATA_URL = 'http://localhost:3000/api/latest';
 var DEFAULT_DESTINATION = __dirname + '/bin';
 var DATA_CACHE;
 
