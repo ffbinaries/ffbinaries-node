@@ -1,4 +1,4 @@
-# FFbinaries downloader
+# ffbinaries downloader
 
 [![NPM Version][npm-img]][npm-url]
 [![NPM Downloads][npm-dl-img]][npm-url]

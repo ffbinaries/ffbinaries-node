@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-console.log('FFbinaries downloader');
+console.log('ffbinaries downloader');
 console.log('------------------------------------');
 
 var ffbinaries = require('./ffbinaries-lib');
