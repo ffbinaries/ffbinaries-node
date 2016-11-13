@@ -183,6 +183,15 @@ function _downloadUrls (urls, opts, callback) {
 
     extractor.on('close', function () {
       console.log('Extracted "' + filename + '" to destination');
+
+      // apply chmod +x
+      try {
+        fse.chmodSync(destinationDir + '/ffmpeg', 0744);
+        console.log('Applied 0744 chmod to "' + filename );
+      } catch (e) {
+        console.error(e);
+      }
+
       if (typeof cb === 'function') cb();
     });
 
