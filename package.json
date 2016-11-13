@@ -1,6 +1,6 @@
 {
   "name": "ffbinaries",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Download binaries for ffmpeg, ffprobe, ffserver and ffplay",
   "main": "index.js",
   "bin": {
@@ -23,6 +23,7 @@
     "fs-extra": "^1.0.0",
     "lodash.get": "^4.4.2",
     "lodash.map": "^4.6.0",
-    "request": "^2.78.0"
+    "request": "^2.78.0",
+    "unzip": "git://github.com/glebdmitriew/node-unzip-2.git"
   }
 }

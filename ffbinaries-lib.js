@@ -5,6 +5,7 @@ var _get = require('lodash.get');
 var _map = require('lodash.map');
 var request = require('request');
 var async = require('async');
+var unzip = require('unzip');
 
 var API_URL = 'http://ffbinaries.com/api';
 // var API_URL = 'http://localhost:3000/api';
@@ -158,17 +159,34 @@ function _downloadUrls (urls, opts, callback) {
   var destinationDir = opts.destination;
   var cacheDir = LOCAL_CACHE_DIR;
 
-  function _copyFileFromCacheToDestination (filename) {
+  function _copyZipToDestination (filename, cb) {
     var oldpath = LOCAL_CACHE_DIR + '/' + filename;
     var newpath = destinationDir + '/' + filename;
 
     try {
       fse.copySync(oldpath, newpath);
       console.log('Copied "' + filename + '" to destination')
+      return cb();
     } catch (err) {
       console.log('Error copying "' + filename + '" to "' + destinationDir + '"');
       console.error(err);
+      return cb();
     }
+  }
+
+  function _extractZipToDestination (filename, cb) {
+    var oldpath = LOCAL_CACHE_DIR + '/' + filename;
+
+    console.log('Extracting ' + oldpath + ' to ' + destinationDir);
+    var readStream = fse.createReadStream(oldpath);
+    var extractor = unzip.Extract({path: destinationDir});
+
+    extractor.on('close', function () {
+      console.log('Extracted "' + filename + '" to destination');
+      if (typeof cb === 'function') cb();
+    });
+
+    readStream.pipe(extractor);
   }
 
 
@@ -199,8 +217,8 @@ function _downloadUrls (urls, opts, callback) {
         fse.accessSync(LOCAL_CACHE_DIR + '/' + filename);
         console.log('Found "' + filename + '" in cache.');
         clearInterval(interval);
-        _copyFileFromCacheToDestination(filename);
-        return cb();
+        // return _copyZipToDestination(filename, cb);
+        return _extractZipToDestination(filename, cb);
       } catch (e) {
         // Download the file and write in cache
         if (opts.quiet) clearInterval(interval);
@@ -212,14 +230,15 @@ function _downloadUrls (urls, opts, callback) {
 
           // fse.writeFileSync(LOCAL_CACHE_DIR + '/' + filename, body);
           // rename from .part to normal
-          fse.move(LOCAL_CACHE_DIR + '/' + filename + '.part', LOCAL_CACHE_DIR + '/' + filename);
-          _copyFileFromCacheToDestination(filename);
-          return cb(err);
+          // fse.move(LOCAL_CACHE_DIR + '/' + filename + '.part', LOCAL_CACHE_DIR + '/' + filename);
+          // _copyZipToDestination(filename);
+          // return cb(err);
+          _extractZipToDestination(filename, cb);
         })
         .on('data', function (data) {
           runningTotal += data.length;
         })
-        .pipe(fse.createWriteStream(LOCAL_CACHE_DIR + '/' + filename + '.part'));
+        .pipe(fse.createWriteStream(LOCAL_CACHE_DIR + '/' + filename/* + '.part'*/));
       }
 
     }
@@ -236,7 +255,6 @@ function _downloadUrls (urls, opts, callback) {
  * and save it to the specified directory
  */
 function downloadFiles (platform, opts, callback) {
-  console.log('------------------------------------');
   console.log('Directories');
   console.log(' LOCAL_BIN:', LOCAL_BIN);
   console.log(' LOCAL_CACHE_DIR:', LOCAL_CACHE_DIR);

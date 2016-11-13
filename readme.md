@@ -17,7 +17,8 @@ This module is meant to be used programatically, i.e. as a build step.
 
 **This project is not stable just yet.**
 
-**Version 0.0.11 fixes a critical bug with broken zip files being saved. Please update.**
+**Version 0.0.11 fixes a critical bug with broken zip files being saved. Please update and run ffbinaries clearcache.**
+**Version 0.0.12 adds automatic extraction of binaries.**
 
 I noticed quite a few downloads of this in the first day already.
 Please be aware that this is just something I started last night
