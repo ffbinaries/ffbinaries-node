@@ -210,13 +210,16 @@ function _downloadUrls (urls, opts, callback) {
           totalFilesize = response.headers['content-length'];
           console.log('> Download completed: ' + url + ' | Transferred: ', Math.floor(totalFilesize/1024/1024*1000)/1000 + 'MB');
 
-          fse.writeFileSync(LOCAL_CACHE_DIR + '/' + filename, body);
+          // fse.writeFileSync(LOCAL_CACHE_DIR + '/' + filename, body);
+          // rename from .part to normal
+          fse.move(LOCAL_CACHE_DIR + '/' + filename + '.part', LOCAL_CACHE_DIR + '/' + filename);
           _copyFileFromCacheToDestination(filename);
           return cb(err);
         })
         .on('data', function (data) {
           runningTotal += data.length;
-        });
+        })
+        .pipe(fse.createWriteStream(LOCAL_CACHE_DIR + '/' + filename + '.part'));
       }
 
     }
