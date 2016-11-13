@@ -1,6 +1,6 @@
 {
   "name": "ffbinaries",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Download binaries for ffmpeg, ffprobe, ffserver and ffplay",
   "main": "index.js",
   "bin": {
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/vot/ffbinaries-node",
   "dependencies": {
     "async": "^2.1.2",
+    "clarg": "0.0.3",
     "lodash.get": "^4.4.2",
     "lodash.map": "^4.6.0",
     "request": "^2.78.0"
