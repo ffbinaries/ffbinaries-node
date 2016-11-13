@@ -74,7 +74,7 @@ ffbinaries linux-64
 ffbinaries linux-64 --version=3.2 --output=/home/user/ffmpeg --quiet
 ```
 
-There are also `ffbinaries help` and `ffbinaries versions`.
+There are also `ffbinaries help`, `ffbinaries versions` and `ffbinaries clearcache`.
 
 
 ## Programatically
@@ -94,6 +94,8 @@ There are also `ffbinaries help` and `ffbinaries versions`.
 `detectPlatform()` returns the platform code of the machine as detected by the module.
 
 `resolvePlatform(input)` resolves input to a platform code (matches aliases).
+
+`clearCache()` purges local cache
 
 
 ### Example

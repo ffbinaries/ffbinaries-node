@@ -1,5 +1,5 @@
 var os = require('os');
-var fs = require('fs');
+var fse = require('fs-extra');
 var path = require('path');
 var _get = require('lodash.get');
 var _map = require('lodash.map');
@@ -15,20 +15,14 @@ var RUNTIME_CACHE = {};
 
 function _ensureDirSync (dir) {
   try {
-    fs.accessSync(dir);
+    fse.accessSync(dir);
   } catch (e) {
-    fs.mkdirSync(dir);
+    fse.mkdirSync(dir);
   }
 }
 
 _ensureDirSync(LOCAL_BIN);
 _ensureDirSync(LOCAL_CACHE_DIR);
-
-console.log('LOCAL_BIN', LOCAL_BIN);
-console.log('LOCAL_CACHE_DIR', LOCAL_CACHE_DIR);
-console.log('CWD', CWD);
-console.log('------------------------------------');
-
 
 /**
  * Resolves the platform key based on input string
@@ -161,7 +155,22 @@ function _downloadUrls (urls, opts, callback) {
     urls = [urls];
   }
 
-  var destination = opts.destination;
+  var destinationDir = opts.destination;
+  var cacheDir = LOCAL_CACHE_DIR;
+
+  function _copyFileFromCacheToDestination (filename) {
+    var oldpath = LOCAL_CACHE_DIR + '/' + filename;
+    var newpath = destinationDir + '/' + filename;
+
+    try {
+      fse.copySync(oldpath, newpath);
+      console.log('Copied "' + filename + '" to destination')
+    } catch (err) {
+      console.log('Error copying "' + filename + '" to "' + destinationDir + '"');
+      console.error(err);
+    }
+  }
+
 
   async.each(urls, function (url, cb) {
     if (!url) {
@@ -178,25 +187,38 @@ function _downloadUrls (urls, opts, callback) {
       console.log('\x1b[2m' + filename + ': Received ' + Math.floor(runningTotal/1024/1024*1000)/1000 + 'MB' + '\x1b[0m');
     }, 2000);
 
+    // Check if file already downloaded in target directory
     try {
-      fs.accessSync(destination + '/' + filename);
-      console.log('File "' + filename + '" already downloaded.');
+      fse.accessSync(destinationDir + '/' + filename);
+      console.log('File "' + filename + '" already downloaded in ' + destinationDir + '.');
       clearInterval(interval);
       return cb();
     } catch (e) {
-      if (opts.quiet) clearInterval(interval);
+      // Check if the file is already cached
+      try {
+        fse.accessSync(LOCAL_CACHE_DIR + '/' + filename);
+        console.log('Found "' + filename + '" in cache.');
+        clearInterval(interval);
+        _copyFileFromCacheToDestination(filename);
+        return cb();
+      } catch (e) {
+        // Download the file and write in cache
+        if (opts.quiet) clearInterval(interval);
 
-      console.log('Downloading', url, 'to', destination);
-      request({url: url}, function (err, response, body) {
-        totalFilesize = response.headers['content-length'];
-        console.log('> Download completed: ' + url + ' | Transferred: ', Math.floor(totalFilesize/1024/1024*1000)/1000 + 'MB');
+        console.log('Downloading', url);
+        request({url: url}, function (err, response, body) {
+          totalFilesize = response.headers['content-length'];
+          console.log('> Download completed: ' + url + ' | Transferred: ', Math.floor(totalFilesize/1024/1024*1000)/1000 + 'MB');
 
-        fs.writeFileSync(destination + '/' + filename, body);
-        return cb(err);
-      })
-      .on('data', function (data) {
-        runningTotal += data.length;
-      });
+          fse.writeFileSync(LOCAL_CACHE_DIR + '/' + filename, body);
+          _copyFileFromCacheToDestination(filename);
+          return cb(err);
+        })
+        .on('data', function (data) {
+          runningTotal += data.length;
+        });
+      }
+
     }
 
   }, function () {
@@ -211,6 +233,14 @@ function _downloadUrls (urls, opts, callback) {
  * and save it to the specified directory
  */
 function downloadFiles (platform, opts, callback) {
+  console.log('------------------------------------');
+  console.log('Directories');
+  console.log(' LOCAL_BIN:', LOCAL_BIN);
+  console.log(' LOCAL_CACHE_DIR:', LOCAL_CACHE_DIR);
+  console.log(' CWD:', CWD);
+  console.log('------------------------------------');
+
+
   if (!callback) {
     if (!opts && typeof platform === 'function') {
       callback = platform;
@@ -237,11 +267,20 @@ function downloadFiles (platform, opts, callback) {
   });
 }
 
+
+function clearCache () {
+  if (LOCAL_CACHE_DIR.endsWith('.ffbinaries-cache')) {
+    fse.removeSync(LOCAL_CACHE_DIR);
+    console.log('Cache cleared');
+  }
+}
+
 module.exports = {
   downloadFiles: downloadFiles,
   getVersionData: getVersionData,
   listVersions: listVersions,
   listPlatforms: listPlatforms,
   detectPlatform: detectPlatform,
-  resolvePlatform: resolvePlatform
+  resolvePlatform: resolvePlatform,
+  clearCache: clearCache
 };

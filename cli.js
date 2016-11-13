@@ -17,6 +17,9 @@ function displayHelp () {
     'To see what versions are available type:',
     ' ffbinaries versions',
     '',
+    'To clear cache type:',
+    ' ffbinaries clearcache',
+    '',
     'If no version is specified the latest will be downloaded.',
     'You can specify target directory, defaults to working directory.',
     '',
@@ -31,7 +34,7 @@ function displayHelp () {
 function displayVersions () {
   ffbinaries.listVersions(function (err, versions) {
     if (versions && Array.isArray(versions)) {
-      console.log('Available versions:', versions.join(', '));
+      console.log('Available ffmpeg versions:', versions.join(', '));
     } else {
       console.log('Couldn\'t retrieve list of versions from the server.');
     }
@@ -66,6 +69,7 @@ function download(platform, opts) {
 
 // execute app
 var mode = _get(cliArgs, 'args.0');
+
 var opts = {
   output: _get(cliArgs, 'opts.output') || _get(cliArgs, 'opts.o'),
   quiet: _get(cliArgs, 'opts.quiet') || _get(cliArgs, 'opts.q'),
@@ -74,6 +78,8 @@ var opts = {
 
 if (mode === 'help' || mode === 'info') {
   return displayHelp();
+} else if (mode === 'clearcache') {
+  return ffbinaries.clearCache();
 } else if (mode === 'versions' || mode === 'list') {
   return displayVersions();
 } else {
