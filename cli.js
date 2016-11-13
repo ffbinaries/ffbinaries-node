@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+console.log('FFbinaries downloader');
+console.log('------------------------------------');
+
 var ffbinaries = require('./ffbinaries-lib');
 var _get = require('lodash.get');
 var cliArgs = require('clarg')();
@@ -6,14 +9,33 @@ var cliArgs = require('clarg')();
 function displayHelp () {
   var lines = [
     '',
+    'Downloads binaries for ffmpeg, ffprobe, ffplay and ffserver.',
+    '',
     'Available platforms:',
-    ffbinaries.listPlatforms().join(', '),
+    ' ' + ffbinaries.listPlatforms().join(', '),
+    '',
+    'To see what versions are available type:',
+    ' ffbinaries versions',
+    '',
+    'If no version is specified the latest will be downloaded.',
+    'You can specify target directory, defaults to working directory.',
     '',
     'Examples:',
     ' ffbinaries',
-    ' ffbinaries linux-64 --output=/home/user/ffmpeg --quiet'
+    ' ffbinaries linux-64',
+    ' ffbinaries linux-64 --version=3.2 --output=/home/user/ffmpeg --quiet'
   ];
   console.log(lines.join('\n'));
+}
+
+function displayVersions () {
+  ffbinaries.listVersions(function (err, versions) {
+    if (versions && Array.isArray(versions)) {
+      console.log('Available versions:', versions.join(', '));
+    } else {
+      console.log('Couldn\'t retrieve list of versions from the server.');
+    }
+  })
 }
 
 function download(platform, opts) {
@@ -31,25 +53,29 @@ function download(platform, opts) {
 
   var getOpts = {
     destination: opts.output || process.cwd(),
-    quiet: opts.quiet || false
+    quiet: opts.quiet || false,
+    version: opts.version || false
   };
 
-  ffbinaries.get(resolved, getOpts, function () {
-    console.log('All done.');
+  ffbinaries.downloadFiles(resolved, getOpts, function () {
+    console.log('------------------------------------');
+    console.log('All files downloaded.');
   });
 }
 
 
-console.log('FFbinaries downloader');
-console.log('---------------------');
+// execute app
 var mode = _get(cliArgs, 'args.0');
 var opts = {
   output: _get(cliArgs, 'opts.output') || _get(cliArgs, 'opts.o'),
-  quiet: _get(cliArgs, 'opts.quiet') || _get(cliArgs, 'opts.q')
+  quiet: _get(cliArgs, 'opts.quiet') || _get(cliArgs, 'opts.q'),
+  version: _get(cliArgs, 'opts.version') || _get(cliArgs, 'opts.v')
 }
 
 if (mode === 'help' || mode === 'info') {
   return displayHelp();
+} else if (mode === 'versions' || mode === 'list') {
+  return displayVersions();
 } else {
   return download(mode, opts);
 }

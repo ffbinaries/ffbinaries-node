@@ -8,7 +8,7 @@
 [npm-dl-img]: https://img.shields.io/npm/dm/ffbinaries.svg
 
 
-Downloads a precompiled ffmpeg binaries from ffbinaries.com.
+Downloads a precompiled ffmpeg binaries from http://ffbinaries.com.
 
 This module is meant to be used programatically, i.e. as a build step.
 
@@ -29,8 +29,11 @@ so there will be changes in data structure as well.
 Documentation may also be slightly inaccurate at the moment - apologies,
 if in doubt please refer to the code for now.
 
+Currently the only version of ffmpeg available is 3.2.
+
 ## New API
-New link structure introduced in version 0.0.6 Please allow few hours for DNS updates
+
+New link structure introduced in version 0.0.6, please allow few hours for DNS updates
 if you're having issues.
 
 To see if you're connecting to new API already go to http://ffbinaries.com and see
@@ -67,9 +70,11 @@ CLI uses the following syntax: `ffbinaries {platform} {--output=dir} {--quiet}`
 
 ```
 ffbinaries
-ffbinaries linux --output=/home/user/ffmpeg
-ffbinaries --output=/home/user/ffmpeg --quiet
+ffbinaries linux-64
+ffbinaries linux-64 --version=3.2 --output=/home/user/ffmpeg --quiet
 ```
+
+There are also `ffbinaries help` and `ffbinaries versions`.
 
 
 ## Programatically
@@ -78,9 +83,13 @@ ffbinaries --output=/home/user/ffmpeg --quiet
 
 `ffbinaries` library exports three methods: `get`, `getData` and `detectPlatform`.
 
-`get(platform, output, callback)` method will download the requested binaries.
+`downloadFiles(platform, output, callback)` method will download the requested binaries.
 
-`getData(callback)` fetches the full data set without downloading any binaries.
+`getVersionData(version, callback)` fetches the full data set without downloading any binaries.
+
+`listVersions(callback)` returns the list of available versions in the API
+
+`listPlatforms()` returns the list of available platforms
 
 `detectPlatform()` returns the platform code of the machine as detected by the module.
 
@@ -93,7 +102,7 @@ ffbinaries --output=/home/user/ffmpeg --quiet
 var ffbinaries = require('ffbinaries');
 var platform = ffbinaries.detectPlatform();
 var output = __dirname;
-ffbinaries.get(platform, output, function () {
+ffbinaries.downloadFiles(platform, output, function () {
   console.log('Download complete.');
 });
 ```

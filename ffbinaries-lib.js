@@ -6,12 +6,14 @@ var _map = require('lodash.map');
 var request = require('request');
 var async = require('async');
 
-var DATA_URL = 'http://ffbinaries.com/api/latest';
-// var DATA_URL = 'http://localhost:3000/api/latest';
-var DEFAULT_DESTINATION = __dirname + '/bin';
-var DATA_CACHE;
+var API_URL = 'http://ffbinaries.com/api';
+// var API_URL = 'http://localhost:3000/api';
+var LOCAL_BIN = __dirname + '/bin';
+var LOCAL_CACHE_DIR = os.homedir() + '/.ffbinaries-cache';
+var CWD = process.cwd();
+var RUNTIME_CACHE = {};
 
-function ensureDirSync (dir) {
+function _ensureDirSync (dir) {
   try {
     fs.accessSync(dir);
   } catch (e) {
@@ -19,7 +21,14 @@ function ensureDirSync (dir) {
   }
 }
 
-ensureDirSync(DEFAULT_DESTINATION);
+_ensureDirSync(LOCAL_BIN);
+_ensureDirSync(LOCAL_CACHE_DIR);
+
+console.log('LOCAL_BIN', LOCAL_BIN);
+console.log('LOCAL_CACHE_DIR', LOCAL_CACHE_DIR);
+console.log('CWD', CWD);
+console.log('------------------------------------');
+
 
 /**
  * Resolves the platform key based on input string
@@ -95,18 +104,44 @@ function detectPlatform () {
 function listPlatforms() {
   return ['osx-64', 'linux-32', 'linux-64', 'linux-armel', 'linux-armhf', 'windows-32', 'windows-64'];
 }
+
+function listVersions(callback) {
+  if (RUNTIME_CACHE['versions']) {
+    return callback(null, RUNTIME_CACHE['versions']);
+  }
+  request({url: API_URL + '/versions'}, function (err, response, body) {
+    try {
+      var parsed = JSON.parse(body.toString());
+      RUNTIME_CACHE['versions'] = Object.keys(parsed);
+      return callback(null, Object.keys(parsed));
+    } catch (e) {
+      console.log(e);
+      return process.exit(1);
+      // return callback(e);
+    }
+  });
+}
 /**
  * Gets full data set from ffbinaries.com
  */
-function getData (callback) {
-  if (DATA_CACHE) {
-    return callback(null, DATA_CACHE);
+function getVersionData (version, callback) {
+  if (RUNTIME_CACHE[version]) {
+    return callback(null, RUNTIME_CACHE[version]);
   }
 
-  request({url: DATA_URL}, function (err, response, body) {
+  if (typeof version !== 'string') {
+    version = false;
+  }
+
+  var url = version ? '/version/' + version : '/latest';
+
+  console.log('Getting version data:', version || 'latest');
+  console.log('------------------------------------');
+
+  request({url: API_URL + url}, function (err, response, body) {
     try {
       var parsed = JSON.parse(body.toString());
-      DATA_CACHE = parsed;
+      RUNTIME_CACHE[version] = parsed;
       return callback(null, parsed);
     } catch (e) {
       console.log(e);
@@ -119,7 +154,7 @@ function getData (callback) {
 /**
  * Download file(s) and save them in the specified directory
  */
-function download (urls, opts, callback) {
+function _downloadUrls (urls, opts, callback) {
   if (typeof urls === 'object') {
     urls = _map(urls, function (v) {return v;})
   } else if (typeof urls === 'string') {
@@ -140,23 +175,24 @@ function download (urls, opts, callback) {
       if (totalFilesize && runningTotal == totalFilesize) {
         return clearInterval(interval);
       }
-      console.log(filename + ': Received ' + Math.floor(runningTotal/1024*100)/100 + 'KB');
+      console.log('\x1b[2m' + filename + ': Received ' + Math.floor(runningTotal/1024/1024*1000)/1000 + 'MB' + '\x1b[0m');
     }, 2000);
 
     try {
       fs.accessSync(destination + '/' + filename);
       console.log('File "' + filename + '" already downloaded.');
       clearInterval(interval);
+      return cb();
     } catch (e) {
       if (opts.quiet) clearInterval(interval);
 
-      console.log('Downloading', filename, 'to', destination);
+      console.log('Downloading', url, 'to', destination);
       request({url: url}, function (err, response, body) {
         totalFilesize = response.headers['content-length'];
-        console.log('Data received. Total filesize: ', Math.floor(totalFilesize/1024*100)/100 + 'KB');
+        console.log('> Download completed: ' + url + ' | Transferred: ', Math.floor(totalFilesize/1024/1024*1000)/1000 + 'MB');
 
         fs.writeFileSync(destination + '/' + filename, body);
-        return cb(err, body);
+        return cb(err);
       })
       .on('data', function (data) {
         runningTotal += data.length;
@@ -164,18 +200,17 @@ function download (urls, opts, callback) {
     }
 
   }, function () {
-    console.log('All files downloaded.');
     return callback();
   })
 
 }
 
 /**
- * Gets binary - specify the platform and destination
- * It will get the data from ffbinaries, pick the correct file
+ * Gets binaries for the platform
+ * It will get the data from ffbinaries, pick the correct files
  * and save it to the specified directory
  */
-function getBinary (platform, opts, callback) {
+function downloadFiles (platform, opts, callback) {
   if (!callback) {
     if (!opts && typeof platform === 'function') {
       callback = platform;
@@ -188,24 +223,25 @@ function getBinary (platform, opts, callback) {
   }
 
   platform = resolvePlatform(platform) || detectPlatform();
-  opts.destination = path.resolve(opts.destination) || (DEFAULT_DESTINATION + '/' + platform);
+  opts.destination = path.resolve(opts.destination) || (LOCAL_BIN + '/' + platform);
 
-  ensureDirSync(opts.destination);
+  _ensureDirSync(opts.destination);
 
-  getData(function (err, data) {
-    var binaryURL = _get(data, 'bin.' + platform);
-    if (!binaryURL) {
-      return console.log('No binaryURL!');
+  getVersionData(opts.version, function (err, data) {
+    var versionUrls = _get(data, 'bin.' + platform);
+    if (!versionUrls) {
+      return console.log('No versionUrls!');
     }
 
-    download(binaryURL, opts, callback);
+    _downloadUrls(versionUrls, opts, callback);
   });
 }
 
 module.exports = {
-  get: getBinary,
-  getData: getData,
+  downloadFiles: downloadFiles,
+  getVersionData: getVersionData,
+  listVersions: listVersions,
+  listPlatforms: listPlatforms,
   detectPlatform: detectPlatform,
-  resolvePlatform: resolvePlatform,
-  listPlatforms: listPlatforms
+  resolvePlatform: resolvePlatform
 };
