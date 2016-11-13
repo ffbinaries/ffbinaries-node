@@ -115,12 +115,14 @@ function getData (callback) {
 /**
  * Download file(s) and save them in the specified directory
  */
-function download (urls, destination, callback) {
+function download (urls, opts, callback) {
   if (typeof urls === 'object') {
     urls = _map(urls, function (v) {return v;})
   } else if (typeof urls === 'string') {
     urls = [urls];
   }
+
+  var destination = opts.destination;
 
   async.each(urls, function (url, cb) {
     var filename = url.split('/').pop();
@@ -139,6 +141,8 @@ function download (urls, destination, callback) {
       console.log('File "' + filename + '" already downloaded.');
       clearInterval(interval);
     } catch (e) {
+      if (opts.quiet) clearInterval(interval);
+
       console.log('Downloading', filename, 'to', destination);
       request({url: url}, function (err, response, body) {
         totalFilesize = response.headers['content-length'];
@@ -177,9 +181,9 @@ function getBinary (platform, opts, callback) {
   }
 
   platform = resolvePlatform(platform) || detectPlatform();
-  var destination = path.resolve(opts.destination) || (DEFAULT_DESTINATION + '/' + platform);
+  opts.destination = path.resolve(opts.destination) || (DEFAULT_DESTINATION + '/' + platform);
 
-  ensureDirSync(destination);
+  ensureDirSync(opts.destination);
 
   getData(function (err, data) {
     var binaryURL = _get(data, 'bin.' + platform);
@@ -187,7 +191,7 @@ function getBinary (platform, opts, callback) {
       return console.log('No binaryURL!');
     }
 
-    download(binaryURL, destination, callback);
+    download(binaryURL, opts, callback);
   });
 }
 

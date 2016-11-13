@@ -49,15 +49,22 @@ extracting them yet (this will happen in future versions).
 When installed globally with `npm i ffbinaries -g` this module will register
 itself on command line interface.
 
-Examples:
+### Arguments
+
+CLI uses the following syntax: `ffbinaries {platform} {--output=dir} {--quiet}`
+
+### Examples
 
 ```
 ffbinaries
 ffbinaries linux --output=/home/user/ffmpeg
+ffbinaries --output=/home/user/ffmpeg --quiet
 ```
 
 
 ## Programatically
+
+### Methods
 
 `ffbinaries` library exports three methods: `get`, `getData` and `detectPlatform`.
 
@@ -69,7 +76,8 @@ ffbinaries linux --output=/home/user/ffmpeg
 
 `resolvePlatform(input)` resolves input to a platform code (matches aliases).
 
-Example:
+
+### Example
 
 ```
 var ffbinaries = require('ffbinaries');
