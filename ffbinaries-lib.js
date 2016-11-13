@@ -1,8 +1,7 @@
 var os = require('os');
 var fse = require('fs-extra');
 var path = require('path');
-var _get = require('lodash.get');
-var _map = require('lodash.map');
+var _ = require('lodash');
 var request = require('request');
 var async = require('async');
 var unzip = require('unzip');
@@ -151,7 +150,10 @@ function getVersionData (version, callback) {
  */
 function _downloadUrls (urls, opts, callback) {
   if (typeof urls === 'object') {
-    urls = _map(urls, function (v) {return v;})
+    urls = _.map(urls, function (v, k) {
+      return (!opts.components || opts.components && Array.isArray(opts.components) && opts.components.indexOf(k) !== -1) ? v : null;
+    })
+    urls = _.uniq(urls);
   } else if (typeof urls === 'string') {
     urls = [urls];
   }
@@ -186,10 +188,21 @@ function _downloadUrls (urls, opts, callback) {
 
       // apply chmod +x
       try {
-        fse.chmodSync(destinationDir + '/ffmpeg', 0744);
-        console.log('Applied 0744 chmod to "' + filename );
+        var extractedFilename;
+        if (os.type() === 'Darwin' || os.type() === 'Linux') {
+          if (filename.startsWith('ffmpeg')) extractedFilename = 'ffmpeg';
+          if (filename.startsWith('ffplay')) extractedFilename = 'ffplay';
+          if (filename.startsWith('ffprobe')) extractedFilename = 'ffprobe';
+          if (filename.startsWith('ffserver')) extractedFilename = 'ffserver';
+        }
+
+        if (extractedFilename) {
+          fse.chmodSync(destinationDir + '/' + extractedFilename, 0744);
+          console.log('Applied 0744 chmod to "' + extractedFilename);
+        }
       } catch (e) {
-        console.error(e);
+        // ignore permission errors for now
+        // console.error(e);
       }
 
       if (typeof cb === 'function') cb();
@@ -288,7 +301,7 @@ function downloadFiles (platform, opts, callback) {
   _ensureDirSync(opts.destination);
 
   getVersionData(opts.version, function (err, data) {
-    var versionUrls = _get(data, 'bin.' + platform);
+    var versionUrls = _.get(data, 'bin.' + platform);
     if (!versionUrls) {
       return console.log('No versionUrls!');
     }

@@ -3,7 +3,7 @@ console.log('ffbinaries downloader');
 console.log('------------------------------------');
 
 var ffbinaries = require('./ffbinaries-lib');
-var _get = require('lodash.get');
+var _ = require('lodash');
 var cliArgs = require('clarg')();
 
 function displayHelp () {
@@ -25,8 +25,9 @@ function displayHelp () {
     '',
     'Examples:',
     ' ffbinaries',
-    ' ffbinaries linux-64',
-    ' ffbinaries linux-64 --version=3.2 --output=/home/user/ffmpeg --quiet'
+    ' ffbinaries mac',
+    ' ffbinaries win-64 --quiet --components=ffplay',
+    ' ffbinaries linux-64 -q --v=3.2 --c=ffmpeg,ffprobe --output=/home/user/ffmpeg'
   ];
   console.log(lines.join('\n'));
 }
@@ -57,7 +58,8 @@ function download(platform, opts) {
   var getOpts = {
     destination: opts.output || process.cwd(),
     quiet: opts.quiet || false,
-    version: opts.version || false
+    version: opts.version || false,
+    components: opts.components || opts.c || false
   };
 
   ffbinaries.downloadFiles(resolved, getOpts, function () {
@@ -68,12 +70,19 @@ function download(platform, opts) {
 
 
 // execute app
-var mode = _get(cliArgs, 'args.0');
+var mode = _.get(cliArgs, 'args.0');
 
 var opts = {
-  output: _get(cliArgs, 'opts.output') || _get(cliArgs, 'opts.o'),
-  quiet: _get(cliArgs, 'opts.quiet') || _get(cliArgs, 'opts.q'),
-  version: _get(cliArgs, 'opts.version') || _get(cliArgs, 'opts.v')
+  output: _.get(cliArgs, 'opts.output') || _.get(cliArgs, 'opts.o'),
+  quiet: _.get(cliArgs, 'opts.quiet') || _.get(cliArgs, 'opts.q'),
+  version: _.get(cliArgs, 'opts.version') || _.get(cliArgs, 'opts.v'),
+  components: (_.get(cliArgs, 'opts.components') || _.get(cliArgs, 'opts.c'))
+}
+
+if (typeof opts.components === 'string') {
+  opts.components = opts.components.split(',');
+} else {
+  opts.components = undefined;
 }
 
 if (mode === 'help' || mode === 'info') {

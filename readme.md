@@ -15,15 +15,14 @@ This module is meant to be used programatically, i.e. as a build step.
 
 # Important info
 
-**This project is not stable just yet.**
+**This project is not stable yet and breaking changes are still introduced. Please always update to the newest version and run ffbinaries clearcache if you're experiencing issues.**
 
-**Version 0.0.11 fixes a critical bug with broken zip files being saved. Please update and run ffbinaries clearcache.**
+**Version 0.1.0 adds automatic permission setting and components option.**
+
 **Version 0.0.12 adds automatic extraction of binaries.**
 
-I noticed quite a few downloads of this in the first day already.
-Please be aware that this is just something I started last night
-and I'm still introducing many breaking changes before I decide how this should
-work.
+**Version 0.0.11 fixes a critical bug with broken zip files being saved.**
+
 
 Please raise issues on GitHub or even pull requests for features you'd like to see.
 I also just created ffbinaries.com at the same time as this module
@@ -36,14 +35,10 @@ Currently the only version of ffmpeg available is 3.2.
 
 ## New API
 
-New link structure introduced in version 0.0.6, please allow few hours for DNS updates
-if you're having issues.
-
-To see if you're connecting to new API already go to http://ffbinaries.com and see
-if you see a raw JSON data file or an actual webpage.
+If you're seeing a raw JSON file at http://ffbinaries.com you're still on old API
+and some features may not work. Please allow time for DNS update to propagate.
 
 New API is running this: https://github.com/vot/ffbinaries-api
-The old API was literally a single static JSON file so this is a slight improvement.
 
 
 # Usage
@@ -54,10 +49,9 @@ If `output` argument is specified the binary will be placed there.
 In CLI it will default to current working directory.
 Programatically the default is `bin/{platform}` folder inside of your copy of ffbinaries.
 
-If `platform` argument is missing the binary for current platform will be downloaded.
+If `platform` argument is missing then binaries for current platform will be downloaded.
 
-Currently only archives with binaries are downloaded without
-extracting them yet (this will happen in future versions).
+If `components` argument is missing then binaries of all available components will be downloaded.
 
 
 ## CLI
@@ -73,8 +67,9 @@ CLI uses the following syntax: `ffbinaries {platform} {--output=dir} {--quiet}`
 
 ```
 ffbinaries
-ffbinaries linux-64
-ffbinaries linux-64 --version=3.2 --output=/home/user/ffmpeg --quiet
+ffbinaries mac
+ffbinaries win-64 --quiet --components=ffplay
+ffbinaries linux-64 -q --v=3.2 --c=ffmpeg,ffprobe --output=/home/user/ffmpeg
 ```
 
 There are also `ffbinaries help`, `ffbinaries versions` and `ffbinaries clearcache`.
