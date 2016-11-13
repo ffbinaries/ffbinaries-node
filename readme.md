@@ -45,9 +45,8 @@ The old API was literally a single static JSON file so this is a slight improvem
 You can run it from your code or through CLI.
 
 If `output` argument is specified the binary will be placed there.
-Otherwise it will default to `bin/{platform}` folder inside of ffbinaries module
-(which may be a global or local install).
-
+In CLI it will default to current working directory.
+Programatically the default is `bin/{platform}` folder inside of your copy of ffbinaries.
 
 If `platform` argument is missing the binary for current platform will be downloaded.
 
