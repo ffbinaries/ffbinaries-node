@@ -127,20 +127,3 @@ The components of the ffmpeg suite are: ffmpeg, ffprobe, ffserver and ffplay.
 | ffprobe  | v   | v     | v       |
 | ffserver | v   | v     |         |
 | ffplay   | v   |       | v       |
-
-
-# Credits
-
-Binaries compiled by:
-
-* OS X version: [https://evermeet.cx/ffmpeg/](https://evermeet.cx/ffmpeg/)
-* Linux version: [http://johnvansickle.com/ffmpeg/](http://johnvansickle.com/ffmpeg/)
-* Windows version: [http://ffmpeg.zeranoe.com/builds/](http://ffmpeg.zeranoe.com/builds/)
-
-
-# Online documentation
-
-* [ffmpeg](http://ffmpeg.org/ffmpeg.html)
-* [ffplay](http://ffmpeg.org/ffplay.html)
-* [ffprobe](http://ffmpeg.org/ffprobe.html)
-* [ffserver](http://ffmpeg.org/ffserver.html)
