@@ -102,9 +102,7 @@ ffbinaries.get(platform, output, function () {
 
 # Platforms
 
-The first argument is platform/package to download. OS X suite is available
-in individually packaged components which currently require downloading
-each needed component separately.
+Platform is the first argument. The following builds are available.
 
 ## Windows
 * windows-32 (aliases: win, windows, win-32)
@@ -123,8 +121,6 @@ each needed component separately.
 # Components
 
 The components of the ffmpeg suite are: ffmpeg, ffprobe, ffserver and ffplay.
-
-OS X version ships in individually packaged components, Linux and Windows in bundles.
 
 |          | Mac | Linux | Windows |
 |----------|-----|-------|---------|
