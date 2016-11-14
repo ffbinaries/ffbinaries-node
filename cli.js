@@ -3,6 +3,7 @@ console.log('ffbinaries downloader');
 console.log('------------------------------------');
 
 var ffbinaries = require('./ffbinaries-lib');
+var packageJson = require('./package.json');
 var _ = require('lodash');
 var cliArgs = require('clarg')();
 
@@ -33,6 +34,7 @@ function displayHelp () {
 }
 
 function displayVersions () {
+  console.log('ffbinaries downloader version:', packageJson.version);
   ffbinaries.listVersions(function (err, versions) {
     if (versions && Array.isArray(versions)) {
       console.log('Available ffmpeg versions:', versions.join(', '));
@@ -89,7 +91,7 @@ if (mode === 'help' || mode === 'info') {
   return displayHelp();
 } else if (mode === 'clearcache') {
   return ffbinaries.clearCache();
-} else if (mode === 'versions' || mode === 'list') {
+} else if (mode === 'version' || mode === 'versions' || mode === 'list') {
   return displayVersions();
 } else {
   return download(mode, opts);

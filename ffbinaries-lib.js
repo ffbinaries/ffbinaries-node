@@ -6,8 +6,9 @@ var request = require('request');
 var async = require('async');
 var unzip = require('unzip');
 
-var API_URL = 'http://ffbinaries.com/api';
-// var API_URL = 'http://localhost:3000/api';
+var API_URL = 'http://ffbinaries.com/api/v1';
+// var API_URL = 'http://localhost:3000/api/v1';
+
 var LOCAL_BIN = __dirname + '/bin';
 var LOCAL_CACHE_DIR = os.homedir() + '/.ffbinaries-cache';
 var CWD = process.cwd();
@@ -101,13 +102,14 @@ function listPlatforms() {
 
 function listVersions(callback) {
   if (RUNTIME_CACHE['versions']) {
-    return callback(null, RUNTIME_CACHE['versions']);
+    return callback(null, RUNTIME_CACHE['versionsAll']);
   }
-  request({url: API_URL + '/versions'}, function (err, response, body) {
+  request({url: API_URL}, function (err, response, body) {
     try {
       var parsed = JSON.parse(body.toString());
-      RUNTIME_CACHE['versions'] = Object.keys(parsed);
-      return callback(null, Object.keys(parsed));
+      var versionsAll = Object.keys(parsed.versions);
+      RUNTIME_CACHE['versionsAll'] = versionsAll;
+      return callback(null, versionsAll);
     } catch (e) {
       console.log(e);
       return process.exit(1);
@@ -151,7 +153,7 @@ function getVersionData (version, callback) {
 function _downloadUrls (urls, opts, callback) {
   if (typeof urls === 'object') {
     urls = _.map(urls, function (v, k) {
-      return (!opts.components || opts.components && Array.isArray(opts.components) && opts.components.indexOf(k) !== -1) ? v : null;
+      return (!opts.components || opts.components && !Array.isArray(opts.components) || opts.components && Array.isArray(opts.components) && opts.components.indexOf(k) !== -1) ? v : null;
     })
     urls = _.uniq(urls);
   } else if (typeof urls === 'string') {
@@ -198,7 +200,7 @@ function _downloadUrls (urls, opts, callback) {
 
         if (extractedFilename) {
           fse.chmodSync(destinationDir + '/' + extractedFilename, 0744);
-          console.log('Applied 0744 chmod to "' + extractedFilename);
+          console.log('Applied 0744 chmod to "' + extractedFilename + '"');
         }
       } catch (e) {
         // ignore permission errors for now
@@ -288,15 +290,17 @@ function downloadFiles (platform, opts, callback) {
     if (!opts && typeof platform === 'function') {
       callback = platform;
       platform = null;
+      opts = {};
     }
     if (typeof opts === 'function') {
       callback = opts;
-      opts = null;
+      opts = platform;
+      platform = null;
     }
   }
 
   platform = resolvePlatform(platform) || detectPlatform();
-  opts.destination = path.resolve(opts.destination) || (LOCAL_BIN + '/' + platform);
+  opts.destination = path.resolve(opts.destination || '.') || (LOCAL_BIN + '/' + platform);
 
   _ensureDirSync(opts.destination);
 

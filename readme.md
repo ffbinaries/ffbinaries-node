@@ -8,34 +8,52 @@
 [npm-dl-img]: https://img.shields.io/npm/dm/ffbinaries.svg
 
 
-Downloads precompiled ffmpeg binaries from http://ffbinaries.com.
+Downloads precompiled ffmpeg, ffprobe, ffplay and ffserver binaries from http://ffbinaries.com.
 
-This module is meant to be used programatically, i.e. as a build step.
+This module is meant to be used programatically, i.e. as a build step or in a postinstall script.
 
 
-# Important info: project status
+# Project status
 
-**This project is getting more stable now that it reached 0.1.0. It's the minimum version you should be running.**
+**This project can be considered stable now since it reached version 0.1. That's the minimum version you should be running.**
 
-In version 0.1.0 the binaries are downloaded, cached and then unzipped to the correct location.
+The module downloads, caches and then extracts the binaries from archives correctly. All the features can be expected to work at this point.
 
-All the features documented should be working at this point.
 If you're experiencing issues please update to the newest version and run `ffbinaries clearcache`.
 
-If documentation is slightly inaccurate please refer to the code for more details
-and suggest updates to documentation.
-
-Please raise issues or pull requests for features you'd like to see on GitHub: https://github.com/vot/ffbinaries-node.
+Please raise issues and pull requests for features you'd like to see on GitHub: https://github.com/vot/ffbinaries-node.
 
 
 ## ffbinaries.com API
 
-http://ffbinaries.com service isn't mature either so there still may be
-some changes in data structure (unlikely but giving you a heads up just in case).
-
-Currently the only version of ffmpeg available is 3.2.
+http://ffbinaries.com service provides a versioned API. This will prevent issues with data structure changes in the future.
 
 The API service is running this application: https://github.com/vot/ffbinaries-api
+
+
+# Platforms
+
+The following platform codes are available:
+
+## Windows
+**windows-32** (aliases: win, windows, win-32), **windows-64** (alias: win-64)
+
+## Linux
+**linux-32** (alias: linux), **linux-64**, **linux-armhf** (alias: linux-arm), **linux-armel**
+
+## OS X
+**osx-64** (aliases: mac, osx, mac-64)
+
+You can use aliases as your platform code argument in both CLI and programatically.
+
+# Included components
+
+|          | Mac | Linux | Windows |
+|----------|-----|-------|---------|
+| ffmpeg   | v   | v     | v       |
+| ffprobe  | v   | v     | v       |
+| ffserver | v   | v     |         |
+| ffplay   | v   |       | v       |
 
 
 # Usage
@@ -44,11 +62,11 @@ You can run it from your code or through CLI.
 
 If `output` argument is specified the binary will be placed there.
 In CLI it will default to current working directory.
-Programatically the default is `bin/{platform}` folder inside of your copy of ffbinaries.
+Programatically the default is the directory in which your script resides.
 
-If `platform` argument is missing then binaries for current platform will be downloaded.
+If `platform` argument is missing then the current platform will be autodected and binaries for it will be downloaded.
 
-If `components` argument is missing then binaries of all available components will be downloaded.
+If `components` argument is missing then binaries of all available components will be downloaded (see Components section).
 
 
 ## CLI
@@ -98,38 +116,18 @@ There are also `ffbinaries help`, `ffbinaries versions` and `ffbinaries clearcac
 ```
 var ffbinaries = require('ffbinaries');
 var platform = ffbinaries.detectPlatform();
-var output = __dirname;
-ffbinaries.downloadFiles(platform, output, function () {
-  console.log('Download complete.');
-});
+var dest = __dirname + '/binaries';
+
+ffbinaries.downloadFiles(function () {
+  console.log('Downloaded binaries for ' + platform + '.');
+})
+
+ffbinaries.downloadFiles('linux', function () {
+  console.log('Downloaded binaries for linux.');
+})
+
+
+ffbinaries.downloadFiles('win-64', {components: ['ffprobe'], quiet: true, destination: dest}, function () {
+  console.log('Downloaded ffprobe binary for win-64 to ' + dest + '.');
+})
 ```
-
-
-# Platforms
-
-Platform is the first argument. The following builds are available.
-
-## Windows
-* windows-32 (aliases: win, windows, win-32)
-* windows-64 (alias: win-64)
-
-## Linux
-* linux-32 (alias: linux)
-* linux-64
-* linux-armhf (alias: linux-arm)
-* linux-armel
-
-## OS X
-* osx-64 (aliases: mac, osx, mac-64)
-
-
-# Components
-
-The components of the ffmpeg suite are: ffmpeg, ffprobe, ffserver and ffplay.
-
-|          | Mac | Linux | Windows |
-|----------|-----|-------|---------|
-| ffmpeg   | v   | v     | v       |
-| ffprobe  | v   | v     | v       |
-| ffserver | v   | v     |         |
-| ffplay   | v   |       | v       |

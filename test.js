@@ -1,50 +1,18 @@
-var unzip = require('unzip');
 var os = require('os');
-var fse = require('fs-extra');
-var request = require('request');
+var ffbinaries = require('./index');
 
-var TESTDIR = os.homedir() + '/.ffbinaries-cache/test';
-var url = 'https://github.com/vot/ffbinaries-prebuilt/releases/download/3.2/ffmpeg-3.2-osx-64.zip';
-var archive = TESTDIR + '/ffmpeg-3.2-osx-64.zip';
-var dest = TESTDIR;
+var platform = ffbinaries.detectPlatform();
+var dest = os.tmpdir() + '/ffbinaries-test';
+console.log('Detected platform:', platform);
 
-function _ensureDirSync (dir) {
-  try {
-    fse.accessSync(dir);
-  } catch (e) {
-    fse.mkdirSync(dir);
-  }
-}
+ffbinaries.downloadFiles({components: ['ffplay'], quiet: true}, function () {
+  console.log('all done');
+});
 
-_ensureDirSync(TESTDIR);
+ffbinaries.downloadFiles({components: ['ffmpeg'], quiet: true, destination: dest}, function () {
+  console.log('all done');
+});
 
-
-/***/
-function testDownload() {
-  request(url).pipe(fse.createWriteStream(archive));
-}
-
-/***/
-function testUnzip() {
-
-  console.log('Extracting ' + archive + ' to ' + dest);
-
-  var readStream = fse.createReadStream(archive);
-  var extractor = unzip.Extract({path: dest});
-
-  extractor.on('close', function () {
-    console.log('Finished extracting');
-  });
-
-  readStream.pipe(extractor);
-}
-
-/**
- * Uncomment tests to execute them.
- * It manually recreates a couple of simple scenarios to troubleshoot problems.
- * First run download and then unzip, one at a time.
- */
-
-
-// testDownload();
-// testUnzip();
+ffbinaries.downloadFiles('win-64', {components: ['ffprobe'], quiet: true, destination: dest}, function () {
+  console.log('all done');
+});
