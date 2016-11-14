@@ -13,20 +13,25 @@ Downloads a precompiled ffmpeg binaries from http://ffbinaries.com.
 This module is meant to be used programatically, i.e. as a build step.
 
 
-# Important info
+# Important info: project status
 
-**This project will be slowly getting more stable but breaking changes may still be introduced at this stage.**
+**This project is getting more stable now that it reached 0.1.0. It's the minimum version you should be running.**
 
-**Version 0.1.0 has all the basic features working. This is the minimum version you should be running.**
+In version 0.1.0 the binaries are downloaded, cached and then unzipped to the correct location.
 
+All the features documented should be working at this point.
 If you're experiencing issues please update to the newest version and run `ffbinaries clearcache`.
-
-Please raise issues on GitHub or even pull requests for features you'd like to see.
-http://ffbinaries.com service is also very immature as well so
-there may be changes in data structure as well.
 
 If documentation is slightly inaccurate please refer to the code for more details
 and suggest updates to documentation.
+
+Please raise issues or pull requests for features you'd like to see on GitHub: https://github.com/vot/ffbinaries-node.
+
+
+## ffbinaries.com API
+
+http://ffbinaries.com service isn't mature either so there still may be
+some changes in data structure (unlikely but giving you a heads up just in case).
 
 Currently the only version of ffmpeg available is 3.2.
 
@@ -53,7 +58,7 @@ itself on command line interface.
 
 ### Arguments
 
-CLI uses the following syntax: `ffbinaries {platform} {--output=dir} {--quiet}`
+CLI uses the following syntax: `ffbinaries [platform] [--components] [--output] [--quiet]`
 
 ### Examples
 
@@ -71,21 +76,21 @@ There are also `ffbinaries help`, `ffbinaries versions` and `ffbinaries clearcac
 
 ### Methods
 
-`ffbinaries` library exports three methods: `get`, `getData` and `detectPlatform`.
+`ffbinaries` library exports the following methods:
 
-`downloadFiles(platform, output, callback)` method will download the requested binaries.
+* `downloadFiles(platform, output, callback)` downloads and extracts the requested binaries.
 
-`getVersionData(version, callback)` fetches the full data set without downloading any binaries.
+* `getVersionData(version, callback)` fetches the full data set without downloading any binaries.
 
-`listVersions(callback)` returns the list of available versions in the API
+* `listVersions(callback)` returns the list of available versions from the API
 
-`listPlatforms()` returns the list of available platforms
+* `listPlatforms()` returns the list of available platforms
 
-`detectPlatform()` returns the platform code of the machine as detected by the module.
+* `detectPlatform()` returns the platform code of the machine as detected by the module.
 
-`resolvePlatform(input)` resolves input to a platform code (matches aliases).
+* `resolvePlatform(input)` resolves input to a platform code (matches aliases).
 
-`clearCache()` purges local cache
+* `clearCache()` purges local cache
 
 
 ### Example
