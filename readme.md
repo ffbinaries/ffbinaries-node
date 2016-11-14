@@ -15,30 +15,22 @@ This module is meant to be used programatically, i.e. as a build step.
 
 # Important info
 
-**This project is not stable yet and breaking changes are still introduced. Please always update to the newest version and run ffbinaries clearcache if you're experiencing issues.**
+**This project will be slowly getting more stable but breaking changes may still be introduced at this stage.**
 
-**Version 0.1.0 adds automatic permission setting and components option.**
+**Version 0.1.0 has all the basic features working. This is the minimum version you should be running.**
 
-**Version 0.0.12 adds automatic extraction of binaries.**
-
-**Version 0.0.11 fixes a critical bug with broken zip files being saved.**
-
+If you're experiencing issues please update to the newest version and run `ffbinaries clearcache`.
 
 Please raise issues on GitHub or even pull requests for features you'd like to see.
-I also just created ffbinaries.com at the same time as this module
-so there will be changes in data structure as well.
+http://ffbinaries.com service is also very immature as well so
+there may be changes in data structure as well.
 
-Documentation may also be slightly inaccurate at the moment - apologies,
-if in doubt please refer to the code for now.
+If documentation is slightly inaccurate please refer to the code for more details
+and suggest updates to documentation.
 
 Currently the only version of ffmpeg available is 3.2.
 
-## New API
-
-If you're seeing a raw JSON file at http://ffbinaries.com you're still on old API
-and some features may not work. Please allow time for DNS update to propagate.
-
-New API is running this: https://github.com/vot/ffbinaries-api
+The API service is running this application: https://github.com/vot/ffbinaries-api
 
 
 # Usage
