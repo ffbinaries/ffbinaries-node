@@ -62,7 +62,7 @@ You can run it from your code or through CLI.
 
 If `output` argument is specified the binary will be placed there.
 In CLI it will default to current working directory.
-Programatically the default is the directory in which your script resides.
+Programatically the default is the also the working directory.
 
 If `platform` argument is missing then the current platform will be autodected and binaries for it will be downloaded.
 
