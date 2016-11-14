@@ -8,7 +8,7 @@
 [npm-dl-img]: https://img.shields.io/npm/dm/ffbinaries.svg
 
 
-Downloads a precompiled ffmpeg binaries from http://ffbinaries.com.
+Downloads precompiled ffmpeg binaries from http://ffbinaries.com.
 
 This module is meant to be used programatically, i.e. as a build step.
 
