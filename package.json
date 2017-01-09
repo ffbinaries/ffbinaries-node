@@ -1,12 +1,17 @@
 {
   "name": "ffbinaries",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Download binaries for ffmpeg, ffprobe, ffserver and ffplay",
   "main": "index.js",
   "bin": {
     "ffbinaries": "cli.js"
   },
   "scripts": {},
+  "keywords": [
+    "ffmpeg", "ffserver", "ffplay", "ffprobe",
+    "bin", "binaries", "static", "cli", "audio", "video",
+    "windows", "linux", "mac"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/vot/ffbinaries-node.git"

@@ -15,7 +15,7 @@ This module is meant to be used programatically, i.e. as a build step or in a po
 
 # Project status
 
-**This project can be considered stable now since it reached version 0.1. That's the minimum version you should be running.**
+**This project can be considered stable now since it reached version 0.1.0. That's the minimum version you should be running.**
 
 The module downloads, caches and then extracts the binaries from archives correctly. All the features can be expected to work at this point.
 
