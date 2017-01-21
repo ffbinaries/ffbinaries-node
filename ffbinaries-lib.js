@@ -4,7 +4,7 @@ var path = require('path');
 var _ = require('lodash');
 var request = require('request');
 var async = require('async');
-var unzip = require('unzip');
+var extractZip = require('extract-zip');
 
 var API_URL = 'http://ffbinaries.com/api/v1';
 // var API_URL = 'http://localhost:3000/api/v1';
@@ -182,35 +182,7 @@ function _downloadUrls (urls, opts, callback) {
     var oldpath = LOCAL_CACHE_DIR + '/' + filename;
 
     console.log('Extracting ' + oldpath + ' to ' + destinationDir);
-    var readStream = fse.createReadStream(oldpath);
-    var extractor = unzip.Extract({path: destinationDir});
-
-    extractor.on('close', function () {
-      console.log('Extracted "' + filename + '" to destination');
-
-      // apply chmod +x
-      try {
-        var extractedFilename;
-        if (os.type() === 'Darwin' || os.type() === 'Linux') {
-          if (filename.startsWith('ffmpeg')) extractedFilename = 'ffmpeg';
-          if (filename.startsWith('ffplay')) extractedFilename = 'ffplay';
-          if (filename.startsWith('ffprobe')) extractedFilename = 'ffprobe';
-          if (filename.startsWith('ffserver')) extractedFilename = 'ffserver';
-        }
-
-        if (extractedFilename) {
-          fse.chmodSync(destinationDir + '/' + extractedFilename, 0744);
-          console.log('Applied 0744 chmod to "' + extractedFilename + '"');
-        }
-      } catch (e) {
-        // ignore permission errors for now
-        // console.error(e);
-      }
-
-      if (typeof cb === 'function') cb();
-    });
-
-    readStream.pipe(extractor);
+    extractZip(oldpath, { dir: destinationDir, defaultFileMode: 0744 }, cb);
   }
 
 
