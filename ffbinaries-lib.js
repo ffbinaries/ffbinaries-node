@@ -22,7 +22,6 @@ function _ensureDirSync (dir) {
   }
 }
 
-_ensureDirSync(LOCAL_BIN);
 _ensureDirSync(LOCAL_CACHE_DIR);
 
 /**
@@ -300,7 +299,13 @@ function downloadFiles (platform, opts, callback) {
   }
 
   platform = resolvePlatform(platform) || detectPlatform();
-  opts.destination = path.resolve(opts.destination || '.') || (LOCAL_BIN + '/' + platform);
+  var localPath = path.resolve(opts.destination || '.');
+  if (localPath) {
+    opts.destination = localPath;
+  } else {
+    _ensureDirSync(LOCAL_BIN);
+    opts.destination = (LOCAL_BIN + '/' + platform);
+  }
 
   _ensureDirSync(opts.destination);
 
