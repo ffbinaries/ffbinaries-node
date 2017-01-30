@@ -10,14 +10,14 @@
 
 Downloads precompiled ffmpeg, ffprobe, ffplay and ffserver binaries from http://ffbinaries.com.
 
-This module is meant to be used programatically, i.e. as a build step or in a postinstall script.
+This module is cross-platform and can be used programatically, i.e. as a build step or in a postinstall script.
 
 
 # Project status
 
 **This project can be considered stable now since it reached version 0.1.0. That's the minimum version you should be running.**
 
-The module downloads, caches and then extracts the binaries from archives correctly. All the features can be expected to work at this point.
+The module downloads, caches and then extracts the binaries from the downloaded archives.
 
 If you're experiencing issues please update to the newest version and run `ffbinaries clearcache`.
 
@@ -111,7 +111,7 @@ There are also `ffbinaries help`, `ffbinaries versions` and `ffbinaries clearcac
 * `clearCache()` purges local cache
 
 
-### Example
+### Examples
 
 ```
 var ffbinaries = require('ffbinaries');
