@@ -9,7 +9,6 @@ var unzip = require('unzip');
 var API_URL = 'http://ffbinaries.com/api/v1';
 // var API_URL = 'http://localhost:3000/api/v1';
 
-var LOCAL_BIN = __dirname + '/bin';
 var LOCAL_CACHE_DIR = os.homedir() + '/.ffbinaries-cache';
 var CWD = process.cwd();
 var RUNTIME_CACHE = {};
@@ -279,7 +278,6 @@ function _downloadUrls (urls, opts, callback) {
  */
 function downloadFiles (platform, opts, callback) {
   console.log('Directories');
-  console.log(' LOCAL_BIN:', LOCAL_BIN);
   console.log(' LOCAL_CACHE_DIR:', LOCAL_CACHE_DIR);
   console.log(' CWD:', CWD);
   console.log('------------------------------------');
@@ -299,14 +297,8 @@ function downloadFiles (platform, opts, callback) {
   }
 
   platform = resolvePlatform(platform) || detectPlatform();
-  var localPath = path.resolve(opts.destination || '.');
-  if (localPath) {
-    opts.destination = localPath;
-  } else {
-    _ensureDirSync(LOCAL_BIN);
-    opts.destination = (LOCAL_BIN + '/' + platform);
-  }
-
+  
+  opts.destination = path.resolve(opts.destination || '.');
   _ensureDirSync(opts.destination);
 
   getVersionData(opts.version, function (err, data) {
