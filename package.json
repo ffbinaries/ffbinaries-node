@@ -35,9 +35,9 @@
   "dependencies": {
     "async": "^2.1.2",
     "clarg": "0.0.3",
+    "extract-zip": "^1.6.0",
     "fs-extra": "^1.0.0",
     "lodash": "^4.16.6",
-    "request": "^2.78.0",
-    "unzip": "^0.1.11"
+    "request": "^2.78.0"
   }
 }
