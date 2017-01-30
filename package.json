@@ -38,6 +38,6 @@
     "extract-zip": "^1.6.0",
     "fs-extra": "^1.0.0",
     "lodash": "^4.16.6",
-    "request": "^2.78.0",
+    "request": "^2.78.0"
   }
 }

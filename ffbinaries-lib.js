@@ -182,7 +182,7 @@ function _downloadUrls (urls, opts, callback) {
     var oldpath = LOCAL_CACHE_DIR + '/' + filename;
 
     console.log('Extracting ' + oldpath + ' to ' + destinationDir);
-    extractZip(oldpath, { dir: destinationDir, defaultFileMode: 0744 }, cb);
+    extractZip(oldpath, { dir: destinationDir, defaultFileMode: parseInt('744', 8) }, cb);
   }
 
 
