@@ -96,13 +96,13 @@ There are also `ffbinaries help`, `ffbinaries versions` and `ffbinaries clearcac
 
 `ffbinaries` library exports the following methods:
 
-* `downloadFiles(platform, output, callback)` downloads and extracts the requested binaries.
+* `downloadFiles(platform, opts, callback)` downloads and extracts the requested binaries.
 
-   * The `output` parameter is an object that can contain following optional parameters=
-      * `destination`: holds the path where ffbinaries will write the downloaded binaries to. If not provided it will default to `.`.
+   The `opts` parameter is an object that can contain these optional parameters:
+      * `destination`: the path where the binaries will be downloaded to. If not provided it will default to `.`.
       * `components`: an array of string values that describes which [components](#included-components) to download. If not provided it will default to all components available for the platform.
-      * `version`: the version of the ffmpeg binaries/components
-      * `quiet`: logs no output
+      * `version`: version of ffmpeg to download
+      * `quiet`: suppress verbose logs
 
 * `getVersionData(version, callback)` fetches the full data set without downloading any binaries.
 
