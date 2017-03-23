@@ -12,23 +12,10 @@ Downloads precompiled ffmpeg, ffprobe, ffplay and ffserver binaries from http://
 
 This module is cross-platform and can be used programatically, i.e. as a build step or in a postinstall script.
 
+**The minimum version you should be running is 0.1.0.**
 
-# Project status
-
-**This project can be considered stable now since it reached version 0.1.0. That's the minimum version you should be running.**
-
-The module downloads, caches and then extracts the binaries from the downloaded archives.
 
 If you're experiencing issues please update to the newest version and run `ffbinaries clearcache`.
-
-Please raise issues and pull requests for features you'd like to see on GitHub: https://github.com/vot/ffbinaries-node.
-
-
-## ffbinaries.com API
-
-http://ffbinaries.com service provides a versioned API. This will prevent issues with data structure changes in the future.
-
-The API service is running this application: https://github.com/vot/ffbinaries-api
 
 
 # Platforms
@@ -66,7 +53,7 @@ Programatically the default is the also the working directory.
 
 If `platform` argument is missing then the current platform will be autodected and binaries for it will be downloaded.
 
-If `components` argument is missing then binaries of all available components will be downloaded (see Components section).
+If `components` argument is missing then binaries of all available components will be downloaded (see [Included components](#included-components) section).
 
 
 ## CLI
@@ -137,3 +124,9 @@ ffbinaries.downloadFiles('win-64', {components: ['ffprobe'], quiet: true, destin
   console.log('Downloaded ffprobe binary for win-64 to ' + dest + '.');
 })
 ```
+
+## Data source
+
+The API backend is located at http://ffbinaries.com and is powered by this app: https://github.com/vot/ffbinaries-api
+
+The binaries are hosted on GitHub as releases of https://github.com/vot/ffbinaries-prebuilt repo.
