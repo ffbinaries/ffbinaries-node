@@ -64,7 +64,12 @@ function download(platform, opts) {
     components: opts.components || opts.c || false
   };
 
-  ffbinaries.downloadFiles(resolved, getOpts, function () {
+  ffbinaries.downloadFiles(resolved, getOpts, function (err, data) {
+    if (err) {
+      console.log('------------------------------------');
+      console.log('Download failed.');
+      return process.exit(1);
+    }
     console.log('------------------------------------');
     console.log('All files downloaded.');
   });

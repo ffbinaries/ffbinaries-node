@@ -109,9 +109,7 @@ function listVersions(callback) {
       RUNTIME_CACHE['versionsAll'] = versionsAll;
       return callback(null, versionsAll);
     } catch (e) {
-      console.log(e);
-      return process.exit(1);
-      // return callback(e);
+      return callback('Couldn\'t get valid data.');
     }
   });
 }
@@ -138,9 +136,7 @@ function getVersionData (version, callback) {
       RUNTIME_CACHE[version] = parsed;
       return callback(null, parsed);
     } catch (e) {
-      console.log(e);
-      return process.exit(1);
-      // return callback(e);
+      return callback('Couldn\'t get valid data.');
     }
   });
 }
@@ -211,7 +207,6 @@ function _downloadUrls (urls, opts, callback) {
         fse.accessSync(LOCAL_CACHE_DIR + '/' + filename);
         console.log('Found "' + filename + '" in cache.');
         clearInterval(interval);
-        // return _copyZipToDestination(filename, cb);
         return _extractZipToDestination(filename, cb);
       } catch (e) {
         // Download the file and write in cache
@@ -222,11 +217,6 @@ function _downloadUrls (urls, opts, callback) {
           totalFilesize = response.headers['content-length'];
           console.log('> Download completed: ' + url + ' | Transferred: ', Math.floor(totalFilesize/1024/1024*1000)/1000 + 'MB');
 
-          // fse.writeFileSync(LOCAL_CACHE_DIR + '/' + filename, body);
-          // rename from .part to normal
-          // fse.move(LOCAL_CACHE_DIR + '/' + filename + '.part', LOCAL_CACHE_DIR + '/' + filename);
-          // _copyZipToDestination(filename);
-          // return cb(err);
           _extractZipToDestination(filename, cb);
         })
         .on('data', function (data) {
@@ -269,14 +259,14 @@ function downloadFiles (platform, opts, callback) {
   }
 
   platform = resolvePlatform(platform) || detectPlatform();
-  
+
   opts.destination = path.resolve(opts.destination || '.');
   _ensureDirSync(opts.destination);
 
   getVersionData(opts.version, function (err, data) {
     var versionUrls = _.get(data, 'bin.' + platform);
-    if (!versionUrls) {
-      return console.log('No versionUrls!');
+    if (err || !versionUrls) {
+      return callback('No versionUrls!');
     }
 
     _downloadUrls(versionUrls, opts, callback);
