@@ -8,9 +8,12 @@
 [npm-dl-img]: https://img.shields.io/npm/dm/ffbinaries.svg
 
 
-Downloads precompiled ffmpeg, ffprobe, ffplay and ffserver binaries from http://ffbinaries.com.
+Downloads precompiled **ffmpeg, ffprobe, ffplay and ffserver binaries** from http://ffbinaries.com.
+
 
 This module is cross-platform and can be used programatically, i.e. as a build step or in a postinstall script.
+
+<br />
 
 **The minimum version you should be running is 0.1.0.**
 
