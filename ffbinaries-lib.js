@@ -157,21 +157,6 @@ function _downloadUrls (urls, opts, callback) {
   var destinationDir = opts.destination;
   var cacheDir = LOCAL_CACHE_DIR;
 
-  function _copyZipToDestination (filename, cb) {
-    var oldpath = LOCAL_CACHE_DIR + '/' + filename;
-    var newpath = destinationDir + '/' + filename;
-
-    try {
-      fse.copySync(oldpath, newpath);
-      console.log('Copied "' + filename + '" to destination')
-      return cb();
-    } catch (err) {
-      console.log('Error copying "' + filename + '" to "' + destinationDir + '"');
-      console.error(err);
-      return cb();
-    }
-  }
-
   function _extractZipToDestination (filename, cb) {
     var oldpath = LOCAL_CACHE_DIR + '/' + filename;
 
