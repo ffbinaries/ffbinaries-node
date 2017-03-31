@@ -43,8 +43,9 @@ You can use aliases as your platform code argument in both CLI and programatical
 | ffmpeg   | v   | v     | v       |
 | ffprobe  | v   | v     | v       |
 | ffserver | v   | v     |         |
-| ffplay   | v   |       | v       |
+| ffplay   | v   | v*    | v       |
 
+(* Only linux-32 and linux-64 builds are available for ffplay)
 
 # Usage
 
