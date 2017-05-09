@@ -11,6 +11,11 @@ var API_URL = 'http://ffbinaries.com/api/v1';
 var LOCAL_CACHE_DIR = os.homedir() + '/.ffbinaries-cache';
 var CWD = process.cwd();
 var RUNTIME_CACHE = {};
+var errorMsgs = {
+  connectionIssues: 'Couldn\'t connect to ffbinaries.com API. Check your Internet connection.',
+  parsingVersionData: 'Couldn\'t parse retrieved version data. Try "ffbinaries clearcache".',
+  parsingVersionList: 'Couldn\'t parse the list of available versions. Try "ffbinaries clearcache".'
+}
 
 function _ensureDirSync (dir) {
   try {
@@ -102,14 +107,19 @@ function listVersions(callback) {
     return callback(null, RUNTIME_CACHE['versionsAll']);
   }
   request({url: API_URL}, function (err, response, body) {
+    if (err) {
+      return callback(errorMsgs.connectionIssues);
+    }
+
     try {
       var parsed = JSON.parse(body.toString());
-      var versionsAll = Object.keys(parsed.versions);
-      RUNTIME_CACHE['versionsAll'] = versionsAll;
-      return callback(null, versionsAll);
     } catch (e) {
-      return callback('Couldn\'t get valid data.');
+      return callback(errorMsgs.parsingVersionList);
     }
+
+    var versionsAll = Object.keys(parsed.versions);
+    RUNTIME_CACHE['versionsAll'] = versionsAll;
+    return callback(null, versionsAll);
   });
 }
 /**
@@ -126,17 +136,19 @@ function getVersionData (version, callback) {
 
   var url = version ? '/version/' + version : '/latest';
 
-  console.log('Getting version data:', version || 'latest');
-  console.log('------------------------------------');
-
   request({url: API_URL + url}, function (err, response, body) {
+    if (err) {
+      return callback(errorMsgs.connectionIssues);
+    }
+
     try {
       var parsed = JSON.parse(body.toString());
-      RUNTIME_CACHE[version] = parsed;
-      return callback(null, parsed);
     } catch (e) {
-      return callback('Couldn\'t get valid data.');
+      return callback(errorMsgs.parsingVersionData);
     }
+
+    RUNTIME_CACHE[version] = parsed;
+    return callback(null, parsed);
   });
 }
 
@@ -162,11 +174,10 @@ function _downloadUrls (components, urls, opts, callback) {
 
   function _extractZipToDestination (filename, cb) {
     var oldpath = LOCAL_CACHE_DIR + '/' + filename;
-
-    console.log('Extracting ' + oldpath + ' to ' + destinationDir);
     extractZip(oldpath, { dir: destinationDir, defaultFileMode: parseInt('744', 8) }, cb);
   }
 
+  var results = [];
 
   async.each(urls, function (url, cb) {
     if (!url) {
@@ -176,34 +187,55 @@ function _downloadUrls (components, urls, opts, callback) {
     var runningTotal = 0;
     var totalFilesize;
 
-    var interval = setInterval(function () {
-      if (totalFilesize && runningTotal == totalFilesize) {
-        return clearInterval(interval);
-      }
-      console.log('\x1b[2m' + filename + ': Received ' + Math.floor(runningTotal/1024/1024*1000)/1000 + 'MB' + '\x1b[0m');
-    }, 2000);
+    if (typeof opts.tickerFn === 'function') {
+      opts.tickerInterval = parseInt(opts.tickerInterval, 10);
+      var tickerInterval = (typeof opts.tickerInterval !== NaN) ? opts.tickerInterval : 1000;
+      var tickData = { filename: filename, progress: 0 };
+
+      // Schedule next ticks
+      var interval = setInterval(function () {
+        if (totalFilesize && runningTotal == totalFilesize) {
+          return clearInterval(interval);
+        }
+        tickData.progress = runningTotal;
+
+        opts.tickerFn(tickData);
+      }, tickerInterval);
+    }
 
     // Check if file already downloaded in target directory
     try {
       fse.accessSync(destinationDir + '/' + filename);
-      console.log('File "' + filename + '" already downloaded in ' + destinationDir + '.');
+      results.push({
+        filename: filename,
+        path: destinationDir,
+        status: 'File exists'
+      });
       clearInterval(interval);
       return cb();
     } catch (e) {
       // Check if the file is already cached
       try {
         fse.accessSync(LOCAL_CACHE_DIR + '/' + filename);
-        console.log('Found "' + filename + '" in cache.');
+        results.push({
+          filename: filename,
+          path: destinationDir,
+          status: 'File extracted to destination (archive found in cache)'
+        });
         clearInterval(interval);
         return _extractZipToDestination(filename, cb);
       } catch (e) {
         // Download the file and write in cache
         if (opts.quiet) clearInterval(interval);
 
-        console.log('Downloading', url);
         request({url: url}, function (err, response, body) {
           totalFilesize = response.headers['content-length'];
-          console.log('> Download completed: ' + url + ' | Transferred: ', Math.floor(totalFilesize/1024/1024*1000)/1000 + 'MB');
+          results.push({
+            filename: filename,
+            path: destinationDir,
+            size: Math.floor(totalFilesize/1024/1024*1000)/1000 + 'MB',
+            status: 'File extracted to destination (downloaded from "' + url + '")'
+          });
 
           _extractZipToDestination(filename, cb);
         })
@@ -216,7 +248,7 @@ function _downloadUrls (components, urls, opts, callback) {
     }
 
   }, function () {
-    return callback();
+    return callback(null, results);
   })
 
 }
@@ -231,12 +263,6 @@ function _downloadUrls (components, urls, opts, callback) {
  * @param {function} callback
  */
 function downloadFiles (components, opts, callback) {
-  console.log('Directories');
-  console.log(' LOCAL_CACHE_DIR:', LOCAL_CACHE_DIR);
-  console.log(' CWD:', CWD);
-  console.log('------------------------------------');
-
-
   if (!callback) {
     if (!opts && typeof components === 'function') {
       callback = components;
@@ -258,7 +284,7 @@ function downloadFiles (components, opts, callback) {
   getVersionData(opts.version, function (err, data) {
     var urls = _.get(data, 'bin.' + platform);
     if (err || !urls) {
-      return callback('No urls!');
+      return callback(err || 'No URLs!');
     }
 
     _downloadUrls(components, urls, opts, callback);
@@ -268,7 +294,6 @@ function downloadFiles (components, opts, callback) {
 
 function clearCache () {
   fse.removeSync(LOCAL_CACHE_DIR);
-  console.log('Cache cleared');
 }
 
 module.exports = {

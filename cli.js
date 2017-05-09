@@ -44,17 +44,27 @@ function displayVersions () {
   })
 }
 
+function clearCache() {
+  ffbinaries.clearCache();
+  console.log('Cache cleared');
+}
+
 function download(components, opts) {
   if (!opts.platform) {
     opts.platform = ffbinaries.detectPlatform();
-    console.log('Platform not specified. Downloading binaries for current platform: ' + opts.platform);
+    console.log('Platform not specified - downloading binaries for current platform.');
+  }
+
+  function fnTicker (data) {
+    console.log('\x1b[2m' + data.filename + ': Received ' + Math.floor(data.progress/1024/1024*1000)/1000 + 'MB' + '\x1b[0m');
   }
 
   var dlOpts = {
     destination: opts.output || process.cwd(),
-    quiet: opts.quiet || false,
     version: opts.version || false,
-    platform: ffbinaries.resolvePlatform(opts.platform)
+    platform: ffbinaries.resolvePlatform(opts.platform),
+    tickerFn: opts.quiet ? null : fnTicker,
+    tickerInterval: 2500
   };
 
   if (!dlOpts.platform) {
@@ -73,10 +83,16 @@ function download(components, opts) {
     if (err) {
       console.log('------------------------------------');
       console.log('Download failed.');
+      console.log('------------------------------------');
+      console.log(err);
       return process.exit(1);
     }
+    console.log('Destination:', data[0].path);
+    console.log('Files downloaded:', _.map(data, 'filename').join(', '));
+
     console.log('------------------------------------');
-    console.log('All files downloaded.');
+    console.log('Binaries downloaded and extracted.');
+    console.log('------------------------------------');
   });
 }
 
@@ -95,7 +111,7 @@ var opts = {
 if (mode === 'help' || mode === 'info') {
   return displayHelp();
 } else if (mode === 'clearcache') {
-  return ffbinaries.clearCache();
+  return clearCache();
 } else if (mode === 'version' || mode === 'versions' || mode === 'list') {
   return displayVersions();
 } else {
