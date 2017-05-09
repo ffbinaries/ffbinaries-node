@@ -20,10 +20,19 @@ If you're still using an older version you can see the
 [previous syntax documented here](https://github.com/vot/ffbinaries-node/blob/ccad244c9fb64e2d90a9c788bf3a726f9df15f10/readme.md).
 
 Old syntax had platform as the main argument and components as flag/option.
-This is now reversed.
+These are now reversed, i.e. `ffbinaries ffmpeg ffplay -p win-64`.
+
+This applies to both [command line interface](#cli)
+and [programmatical usage](#programatically).
 
 
 If you're experiencing issues please update to the newest version and run `ffbinaries clearcache`.
+
+
+# New in version 1.0.0
+
+* Updated syntax (see note above)
+* Cleaned up code and implemented various small fixes (handling errors in callbacks, added ticker function)
 
 
 # Platforms
