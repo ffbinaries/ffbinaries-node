@@ -44,27 +44,32 @@ function displayVersions () {
   })
 }
 
-function download(platform, opts) {
-  var resolved = ffbinaries.resolvePlatform(platform);
-
-  if (!platform) {
-    console.log('Platform not specified. Downloading binaries for current platform: ' + ffbinaries.detectPlatform());
-  } else {
-    if (!resolved) {
-      console.log('Specified platform "' + platform + '" not supported. Type "ffbinaries help" to see the list of available binaries or run "ffbinaries" without -p switch.');
-      return process.exit(1);
-    }
-    console.log('Platform selected:', resolved);
+function download(components, opts) {
+  if (!opts.platform) {
+    opts.platform = ffbinaries.detectPlatform();
+    console.log('Platform not specified. Downloading binaries for current platform: ' + opts.platform);
   }
 
-  var getOpts = {
+  var dlOpts = {
     destination: opts.output || process.cwd(),
     quiet: opts.quiet || false,
     version: opts.version || false,
-    components: opts.components || opts.c || false
+    platform: ffbinaries.resolvePlatform(opts.platform)
   };
 
-  ffbinaries.downloadFiles(resolved, getOpts, function (err, data) {
+  if (!dlOpts.platform) {
+    console.log('Specified platform "' + opts.platform + '" not supported. Type "ffbinaries help" to see the list of available binaries or run "ffbinaries" without -p switch.');
+    return process.exit(1);
+  }
+
+  if (!components.length) {
+    components = null;
+  }
+
+  console.log('Components:', Array.isArray(components) ? components.join(', ') : 'all')
+  console.log('Platform:', dlOpts.platform);
+
+  ffbinaries.downloadFiles(components, dlOpts, function (err, data) {
     if (err) {
       console.log('------------------------------------');
       console.log('Download failed.');
@@ -78,18 +83,13 @@ function download(platform, opts) {
 
 // execute app
 var mode = _.get(cliArgs, 'args.0');
+var components = _.get(cliArgs, 'args');
 
 var opts = {
   output: _.get(cliArgs, 'opts.output') || _.get(cliArgs, 'opts.o'),
   quiet: _.get(cliArgs, 'opts.quiet') || _.get(cliArgs, 'opts.q'),
   version: _.get(cliArgs, 'opts.version') || _.get(cliArgs, 'opts.v'),
-  components: (_.get(cliArgs, 'opts.components') || _.get(cliArgs, 'opts.c'))
-}
-
-if (typeof opts.components === 'string') {
-  opts.components = opts.components.split(',');
-} else {
-  opts.components = undefined;
+  platform: (_.get(cliArgs, 'opts.platform') || _.get(cliArgs, 'opts.p'))
 }
 
 if (mode === 'help' || mode === 'info') {
@@ -99,5 +99,5 @@ if (mode === 'help' || mode === 'info') {
 } else if (mode === 'version' || mode === 'versions' || mode === 'list') {
   return displayVersions();
 } else {
-  return download(mode, opts);
+  return download(components, opts);
 }

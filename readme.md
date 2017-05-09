@@ -15,7 +15,12 @@ This module is cross-platform and can be used programatically, i.e. as a build s
 
 <br />
 
-**The minimum version you should be running is 0.1.0.**
+**Important: Syntax change in 1.0.0. Please update.**
+If you're still using an older version you can see the
+[previous syntax documented here](https://github.com/vot/ffbinaries-node/blob/ccad244c9fb64e2d90a9c788bf3a726f9df15f10/readme.md).
+
+Old syntax had platform as the main argument and components as flag/option.
+This is now reversed.
 
 
 If you're experiencing issues please update to the newest version and run `ffbinaries clearcache`.
@@ -45,7 +50,7 @@ You can use aliases as your platform code argument in both CLI and programatical
 | ffserver | v   | v     |         |
 | ffplay   | v   | v*    | v       |
 
-(* Only linux-32 and linux-64 builds are available for ffplay)
+(* Only linux-32 and linux-64 builds of ffplay are currently available)
 
 # Usage
 
@@ -67,16 +72,34 @@ itself on command line interface.
 
 ### Arguments
 
-CLI uses the following syntax: `ffbinaries [platform] [--components] [--output] [--quiet]`
+CLI uses the following syntax:
+
+`ffbinaries [components] [--platform] [--output] [--quiet] [--version]`
+
+Each flag can also be abbreviated in your scripts with `-p`, `-o`, `-q` and `-v` respectively.
 
 ### Examples
 
-```
-ffbinaries
-ffbinaries mac
-ffbinaries win-64 --quiet --components=ffplay
-ffbinaries linux-64 -q --v=3.2 --c=ffmpeg,ffprobe --output=/home/user/ffmpeg
-```
+**Download all binaries for your platform**
+
+`ffbinaries`
+
+
+**Download all binaries for a specified platform**
+
+`ffbinaries -p=mac`
+
+
+**Download only ffplay for 64-bit Windows, quiet output**
+
+`ffbinaries ffplay -p=win-64 --quiet`
+
+
+**Download only ffmpeg and ffprobe, version 3.2 for 64-bit Linux, quiet output, save binaries in a specified directory**
+
+`ffbinaries ffmpeg ffprobe -p=linux-64 -q -v=3.2 --output=/usr/local/bin`
+
+**Additional commands**
 
 There are also `ffbinaries help`, `ffbinaries versions` and `ffbinaries clearcache`.
 
@@ -110,23 +133,37 @@ There are also `ffbinaries help`, `ffbinaries versions` and `ffbinaries clearcac
 
 ### Examples
 
+**Download all binaries for your platform**
+
 ```
 var ffbinaries = require('ffbinaries');
 var platform = ffbinaries.detectPlatform();
-var dest = __dirname + '/binaries';
 
 ffbinaries.downloadFiles(function () {
-  console.log('Downloaded binaries for ' + platform + '.');
-})
+  console.log('Downloaded all binaries for ' + platform + '.');
+});
+```
 
-ffbinaries.downloadFiles('linux', function () {
-  console.log('Downloaded binaries for linux.');
-})
+**Download only ffplay for your platform**
 
+```
+var ffbinaries = require('ffbinaries');
+var platform = ffbinaries.detectPlatform();
 
-ffbinaries.downloadFiles('win-64', {components: ['ffprobe'], quiet: true, destination: dest}, function () {
-  console.log('Downloaded ffprobe binary for win-64 to ' + dest + '.');
-})
+ffbinaries.downloadFiles('ffplay', function () {
+  console.log('Downloaded ffplay binary for ' + platform + '.');
+});
+```
+
+**Download only ffmpeg and ffprobe, version 3.2 for 64-bit Linux, quiet output, save binaries in a specified**
+
+```
+var ffbinaries = require('ffbinaries');
+var dest = __dirname + '/binaries';
+
+ffbinaries.downloadFiles(['ffmpeg', 'ffprobe'], {platform: 'linux-64', quiet: true, destination: dest}, function () {
+  console.log('Downloaded ffplay and ffprobe binaries for linux-64 to ' + dest + '.');
+});
 ```
 
 ## Data source

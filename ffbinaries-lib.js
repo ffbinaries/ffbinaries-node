@@ -7,7 +7,6 @@ var async = require('async');
 var extractZip = require('extract-zip');
 
 var API_URL = 'http://ffbinaries.com/api/v1';
-// var API_URL = 'http://localhost:3000/api/v1';
 
 var LOCAL_CACHE_DIR = os.homedir() + '/.ffbinaries-cache';
 var CWD = process.cwd();
@@ -144,10 +143,14 @@ function getVersionData (version, callback) {
 /**
  * Download file(s) and save them in the specified directory
  */
-function _downloadUrls (urls, opts, callback) {
+function _downloadUrls (components, urls, opts, callback) {
+  if (components && !Array.isArray(components)) {
+    components = [components];
+  }
+
   if (typeof urls === 'object') {
     urls = _.map(urls, function (v, k) {
-      return (!opts.components || opts.components && !Array.isArray(opts.components) || opts.components && Array.isArray(opts.components) && opts.components.indexOf(k) !== -1) ? v : null;
+      return (!components || components && !Array.isArray(components) || components && Array.isArray(components) && components.indexOf(k) !== -1) ? v : null;
     })
     urls = _.uniq(urls);
   } else if (typeof urls === 'string') {
@@ -222,8 +225,12 @@ function _downloadUrls (urls, opts, callback) {
  * Gets binaries for the platform
  * It will get the data from ffbinaries, pick the correct files
  * and save it to the specified directory
+ *
+ * @param {string|array} components
+ * @param {object}   opts
+ * @param {function} callback
  */
-function downloadFiles (platform, opts, callback) {
+function downloadFiles (components, opts, callback) {
   console.log('Directories');
   console.log(' LOCAL_CACHE_DIR:', LOCAL_CACHE_DIR);
   console.log(' CWD:', CWD);
@@ -231,39 +238,37 @@ function downloadFiles (platform, opts, callback) {
 
 
   if (!callback) {
-    if (!opts && typeof platform === 'function') {
-      callback = platform;
-      platform = null;
+    if (!opts && typeof components === 'function') {
+      callback = components;
+      components = null;
       opts = {};
     }
     if (typeof opts === 'function') {
       callback = opts;
-      opts = platform;
-      platform = null;
+      opts = components;
+      components = null;
     }
   }
 
-  platform = resolvePlatform(platform) || detectPlatform();
+  platform = resolvePlatform(opts.platform) || detectPlatform();
 
   opts.destination = path.resolve(opts.destination || '.');
   _ensureDirSync(opts.destination);
 
   getVersionData(opts.version, function (err, data) {
-    var versionUrls = _.get(data, 'bin.' + platform);
-    if (err || !versionUrls) {
-      return callback('No versionUrls!');
+    var urls = _.get(data, 'bin.' + platform);
+    if (err || !urls) {
+      return callback('No urls!');
     }
 
-    _downloadUrls(versionUrls, opts, callback);
+    _downloadUrls(components, urls, opts, callback);
   });
 }
 
 
 function clearCache () {
-  if (LOCAL_CACHE_DIR.endsWith('.ffbinaries-cache')) {
-    fse.removeSync(LOCAL_CACHE_DIR);
-    console.log('Cache cleared');
-  }
+  fse.removeSync(LOCAL_CACHE_DIR);
+  console.log('Cache cleared');
 }
 
 module.exports = {
