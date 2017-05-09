@@ -18,10 +18,12 @@ This module is cross-platform and can be used programatically, i.e. as a build s
 
 * **Updated syntax (see note below)**
 * Cleaned up code and implemented various small fixes (handling errors in callbacks, added ticker function)
-* @TODO: global installs (-g to save globally - Linux/Mac: /usr/local/bin; Win: C:/ffmpeg ?)
-* @TODO: add unit tests
-* @TODO: add preference to use JSON cache for offline installs (--prefer-cache; when the archives are already on your machine)
-* @TODO: recompile everything (all platform; with/without proprietary codes)
+* Added unit tests (current coverage ~65%)
+
+**TODO**
+* global installs (-g to save globally - Linux/Mac: /usr/local/bin; Win: C:/ffmpeg ?)
+* add preference to use JSON cache for offline installs (--prefer-cache; when the archives are already on your machine)
+* [help needed] recompile everything (all platform; with/without proprietary codes)
 
 
 ## Syntax
