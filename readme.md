@@ -18,15 +18,30 @@ This module is cross-platform and can be used programatically, i.e. as a build s
 
 * **Updated syntax (see note below)**
 * Cleaned up code and implemented various small fixes (handling errors in callbacks, added ticker function)
-* @TODO: Linux/Mac global installs (-g to save in /usr/local/bin)
+* @TODO: global installs (-g to save globally - Linux/Mac: /usr/local/bin; Win: C:/ffmpeg ?)
 * @TODO: add unit tests
+* @TODO: add preference to use JSON cache for offline installs (--prefer-cache; when the archives are already on your machine)
+* @TODO: recompile everything (all platform; with/without proprietary codes)
 
-<br />
+
+## Syntax
 
 With the new syntax binaries to download (i.e. ffmpeg or ffplay) are specified first,
 taking place of the platform argument. Platform has now became a flag.
 
-Example: `ffbinaries ffmpeg ffplay -p win-64`.
+CLI usage example:
+
+```
+ffbinaries ffmpeg ffplay -p win-64
+```
+
+Programmatical usage example:
+
+```
+ffbinaries.downloadFiles('ffplay', function (err, data) {
+  console.log('Downloaded ' + data[0].filename + '.');
+});
+```
 
 This change applies to both [command line interface](#cli)
 and [programmatical usage](#programatically).
