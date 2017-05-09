@@ -16,15 +16,18 @@ This module is cross-platform and can be used programatically, i.e. as a build s
 <br />
 
 **Important: Syntax change in 1.0.0. Please update.**
+
 If you're still using an older version you can see the
 [previous syntax documented here](https://github.com/vot/ffbinaries-node/blob/ccad244c9fb64e2d90a9c788bf3a726f9df15f10/readme.md).
 
 Old syntax had platform as the main argument and components as flag/option.
-These are now reversed, i.e. `ffbinaries ffmpeg ffplay -p win-64`.
+
+Their order is now reversed, i.e. `ffbinaries ffmpeg ffplay -p win-64`.
 
 This applies to both [command line interface](#cli)
 and [programmatical usage](#programatically).
 
+<br />
 
 If you're experiencing issues please update to the newest version and run `ffbinaries clearcache`.
 
