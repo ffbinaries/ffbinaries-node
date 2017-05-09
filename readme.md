@@ -13,6 +13,15 @@ Downloads precompiled **ffmpeg, ffprobe, ffplay and ffserver binaries** from htt
 
 This module is cross-platform and can be used programatically, i.e. as a build step or in a postinstall script.
 
+
+# New in version 1.0.0
+
+* Updated syntax (see note above)
+* Cleaned up code and implemented various small fixes (handling errors in callbacks, added ticker function)
+* @TODO: Linux/Mac global installs (-g to save in /usr/local/bin)
+* @TODO: add unit tests
+
+
 <br />
 
 **Important: Syntax change in 1.0.0. Please update.**
@@ -30,12 +39,6 @@ and [programmatical usage](#programatically).
 <br />
 
 If you're experiencing issues please update to the newest version and run `ffbinaries clearcache`.
-
-
-# New in version 1.0.0
-
-* Updated syntax (see note above)
-* Cleaned up code and implemented various small fixes (handling errors in callbacks, added ticker function)
 
 
 # Platforms
