@@ -16,29 +16,27 @@ This module is cross-platform and can be used programatically, i.e. as a build s
 
 # New in version 1.0.0
 
-* Updated syntax (see note above)
+* **Updated syntax (see note below)**
 * Cleaned up code and implemented various small fixes (handling errors in callbacks, added ticker function)
 * @TODO: Linux/Mac global installs (-g to save in /usr/local/bin)
 * @TODO: add unit tests
 
-
 <br />
 
-**Important: Syntax change in 1.0.0. Please update.**
+With the new syntax binaries to download (i.e. ffmpeg or ffplay) are specified first,
+taking place of the platform argument. Platform has now became a flag.
 
-If you're still using an older version you can see the
-[previous syntax documented here](https://github.com/vot/ffbinaries-node/blob/ccad244c9fb64e2d90a9c788bf3a726f9df15f10/readme.md).
+Example: `ffbinaries ffmpeg ffplay -p win-64`.
 
-Old syntax had platform as the main argument and components as flag/option.
-
-Their order is now reversed, i.e. `ffbinaries ffmpeg ffplay -p win-64`.
-
-This applies to both [command line interface](#cli)
+This change applies to both [command line interface](#cli)
 and [programmatical usage](#programatically).
 
 <br />
 
 If you're experiencing issues please update to the newest version and run `ffbinaries clearcache`.
+
+You can see the
+[previous syntax documented here](https://github.com/vot/ffbinaries-node/blob/ccad244c9fb64e2d90a9c788bf3a726f9df15f10/readme.md).
 
 
 # Platforms
