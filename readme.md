@@ -2,10 +2,13 @@
 
 [![NPM Version][npm-img]][npm-url]
 [![NPM Downloads][npm-dl-img]][npm-url]
+[![Travis build][travis-img]][travis-url]
 
 [npm-url]: https://npmjs.org/package/ffbinaries
 [npm-img]: https://img.shields.io/npm/v/ffbinaries.svg
 [npm-dl-img]: https://img.shields.io/npm/dm/ffbinaries.svg
+[travis-img]: https://img.shields.io/travis/vot/ffbinaries-node/v1.0.0.svg
+[travis-url]: https://travis-ci.org/vot/ffbinaries-node
 
 
 Downloads precompiled **ffmpeg, ffprobe, ffplay and ffserver binaries** from http://ffbinaries.com.
@@ -18,11 +21,10 @@ This module is cross-platform and can be used programatically, i.e. as a build s
 
 * **Updated syntax (see note below)**
 * Cleaned up code and implemented various small fixes (handling errors in callbacks, added ticker function)
-* Added unit tests (coverage ~78%)
+* Added unit tests (coverage ~80%)
 
 **TODO**
-* global installs (-g to save globally)
-<!-- Linux/Mac: /usr/local/bin   Win: C:/ffmpeg -->
+* global installs (-g to save globally) <!-- Linux/Mac: /usr/local/bin   Win: C:/ffmpeg -->
 * add preference to use JSON cache for offline installs (--prefer-cache)
 * [help needed] recompile all binaries (all platforms; with and without proprietary codes)
 
