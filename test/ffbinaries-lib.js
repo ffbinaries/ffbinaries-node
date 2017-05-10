@@ -117,6 +117,22 @@ describe('ffbinaries library', function() {
         return done();
       });
     });
+
+    it('should throw an error for non-existent versions', function(done) {
+      ffbinaries.getVersionData('potato', function (err, data) {
+        expect(err).to.be.ok;
+
+        return done();
+      });
+    });
+
+    it('should throw an error for non-string values', function(done) {
+      ffbinaries.getVersionData(false, function (err, data) {
+        expect(err).to.be.ok;
+
+        return done();
+      });
+    });
   });
 
   describe('downloadFiles (this will take a while)', function() {

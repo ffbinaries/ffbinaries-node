@@ -14,7 +14,9 @@ var RUNTIME_CACHE = {};
 var errorMsgs = {
   connectionIssues: 'Couldn\'t connect to ffbinaries.com API. Check your Internet connection.',
   parsingVersionData: 'Couldn\'t parse retrieved version data. Try "ffbinaries clearcache".',
-  parsingVersionList: 'Couldn\'t parse the list of available versions. Try "ffbinaries clearcache".'
+  parsingVersionList: 'Couldn\'t parse the list of available versions. Try "ffbinaries clearcache".',
+  notFound: 'Requested data not found.',
+  incorrectVersionParam: '"version" parameter must be a string.'
 };
 
 function _ensureDirSync (dir) {
@@ -138,7 +140,7 @@ function getVersionData (version, callback) {
   }
 
   if (typeof version !== 'string') {
-    version = false;
+    return callback(errorMsgs.incorrectVersionParam);
   }
 
   var url = version ? '/version/' + version : '/latest';
@@ -146,6 +148,10 @@ function getVersionData (version, callback) {
   request({url: API_URL + url}, function (err, response, body) {
     if (err) {
       return callback(errorMsgs.connectionIssues);
+    }
+
+    if (body === '404') {
+      return callback(errorMsgs.notFound);
     }
 
     try {
@@ -172,8 +178,6 @@ function _downloadUrls (components, urls, opts, callback) {
       return (!components || components && !Array.isArray(components) || components && Array.isArray(components) && components.indexOf(k) !== -1) ? v : null;
     });
     urls = _.uniq(urls);
-  } else if (typeof urls === 'string') {
-    urls = [urls];
   }
 
   var destinationDir = opts.destination;
