@@ -26,9 +26,9 @@ function displayHelp () {
     '',
     'Examples:',
     ' ffbinaries',
-    ' ffbinaries mac',
-    ' ffbinaries win-64 --quiet --components=ffplay',
-    ' ffbinaries linux-64 -q --v=3.2 --c=ffmpeg,ffprobe --output=/home/user/ffmpeg'
+    ' ffbinaries ffmpeg',
+    ' ffbinaries ffplay --quiet --platform=win-64',
+    ' ffbinaries ffmpeg ffprobe -q --v=3.2 --p=linux-64 --output=/usr/local/bin/ffmpeg'
   ];
   console.log(lines.join('\n'));
 }
