@@ -40,7 +40,9 @@ describe('ffbinaries library', function() {
       };
 
       Object.keys(map).forEach(function (i) {
-        expect(ffbinaries.resolvePlatform(i)).to.equal(map[i]);
+        if (i) {
+          expect(ffbinaries.resolvePlatform(i)).to.equal(map[i]);
+        }
       });
     });
   });

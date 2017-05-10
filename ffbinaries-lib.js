@@ -31,47 +31,50 @@ _ensureDirSync(LOCAL_CACHE_DIR);
  * Resolves the platform key based on input string
  */
 function resolvePlatform (input) {
+  var rtn = null;
+
   switch (input) {
     case 'mac':
     case 'osx':
     case 'mac-64':
     case 'osx-64':
-        return 'osx-64';
+        rtn = 'osx-64';
         break;
 
     case 'linux':
     case 'linux-32':
-        return 'linux-32';
+        rtn = 'linux-32';
         break;
 
     case 'linux-64':
-        return 'linux-64';
+        rtn = 'linux-64';
         break;
 
     case 'linux-arm':
     case 'linux-armel':
-        return 'linux-armel';
+        rtn = 'linux-armel';
         break;
 
     case 'linux-armhf':
-        return 'linux-armhf';
+        rtn = 'linux-armhf';
         break;
 
     case 'win':
     case 'win-32':
     case 'windows':
     case 'windows-32':
-        return 'windows-32';
+        rtn = 'windows-32';
         break;
 
     case 'win-64':
     case 'windows-64':
-        return 'windows-64';
+        rtn = 'windows-64';
         break;
 
     default:
-        return null;
-  }
+        rtn = null;
+    }
+    return rtn;
 }
 /**
  * Detects the platform of the machine the script is executed on
