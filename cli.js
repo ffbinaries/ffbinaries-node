@@ -41,7 +41,7 @@ function displayVersions () {
     } else {
       console.log('Couldn\'t retrieve list of versions from the server.');
     }
-  })
+  });
 }
 
 function clearCache() {
@@ -76,7 +76,7 @@ function download(components, opts) {
     components = null;
   }
 
-  console.log('Components:', Array.isArray(components) ? components.join(', ') : 'all')
+  console.log('Components:', Array.isArray(components) ? components.join(', ') : 'all');
   console.log('Platform:', dlOpts.platform);
 
   ffbinaries.downloadFiles(components, dlOpts, function (err, data) {
@@ -106,14 +106,18 @@ var opts = {
   quiet: _.get(cliArgs, 'opts.quiet') || _.get(cliArgs, 'opts.q'),
   version: _.get(cliArgs, 'opts.version') || _.get(cliArgs, 'opts.v'),
   platform: (_.get(cliArgs, 'opts.platform') || _.get(cliArgs, 'opts.p'))
+};
+
+function dispatch(m, c, o) {
+  if (m === 'help' || m === 'info') {
+    return displayHelp();
+  } else if (m === 'clearcache') {
+    return clearCache();
+  } else if (m === 'version' || m === 'versions' || m === 'list') {
+    return displayVersions();
+  } else {
+    return download(c, o);
+  }
 }
 
-if (mode === 'help' || mode === 'info') {
-  return displayHelp();
-} else if (mode === 'clearcache') {
-  return clearCache();
-} else if (mode === 'version' || mode === 'versions' || mode === 'list') {
-  return displayVersions();
-} else {
-  return download(components, opts);
-}
+dispatch(mode, components, opts);

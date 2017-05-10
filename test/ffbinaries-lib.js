@@ -111,7 +111,7 @@ describe('ffbinaries library', function() {
 
         return done();
       });
-    })
+    });
 
     it('should download all components if none are specified', function(done) {
       this.timeout(120000);
@@ -124,7 +124,7 @@ describe('ffbinaries library', function() {
 
         return done();
       });
-    })
+    });
 
     it('should use cache for repeat requests', function(done) {
       this.timeout(3000);

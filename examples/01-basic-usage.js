@@ -26,8 +26,8 @@ function example2 (callback) {
 
   ffbinaries.downloadFiles({destination: dest, platform: 'linux'}, function (err, data) {
     console.log('Downloading binaries for linux:');
-    console.log('err', err)
-    console.log('data', data)
+    console.log('err', err);
+    console.log('data', data);
 
     callback(err, data);
   });
@@ -41,8 +41,8 @@ function example3 (callback) {
 
   ffbinaries.downloadFiles('ffmpeg', {platform: 'win-64', quiet: true, destination: dest}, function (err, data) {
     console.log('Downloading ffmpeg binary for win-64 to ' + dest + '.');
-    console.log('err', err)
-    console.log('data', data)
+    console.log('err', err);
+    console.log('data', data);
 
     callback(err, data);
   });
@@ -56,8 +56,8 @@ function example4 (callback) {
 
   ffbinaries.downloadFiles(['ffplay', 'ffprobe'], {platform: 'win-64', quiet: true, destination: dest}, function (err, data) {
     console.log('Downloading ffmpeg binary for win-64 to ' + dest + '.');
-    console.log('err', err)
-    console.log('data', data)
+    console.log('err', err);
+    console.log('data', data);
 
     callback(err, data);
   });

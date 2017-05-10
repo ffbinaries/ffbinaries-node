@@ -15,7 +15,7 @@ var errorMsgs = {
   connectionIssues: 'Couldn\'t connect to ffbinaries.com API. Check your Internet connection.',
   parsingVersionData: 'Couldn\'t parse retrieved version data. Try "ffbinaries clearcache".',
   parsingVersionList: 'Couldn\'t parse the list of available versions. Try "ffbinaries clearcache".'
-}
+};
 
 function _ensureDirSync (dir) {
   try {
@@ -166,7 +166,7 @@ function _downloadUrls (components, urls, opts, callback) {
   if (typeof urls === 'object') {
     urls = _.map(urls, function (v, k) {
       return (!components || components && !Array.isArray(components) || components && Array.isArray(components) && components.indexOf(k) !== -1) ? v : null;
-    })
+    });
     urls = _.uniq(urls);
   } else if (typeof urls === 'string') {
     urls = [urls];
@@ -252,7 +252,7 @@ function _downloadUrls (components, urls, opts, callback) {
 
   }, function () {
     return callback(null, results);
-  })
+  });
 
 }
 
