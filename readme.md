@@ -21,9 +21,10 @@ This module is cross-platform and can be used programatically, i.e. as a build s
 * Added unit tests (coverage ~78%)
 
 **TODO**
-* global installs (-g to save globally - Linux/Mac: /usr/local/bin; Win: C:/ffmpeg ?)
-* add preference to use JSON cache for offline installs (--prefer-cache; when the archives are already on your machine)
-* [help needed] recompile everything (all platform; with/without proprietary codes)
+* global installs (-g to save globally)
+<!-- Linux/Mac: /usr/local/bin   Win: C:/ffmpeg -->
+* add preference to use JSON cache for offline installs (--prefer-cache)
+* [help needed] recompile all binaries (all platforms; with and without proprietary codes)
 
 
 ## Syntax
