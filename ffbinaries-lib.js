@@ -77,21 +77,25 @@ function resolvePlatform (input) {
     return rtn;
 }
 /**
- * Detects the platform of the machine the script is executed on
+ * Detects the platform of the machine the script is executed on.
+ * Object can be provided to detect platform from info derived elsewhere.
+ *
+ * @param {object} osinfo Contains "type" and "arch" properties
  */
-function detectPlatform () {
-  var type = os.type();
-  var arch = os.arch();
+function detectPlatform (osinfo) {
+  var inputIsValid = typeof osinfo === 'object' && typeof osinfo.type === 'string' && typeof osinfo.arch === 'string';
+  var type = (inputIsValid ? osinfo.type : os.type()).toLowerCase();
+  var arch = (inputIsValid ? osinfo.arch : os.arch()).toLowerCase();
 
-  if (type === 'Darwin') {
+  if (type === 'darwin') {
     return 'osx-64';
   }
 
-  if (type === 'Windows_NT') {
+  if (type === 'windows_nt') {
     return arch == 'x64' ? 'windows-64' : 'windows-32';
   }
 
-  if (type === 'Linux') {
+  if (type === 'linux') {
     if (arch === 'arm' || arch === 'arm64') {
       return 'linux-armel';
     }
