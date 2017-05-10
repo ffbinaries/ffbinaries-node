@@ -75,18 +75,84 @@ describe('ffbinaries library', function() {
     });
   });
 
-  describe('downloadFiles (this can take a moment)', function() {
-    it('should download a file', function(done) {
-      var dest = __dirname + '/binaries';
+  describe('downloadFiles (this will take a while)', function() {
+    // beforeEach(function wait(done){
+    //   this.timeout(5000);
+    //   console.log('      (waiting for 3 seconds before a download call)');
+    //   setTimeout(function () {
+    //     done();
+    //   }, 3000);
+    // });
 
-      ffbinaries.downloadFiles('ffplay', {platform: 'win-64', quiet: true, destination: dest}, function (err, data) {
+    it('should download a single file', function(done) {
+      this.timeout(120000);
+      var dest = __dirname + '/binaries';
+      var tickerFn = function () {};
+      var tickerInterval = function () {};
+
+      ffbinaries.downloadFiles('ffplay', {platform: ffbinaries.detectPlatform(), quiet: true, destination: dest, tickerFn: tickerFn, tickerInterval: tickerInterval}, function (err, data) {
         expect(err).to.equal(null);
         expect(data.length).to.equal(1);
         expect(data[0].filename).to.exist;
 
         return done();
       });
-    }).timeout(120000);
+    });
+
+    it('should download multiple components', function(done) {
+      this.timeout(120000);
+      ffbinaries.downloadFiles(['ffplay', 'ffprobe'], function (err, data) {
+        expect(err).to.equal(null);
+        expect(data.length).to.equal(2);
+        expect(data[0].filename).to.exist;
+        expect(data[1].filename).to.exist;
+
+        return done();
+      });
+    })
+
+    it('should download all components if none are specified', function(done) {
+      this.timeout(120000);
+      ffbinaries.downloadFiles(function (err, data) {
+        expect(err).to.equal(null);
+        expect(data.length).to.be.at.least(3);
+        expect(data[0].filename).to.exist;
+        expect(data[1].filename).to.exist;
+        expect(data[2].filename).to.exist;
+
+        return done();
+      });
+    })
+
+    it('should use cache for repeat requests', function(done) {
+      this.timeout(3000);
+      var dest = __dirname + '/binaries';
+
+      ffbinaries.downloadFiles('ffprobe', {quiet: true, destination: dest}, function (err, data) {
+        expect(err).to.equal(null);
+        expect(data.length).to.equal(1);
+        expect(data[0].filename).to.exist;
+        expect(data[0].status.endsWith('(archive found in cache)')).to.be.ok;
+
+        return done();
+      });
+    });
+
+    // it('should inform of existing file', function(done) {
+    //   this.timeout(3000);
+    //   var dest = __dirname + '/binaries';
+    //
+    //   ffbinaries.downloadFiles('ffplay', {quiet: true, destination: dest}, function (err, data) {
+    //     expect(err).to.equal(null);
+    //     expect(data.length).to.equal(1);
+    //     expect(data[0].filename).to.exist;
+    //     expect(data[0].status.endsWith('exists')).to.be.ok;
+    //
+    //     return done();
+    //   });
+    // });
+
+
   });
 
   describe('clearCache', function() {

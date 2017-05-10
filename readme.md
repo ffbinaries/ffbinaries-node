@@ -18,7 +18,7 @@ This module is cross-platform and can be used programatically, i.e. as a build s
 
 * **Updated syntax (see note below)**
 * Cleaned up code and implemented various small fixes (handling errors in callbacks, added ticker function)
-* Added unit tests (current coverage ~65%)
+* Added unit tests (coverage ~78%)
 
 **TODO**
 * global installs (-g to save globally - Linux/Mac: /usr/local/bin; Win: C:/ffmpeg ?)

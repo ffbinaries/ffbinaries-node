@@ -263,17 +263,15 @@ function _downloadUrls (components, urls, opts, callback) {
  * @param {function} callback
  */
 function downloadFiles (components, opts, callback) {
-  if (!callback) {
-    if (!opts && typeof components === 'function') {
-      callback = components;
-      components = null;
-      opts = {};
-    }
-    if (typeof opts === 'function') {
-      callback = opts;
-      opts = components;
-      components = null;
-    }
+  if (!callback && !opts && typeof components === 'function') {
+    callback = components;
+    components = null;
+    opts = {};
+  }
+
+  if (!callback && typeof opts === 'function') {
+    callback = opts;
+    opts = {};
   }
 
   platform = resolvePlatform(opts.platform) || detectPlatform();
