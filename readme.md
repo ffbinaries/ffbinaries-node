@@ -3,12 +3,15 @@
 [![NPM Version][npm-img]][npm-url]
 [![NPM Downloads][npm-dl-img]][npm-url]
 [![Travis build][travis-img]][travis-url]
+[![Coveralls coverage][coveralls-img]][coveralls-url]
 
 [npm-url]: https://npmjs.org/package/ffbinaries
 [npm-img]: https://img.shields.io/npm/v/ffbinaries.svg
 [npm-dl-img]: https://img.shields.io/npm/dm/ffbinaries.svg
 [travis-img]: https://img.shields.io/travis/vot/ffbinaries-node.svg
 [travis-url]: https://travis-ci.org/vot/ffbinaries-node
+[coveralls-img]: https://img.shields.io/coveralls/vot/ffbinaries-node.svg
+[coveralls-url]: https://coveralls.io/github/vot/ffbinaries-node
 
 
 Downloads precompiled **ffmpeg, ffprobe, ffplay and ffserver binaries** from http://ffbinaries.com.
