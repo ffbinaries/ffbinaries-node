@@ -1,3 +1,11 @@
 .DS_Store
+coverage
 node_modules
-bin
+ffmpeg
+ffplay
+ffprobe
+ffserver
+ffmpeg.exe
+ffplay.exe
+ffprobe.exe
+ffserver.exe

@@ -2,10 +2,13 @@
 
 [![NPM Version][npm-img]][npm-url]
 [![NPM Downloads][npm-dl-img]][npm-url]
+[![Travis build][travis-img]][travis-url]
 
 [npm-url]: https://npmjs.org/package/ffbinaries
 [npm-img]: https://img.shields.io/npm/v/ffbinaries.svg
 [npm-dl-img]: https://img.shields.io/npm/dm/ffbinaries.svg
+[travis-img]: https://img.shields.io/travis/vot/ffbinaries-node.svg
+[travis-url]: https://travis-ci.org/vot/ffbinaries-node
 
 
 Downloads precompiled **ffmpeg, ffprobe, ffplay and ffserver binaries** from http://ffbinaries.com.
@@ -13,12 +16,42 @@ Downloads precompiled **ffmpeg, ffprobe, ffplay and ffserver binaries** from htt
 
 This module is cross-platform and can be used programatically, i.e. as a build step or in a postinstall script.
 
+
+# New in version 1.0.0
+
+* **Updated syntax (see note below)**
+* Cleaned up code and implemented various small fixes (handling errors in callbacks, added ticker function)
+* Added unit tests (coverage ~80%)
+
+
+## Syntax
+
+With the new syntax binaries to download (i.e. ffmpeg or ffplay) are specified first,
+taking place of the platform argument. Platform has now became a flag.
+
+CLI usage example:
+
+```
+ffbinaries ffmpeg ffplay -p win-64
+```
+
+Programmatical usage example:
+
+```
+ffbinaries.downloadFiles('ffplay', function (err, data) {
+  console.log('Downloaded ' + data[0].filename + '.');
+});
+```
+
+This change applies to both [command line interface](#cli)
+and [programmatical usage](#programatically).
+
 <br />
 
-**The minimum version you should be running is 0.1.0.**
-
-
 If you're experiencing issues please update to the newest version and run `ffbinaries clearcache`.
+
+You can see the
+[previous syntax documented here](https://github.com/vot/ffbinaries-node/blob/ccad244c9fb64e2d90a9c788bf3a726f9df15f10/readme.md).
 
 
 # Platforms
@@ -45,7 +78,7 @@ You can use aliases as your platform code argument in both CLI and programatical
 | ffserver | v   | v     |         |
 | ffplay   | v   | v*    | v       |
 
-(* Only linux-32 and linux-64 builds are available for ffplay)
+(* Only linux-32 and linux-64 builds of ffplay are currently available)
 
 # Usage
 
@@ -67,16 +100,34 @@ itself on command line interface.
 
 ### Arguments
 
-CLI uses the following syntax: `ffbinaries [platform] [--components] [--output] [--quiet]`
+CLI uses the following syntax:
+
+`ffbinaries [components] [--platform] [--output] [--quiet] [--version]`
+
+Each flag can also be abbreviated in your scripts with `-p`, `-o`, `-q` and `-v` respectively.
 
 ### Examples
 
-```
-ffbinaries
-ffbinaries mac
-ffbinaries win-64 --quiet --components=ffplay
-ffbinaries linux-64 -q --v=3.2 --c=ffmpeg,ffprobe --output=/home/user/ffmpeg
-```
+**Download all binaries for your platform**
+
+`ffbinaries`
+
+
+**Download all binaries for a specified platform**
+
+`ffbinaries -p=mac`
+
+
+**Download only ffplay for 64-bit Windows, quiet output**
+
+`ffbinaries ffplay -p=win-64 --quiet`
+
+
+**Download only ffmpeg and ffprobe, version 3.2 for 64-bit Linux, quiet output, save binaries in a specified directory**
+
+`ffbinaries ffmpeg ffprobe -p=linux-64 -q -v=3.2 --output=/usr/local/bin`
+
+**Additional commands**
 
 There are also `ffbinaries help`, `ffbinaries versions` and `ffbinaries clearcache`.
 
@@ -110,23 +161,37 @@ There are also `ffbinaries help`, `ffbinaries versions` and `ffbinaries clearcac
 
 ### Examples
 
+**Download all binaries for your platform**
+
 ```
 var ffbinaries = require('ffbinaries');
 var platform = ffbinaries.detectPlatform();
-var dest = __dirname + '/binaries';
 
 ffbinaries.downloadFiles(function () {
-  console.log('Downloaded binaries for ' + platform + '.');
-})
+  console.log('Downloaded all binaries for ' + platform + '.');
+});
+```
 
-ffbinaries.downloadFiles('linux', function () {
-  console.log('Downloaded binaries for linux.');
-})
+**Download only ffplay for your platform**
 
+```
+var ffbinaries = require('ffbinaries');
+var platform = ffbinaries.detectPlatform();
 
-ffbinaries.downloadFiles('win-64', {components: ['ffprobe'], quiet: true, destination: dest}, function () {
-  console.log('Downloaded ffprobe binary for win-64 to ' + dest + '.');
-})
+ffbinaries.downloadFiles('ffplay', function () {
+  console.log('Downloaded ffplay binary for ' + platform + '.');
+});
+```
+
+**Download only ffmpeg and ffprobe, version 3.2 for 64-bit Linux, quiet output, save binaries in a specified**
+
+```
+var ffbinaries = require('ffbinaries');
+var dest = __dirname + '/binaries';
+
+ffbinaries.downloadFiles(['ffmpeg', 'ffprobe'], {platform: 'linux-64', quiet: true, destination: dest}, function () {
+  console.log('Downloaded ffplay and ffprobe binaries for linux-64 to ' + dest + '.');
+});
 ```
 
 ## Data source
@@ -134,3 +199,10 @@ ffbinaries.downloadFiles('win-64', {components: ['ffprobe'], quiet: true, destin
 The API backend is located at http://ffbinaries.com and is powered by this app: https://github.com/vot/ffbinaries-api
 
 The binaries are hosted on GitHub as releases of https://github.com/vot/ffbinaries-prebuilt repo.
+
+
+## TODO
+
+* global installs (-g to save globally) <!-- Linux/Mac: /usr/local/bin   Win: C:/ffmpeg -->
+* add preference to use JSON cache for offline installs (--prefer-cache)
+* [help needed] recompile all binaries (all platforms; with and without proprietary codes)
