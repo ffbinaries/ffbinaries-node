@@ -7,7 +7,7 @@
 [npm-url]: https://npmjs.org/package/ffbinaries
 [npm-img]: https://img.shields.io/npm/v/ffbinaries.svg
 [npm-dl-img]: https://img.shields.io/npm/dm/ffbinaries.svg
-[travis-img]: https://img.shields.io/travis/vot/ffbinaries-node/v1.0.0.svg
+[travis-img]: https://img.shields.io/travis/vot/ffbinaries-node.svg
 [travis-url]: https://travis-ci.org/vot/ffbinaries-node
 
 
