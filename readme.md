@@ -23,11 +23,6 @@ This module is cross-platform and can be used programatically, i.e. as a build s
 * Cleaned up code and implemented various small fixes (handling errors in callbacks, added ticker function)
 * Added unit tests (coverage ~80%)
 
-**TODO**
-* global installs (-g to save globally) <!-- Linux/Mac: /usr/local/bin   Win: C:/ffmpeg -->
-* add preference to use JSON cache for offline installs (--prefer-cache)
-* [help needed] recompile all binaries (all platforms; with and without proprietary codes)
-
 
 ## Syntax
 
@@ -204,3 +199,10 @@ ffbinaries.downloadFiles(['ffmpeg', 'ffprobe'], {platform: 'linux-64', quiet: tr
 The API backend is located at http://ffbinaries.com and is powered by this app: https://github.com/vot/ffbinaries-api
 
 The binaries are hosted on GitHub as releases of https://github.com/vot/ffbinaries-prebuilt repo.
+
+
+## TODO
+
+* global installs (-g to save globally) <!-- Linux/Mac: /usr/local/bin   Win: C:/ffmpeg -->
+* add preference to use JSON cache for offline installs (--prefer-cache)
+* [help needed] recompile all binaries (all platforms; with and without proprietary codes)
