@@ -13,43 +13,43 @@ describe('ffbinaries library', function() {
     });
 
     it('should return null when no matches found', function() {
-      var osinfo = {type: 'potato', arch: 'golden'}
+      var osinfo = {type: 'potato', arch: 'golden'};
       var platform = ffbinaries.detectPlatform(osinfo);
       expect(platform).to.equal(null);
     });
 
     it('should detect Mac OS X (64 bit)', function() {
-      var osinfo = {type: 'darwin', arch: 'x64'}
+      var osinfo = {type: 'darwin', arch: 'x64'};
       var platform = ffbinaries.detectPlatform(osinfo);
       expect(platform).to.equal('osx-64');
     });
 
     it('should detect Windows (32 bit)', function() {
-      var osinfo = {type: 'windows_nt', arch: 'anything'}
+      var osinfo = {type: 'windows_nt', arch: 'anything'};
       var platform = ffbinaries.detectPlatform(osinfo);
       expect(platform).to.equal('windows-32');
     });
 
     it('should detect Windows (64 bit)', function() {
-      var osinfo = {type: 'windows_nt', arch: 'x64'}
+      var osinfo = {type: 'windows_nt', arch: 'x64'};
       var platform = ffbinaries.detectPlatform(osinfo);
       expect(platform).to.equal('windows-64');
     });
 
     it('should detect Linux (32 bit)', function() {
-      var osinfo = {type: 'linux', arch: 'anything'}
+      var osinfo = {type: 'linux', arch: 'anything'};
       var platform = ffbinaries.detectPlatform(osinfo);
       expect(platform).to.equal('linux-32');
     });
 
     it('should detect Linux (64 bit)', function() {
-      var osinfo = {type: 'linux', arch: 'x64'}
+      var osinfo = {type: 'linux', arch: 'x64'};
       var platform = ffbinaries.detectPlatform(osinfo);
       expect(platform).to.equal('linux-64');
     });
 
     it('should detect Linux (ARM)', function() {
-      var osinfo = {type: 'linux', arch: 'arm'}
+      var osinfo = {type: 'linux', arch: 'arm'};
       var platform = ffbinaries.detectPlatform(osinfo);
       expect(platform).to.equal('linux-armel');
     });
