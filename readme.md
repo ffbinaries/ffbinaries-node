@@ -23,22 +23,31 @@ This module is cross-platform and can be used programatically, i.e. as a build s
 # New in version 1.0.0
 
 * **Updated syntax (see note below)**
-* Cleaned up code and implemented various small fixes (handling errors in callbacks, added ticker function)
-* Added unit tests (coverage ~80%)
+* **Added unit tests (coverage ~80%)**
+* Implemented various small fixes and improved error handling
 
 
-## Syntax
+**Version 1.0.1**
 
-With the new syntax binaries to download (i.e. ffmpeg or ffplay) are specified first,
+* Added linter to ensure consistent code
+* Added Coveralls integration
+* Increased unit test coverage (~90%)
+
+
+## New syntax
+
+*This syntax is introduced in 1.0.0.*
+
+With the new syntax binaries to download are specified first (i.e. ffmpeg or ffplay),
 taking place of the platform argument. Platform has now became a flag.
 
-CLI usage example:
+**CLI usage example:**
 
 ```
 ffbinaries ffmpeg ffplay -p win-64
 ```
 
-Programmatical usage example:
+**Programmatical usage example:**
 
 ```
 ffbinaries.downloadFiles('ffplay', function (err, data) {
@@ -54,7 +63,7 @@ and [programmatical usage](#programatically).
 If you're experiencing issues please update to the newest version and run `ffbinaries clearcache`.
 
 You can see the
-[previous syntax documented here](https://github.com/vot/ffbinaries-node/blob/ccad244c9fb64e2d90a9c788bf3a726f9df15f10/readme.md).
+[previous syntax documented in v0.1.8](https://github.com/vot/ffbinaries-node/blob/ccad244c9fb64e2d90a9c788bf3a726f9df15f10/readme.md#usage).
 
 
 # Platforms
