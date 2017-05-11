@@ -127,7 +127,7 @@ describe('ffbinaries library', function() {
     });
 
     it('should throw an error for non-string values', function(done) {
-      ffbinaries.getVersionData(false, function (err, data) {
+      ffbinaries.getVersionData([1, 2, 3], function (err, data) {
         expect(err).to.be.ok;
 
         return done();

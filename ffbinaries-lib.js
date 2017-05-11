@@ -139,7 +139,7 @@ function getVersionData (version, callback) {
     return callback(null, RUNTIME_CACHE[version]);
   }
 
-  if (typeof version !== 'string') {
+  if (version && typeof version !== 'string') {
     return callback(errorMsgs.incorrectVersionParam);
   }
 
