@@ -89,6 +89,28 @@ describe('ffbinaries library', function() {
     });
   });
 
+  describe('getBinaryFilename', function() {
+    it('should add ".exe" in windows-32', function() {
+      var result = ffbinaries.getBinaryFilename('ffmpeg', 'windows-32');
+      expect(result).to.equal('ffmpeg.exe');
+    });
+
+    it('should add ".exe" in windows-64', function() {
+      var result = ffbinaries.getBinaryFilename('ffserver', 'windows-64');
+      expect(result).to.equal('ffserver.exe');
+    });
+
+    it('should not add extension in linux', function() {
+      var result = ffbinaries.getBinaryFilename('ffprobe', 'linux');
+      expect(result).to.equal('ffprobe');
+    });
+
+    it('should not add extension in mac', function() {
+      var result = ffbinaries.getBinaryFilename('ffplay', 'mac');
+      expect(result).to.equal('ffplay');
+    });
+  });
+
   describe('listPlatforms', function() {
     it('should return 7 platforms in an array', function() {
       var platforms = ffbinaries.listPlatforms();
@@ -144,7 +166,7 @@ describe('ffbinaries library', function() {
     //   }, 3000);
     // });
 
-    it('should download a single file', function(done) {
+    it('should download a single file with options provided', function(done) {
       this.timeout(120000);
       var dest = __dirname + '/binaries';
       var tickerFn = function () {};
@@ -159,7 +181,7 @@ describe('ffbinaries library', function() {
       });
     });
 
-    it('should download multiple components', function(done) {
+    it('should download multiple components without options', function(done) {
       this.timeout(120000);
       ffbinaries.downloadFiles(['ffplay', 'ffprobe'], function (err, data) {
         expect(err).to.equal(null);
@@ -174,6 +196,21 @@ describe('ffbinaries library', function() {
     it('should download all components if none are specified', function(done) {
       this.timeout(120000);
       ffbinaries.downloadFiles(function (err, data) {
+        expect(err).to.equal(null);
+        expect(data.length).to.be.at.least(3);
+        expect(data[0].filename).to.exist;
+        expect(data[1].filename).to.exist;
+        expect(data[2].filename).to.exist;
+
+        return done();
+      });
+    });
+
+    it('should download all components if none are specified and options are provided as first argument', function(done) {
+      this.timeout(120000);
+      var dest = __dirname + '/binaries';
+
+      ffbinaries.downloadFiles({destination: dest}, function (err, data) {
         expect(err).to.equal(null);
         expect(data.length).to.be.at.least(3);
         expect(data[0].filename).to.exist;
@@ -216,7 +253,7 @@ describe('ffbinaries library', function() {
   });
 
   describe('clearCache', function() {
-    it('should leave .ffbinaries-cache empty', function() {
+    it('should remove .ffbinaries-cache directory', function() {
       ffbinaries.clearCache();
       var exists = fs.existsSync(LOCAL_CACHE_DIR);
       expect(exists).to.equal(false);

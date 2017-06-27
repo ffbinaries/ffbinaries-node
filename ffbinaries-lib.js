@@ -9,7 +9,6 @@ var extractZip = require('extract-zip');
 var API_URL = 'http://ffbinaries.com/api/v1';
 
 var LOCAL_CACHE_DIR = os.homedir() + '/.ffbinaries-cache';
-var CWD = process.cwd();
 var RUNTIME_CACHE = {};
 var errorMsgs = {
   connectionIssues: 'Couldn\'t connect to ffbinaries.com API. Check your Internet connection.',
@@ -105,6 +104,19 @@ function detectPlatform (osinfo) {
   }
 
   return null;
+}
+/**
+ * Gets the binary filename (appends exe in Windows)
+ *
+ * @param {string} component "ffmpeg", "ffplay", "ffprobe" or "ffserver"
+ * @param {platform} platform "ffmpeg", "ffplay", "ffprobe" or "ffserver"
+ */
+function getBinaryFilename (component, platform) {
+  var platformCode = resolvePlatform(platform);
+  if (platformCode === 'windows-32' || platformCode === 'windows-64') {
+    return component + '.exe';
+  }
+  return component;
 }
 
 function listPlatforms() {
@@ -274,6 +286,7 @@ function _downloadUrls (components, urls, opts, callback) {
  * @param {function} callback
  */
 function downloadFiles (components, opts, callback) {
+  // only callback provided: assign blank components and opts
   if (!callback && !opts && typeof components === 'function') {
     callback = components;
     components = null;
@@ -282,10 +295,18 @@ function downloadFiles (components, opts, callback) {
 
   if (!callback && typeof opts === 'function') {
     callback = opts;
-    opts = {};
+
+    if (typeof components === 'object' && !Array.isArray(components)) {
+      // first argument is an object: use as opts and assign blank components
+      opts = components;
+      components = null;
+    } else {
+      // leave first argument intact, assign blank opts
+      opts = {};
+    }
   }
 
-  platform = resolvePlatform(opts.platform) || detectPlatform();
+  var platform = resolvePlatform(opts.platform) || detectPlatform();
 
   opts.destination = path.resolve(opts.destination || '.');
   _ensureDirSync(opts.destination);
@@ -312,5 +333,6 @@ module.exports = {
   listPlatforms: listPlatforms,
   detectPlatform: detectPlatform,
   resolvePlatform: resolvePlatform,
+  getBinaryFilename: getBinaryFilename,
   clearCache: clearCache
 };

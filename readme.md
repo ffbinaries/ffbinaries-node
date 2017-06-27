@@ -34,6 +34,12 @@ This module is cross-platform and can be used programatically, i.e. as a build s
 * Increased unit test coverage (~90%)
 
 
+**Version 1.0.2**
+
+* Improved support for incomplete arguments in downloadFiles
+* Added `getBinaryFilename(component, platform)`
+
+
 ## New syntax
 
 *This syntax is introduced in 1.0.0.*
@@ -167,6 +173,9 @@ There are also `ffbinaries help`, `ffbinaries versions` and `ffbinaries clearcac
 * `detectPlatform()` returns the platform code of the machine as detected by the module.
 
 * `resolvePlatform(input)` resolves input to a platform code (matches aliases).
+
+* `getBinaryFilename(component, platform)` resolves a filename of a binary
+for a given platform (appends ".exe" in Windows).
 
 * `clearCache()` purges local cache
 
