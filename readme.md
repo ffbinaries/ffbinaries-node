@@ -158,11 +158,11 @@ There are also `ffbinaries help`, `ffbinaries versions` and `ffbinaries clearcac
 
 * `downloadFiles(platform, opts, callback)` downloads and extracts the requested binaries.
 
-   The `opts` parameter is an object that can contain these optional parameters:
-      * `destination`: the path where the binaries will be downloaded to. If not provided it will default to `.`.
-      * `components`: an array of string values that describes which [components](#included-components) to download. If not provided it will default to all components available for the platform.
-      * `version`: version of ffmpeg to download
-      * `quiet`: suppress verbose logs
+  The `opts` parameter is an object that can contain these optional parameters:
+  * `destination`: the path where the binaries will be downloaded to. If not provided it will default to `.`.
+  * `components`: an array of string values that describes which [components](#included-components) to download. If not provided it will default to all components available for the platform.
+  * `version`: version of ffmpeg to download
+  * `quiet`: suppress verbose logs
 
 * `getVersionData(version, callback)` fetches the full data set without downloading any binaries.
 
