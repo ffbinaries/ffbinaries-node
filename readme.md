@@ -54,26 +54,10 @@ platform, the exact commands you're trying to execute and their output.
 
 ## New syntax
 
-*This syntax is introduced in 1.0.0.*
+*New syntax got introduced in 1.0.0.*
 
-With the new syntax binaries to download are specified first (i.e. ffmpeg or ffplay),
-taking place of the platform argument. Platform has now became a flag.
-
-**CLI usage example:**
-
-```
-ffbinaries ffmpeg ffplay -p win-64
-```
-
-**Programmatical usage example:**
-
-```
-ffbinaries.downloadFiles('ffplay', function (err, data) {
-  console.log('Downloaded ' + data[0].filename + '.');
-});
-```
-
-<br />
+With the new syntax binaries to download are specified first (i.e. `ffmpeg` or `ffplay`).
+Platform is now a flag.
 
 This change applies to both [command line interface](#cli)
 and [programmatical usage](#programmatically).
@@ -81,32 +65,6 @@ and [programmatical usage](#programmatically).
 You can see the
 [old syntax documented in v0.1.8](https://github.com/vot/ffbinaries-node/blob/ccad244c9fb64e2d90a9c788bf3a726f9df15f10/readme.md#usage).
 
-
-# Platforms
-
-The following platform codes are available:
-
-## Windows
-**windows-32** (aliases: win, windows, win-32), **windows-64** (alias: win-64)
-
-## Linux
-**linux-32** (alias: linux), **linux-64**, **linux-armhf** (alias: linux-arm), **linux-armel**
-
-## OS X
-**osx-64** (aliases: mac, osx, mac-64)
-
-You can use aliases as your platform code argument in both CLI and programmatically.
-
-# Included components
-
-|          | Mac | Linux | Windows |
-|----------|-----|-------|---------|
-| ffmpeg   | v   | v     | v       |
-| ffprobe  | v   | v     | v       |
-| ffserver | v   | v     |         |
-| ffplay   | v   | v*    | v       |
-
-(* Only linux-32 and linux-64 builds of ffplay are currently available)
 
 # Usage
 
@@ -215,6 +173,35 @@ ffbinaries.downloadFiles(['ffmpeg', 'ffprobe'], {platform: 'linux-64', quiet: tr
 ```
 
 [See more examples](https://github.com/vot/ffbinaries-node/tree/master/examples).
+
+
+# Platforms
+
+The following platform codes are available:
+
+## Windows
+**windows-32** (aliases: win, windows, win-32), **windows-64** (alias: win-64)
+
+## Linux
+**linux-32** (alias: linux), **linux-64**, **linux-armhf** (alias: linux-arm), **linux-armel**
+
+## OS X
+**osx-64** (aliases: mac, osx, mac-64)
+
+You can use aliases as your platform code argument in both CLI and programmatically.
+
+
+# Included components
+
+|          | Mac | Linux | Windows |
+|----------|-----|-------|---------|
+| ffmpeg   | v   | v     | v       |
+| ffprobe  | v   | v     | v       |
+| ffserver | v   | v     |         |
+| ffplay   | v   | v*    | v       |
+
+(* Only linux-32 and linux-64 builds of ffplay are currently available)
+
 
 ## Source of binaries
 
