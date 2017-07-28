@@ -17,7 +17,10 @@
 Downloads precompiled **ffmpeg, ffprobe, ffplay and ffserver binaries** from http://ffbinaries.com.
 
 
-This module is cross-platform and can be used programatically, i.e. as a build step or in a postinstall script.
+This module is cross-platform and can be used programmatically,
+either as a build step or in a postinstall script.
+
+Can be used through CLI or as a Node module.
 
 
 # New in version 1.0.0
@@ -62,7 +65,7 @@ ffbinaries.downloadFiles('ffplay', function (err, data) {
 ```
 
 This change applies to both [command line interface](#cli)
-and [programmatical usage](#programatically).
+and [programmatical usage](#programmatically).
 
 <br />
 
@@ -85,7 +88,7 @@ The following platform codes are available:
 ## OS X
 **osx-64** (aliases: mac, osx, mac-64)
 
-You can use aliases as your platform code argument in both CLI and programatically.
+You can use aliases as your platform code argument in both CLI and programmatically.
 
 # Included components
 
@@ -103,12 +106,13 @@ You can use aliases as your platform code argument in both CLI and programatical
 You can run it from your code or through CLI.
 
 If `output` argument is specified the binary will be placed there.
-In CLI it will default to current working directory.
-Programatically the default is the also the working directory.
+It will default to current working directory.
 
-If `platform` argument is missing then the current platform will be autodected and binaries for it will be downloaded.
+If `platform` argument is missing then the current platform will be automatically
+detected and binaries for it will be downloaded.
 
-If `components` argument is missing then binaries of all available components will be downloaded (see [Included components](#included-components) section).
+If `components` argument is missing then binaries of all available components
+will be downloaded (see [Included components](#included-components) section).
 
 
 ## CLI
@@ -150,7 +154,7 @@ Each flag can also be abbreviated in your scripts with `-p`, `-o`, `-q` and `-v`
 There are also `ffbinaries help`, `ffbinaries versions` and `ffbinaries clearcache`.
 
 
-## Programatically
+## Programmatically
 
 ### Methods
 
@@ -215,15 +219,9 @@ ffbinaries.downloadFiles(['ffmpeg', 'ffprobe'], {platform: 'linux-64', quiet: tr
 });
 ```
 
-## Data source
+## Source of binaries
 
-The API backend is located at http://ffbinaries.com and is powered by this app: https://github.com/vot/ffbinaries-api
+The API backend *ffbinaries* connects to is located at http://ffbinaries.com.
+The code is located in [ffbinaries-api repo](https://github.com/vot/ffbinaries-api).
 
-The binaries are hosted on GitHub as releases of https://github.com/vot/ffbinaries-prebuilt repo.
-
-
-## TODO
-
-* global installs (-g to save globally) <!-- Linux/Mac: /usr/local/bin   Win: C:/ffmpeg -->
-* add preference to use JSON cache for offline installs (--prefer-cache)
-* [help needed] recompile all binaries (all platforms; with and without proprietary codes)
+The binaries are hosted on GitHub as releases of [ffbinaries-prebuilt repo](https://github.com/vot/ffbinaries-prebuilt/releases).
