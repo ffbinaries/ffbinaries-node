@@ -197,25 +197,13 @@ for a given platform (appends ".exe" in Windows).
 
 ```
 var ffbinaries = require('ffbinaries');
-var platform = ffbinaries.detectPlatform();
 
 ffbinaries.downloadFiles(function () {
-  console.log('Downloaded all binaries for ' + platform + '.');
+  console.log('Downloaded all binaries for current platform.');
 });
 ```
 
-**Download only ffplay for your platform**
-
-```
-var ffbinaries = require('ffbinaries');
-var platform = ffbinaries.detectPlatform();
-
-ffbinaries.downloadFiles('ffplay', function () {
-  console.log('Downloaded ffplay binary for ' + platform + '.');
-});
-```
-
-**Download only ffmpeg and ffprobe, version 3.2 for 64-bit Linux, quiet output, save binaries in a specified**
+**Download only ffmpeg and ffprobe, version 3.2 for 64-bit Linux, quiet output, save binaries in a specified location**
 
 ```
 var ffbinaries = require('ffbinaries');
@@ -225,6 +213,8 @@ ffbinaries.downloadFiles(['ffmpeg', 'ffprobe'], {platform: 'linux-64', quiet: tr
   console.log('Downloaded ffplay and ffprobe binaries for linux-64 to ' + dest + '.');
 });
 ```
+
+[See more examples](https://github.com/vot/ffbinaries-node/tree/master/examples).
 
 ## Source of binaries
 
