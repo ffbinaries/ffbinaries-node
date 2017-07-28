@@ -14,13 +14,11 @@
 [coveralls-url]: https://coveralls.io/github/vot/ffbinaries-node
 
 
-Downloads precompiled **ffmpeg, ffprobe, ffplay and ffserver binaries** from http://ffbinaries.com.
+Downloads precompiled **ffmpeg, ffprobe, ffplay and ffserver binaries**
+from [ffbinaries.com](http://ffbinaries.com).
 
-
-This module is cross-platform and can be used programmatically,
-either as a build step or in a postinstall script.
-
-Can be used through CLI or as a Node module.
+This module is cross-platform and can be used through CLI or as a Node module,
+(either as a build step or in a postinstall script).
 
 
 # New in version 1.0.0
@@ -41,6 +39,17 @@ Can be used through CLI or as a Node module.
 
 * Improved support for incomplete arguments in downloadFiles
 * Added `getBinaryFilename(component, platform)`
+
+
+## Reporting issues
+
+If you're experiencing issues please update to the newest version and run `ffbinaries clearcache`.
+
+If that doesn't resolve it simply
+[raise an issue here](https://github.com/vot/ffbinaries-node/issues).
+
+Make sure to include the information about which version you're using,
+platform, the exact commands you're trying to execute and their output.
 
 
 ## New syntax
@@ -64,15 +73,13 @@ ffbinaries.downloadFiles('ffplay', function (err, data) {
 });
 ```
 
+<br />
+
 This change applies to both [command line interface](#cli)
 and [programmatical usage](#programmatically).
 
-<br />
-
-If you're experiencing issues please update to the newest version and run `ffbinaries clearcache`.
-
 You can see the
-[previous syntax documented in v0.1.8](https://github.com/vot/ffbinaries-node/blob/ccad244c9fb64e2d90a9c788bf3a726f9df15f10/readme.md#usage).
+[old syntax documented in v0.1.8](https://github.com/vot/ffbinaries-node/blob/ccad244c9fb64e2d90a9c788bf3a726f9df15f10/readme.md#usage).
 
 
 # Platforms
@@ -221,7 +228,14 @@ ffbinaries.downloadFiles(['ffmpeg', 'ffprobe'], {platform: 'linux-64', quiet: tr
 
 ## Source of binaries
 
-The API backend *ffbinaries* connects to is located at http://ffbinaries.com.
+The API providing data to the module is located at [ffbinaries.com](http://ffbinaries.com).
 The code is located in [ffbinaries-api repo](https://github.com/vot/ffbinaries-api).
 
 The binaries are hosted on GitHub as releases of [ffbinaries-prebuilt repo](https://github.com/vot/ffbinaries-prebuilt/releases).
+
+
+## Contributing
+
+If you'd like to contribute to this project have a look at
+[contributing.md file](https://github.com/vot/ffbinaries-node/blob/master/contributing.md)
+for more information (including basic guidelines and a list of TODOs).
