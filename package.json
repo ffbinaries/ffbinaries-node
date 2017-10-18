@@ -1,6 +1,6 @@
 {
   "name": "ffbinaries",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Download binaries for ffmpeg, ffprobe, ffserver and ffplay (cross-platform)",
   "main": "index.js",
   "bin": {
