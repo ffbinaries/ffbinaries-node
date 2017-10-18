@@ -21,18 +21,19 @@ This module is cross-platform and can be used through CLI or as a Node module,
 (either as a build step or in a postinstall script).
 
 
-# New in version 1.0.0
+**Version 1.0.0**
 
-* **Updated syntax (see note below)**
-* **Added unit tests (coverage ~80%)**
-* Implemented various small fixes and improved error handling
+* Updated syntax
+* Added unit tests
+* Improved error handling
+* Various small fixes
 
 
 **Version 1.0.1**
 
 * Added linter to ensure consistent code
 * Added Coveralls integration
-* Increased unit test coverage (~90%)
+* Increased unit test coverage
 
 
 **Version 1.0.2**
@@ -41,15 +42,21 @@ This module is cross-platform and can be used through CLI or as a Node module,
 * Added `getBinaryFilename(component, platform)`
 
 
+**Version 1.0.3**
+
+* Preventing storage of incomplete archives in cache
+* Added status codes in `downloadFiles` method result
+
+
 ## Reporting issues
 
 If you're experiencing issues please update to the newest version and run `ffbinaries clearcache`.
 
 If that doesn't resolve it simply
-[raise an issue here](https://github.com/vot/ffbinaries-node/issues).
+[raise an issue on GitHub](https://github.com/vot/ffbinaries-node/issues).
 
 Make sure to include the information about which version you're using,
-platform, the exact commands you're trying to execute and their output.
+platform, the exact commands you're trying to execute and the output.
 
 
 ## New syntax
@@ -179,13 +186,10 @@ ffbinaries.downloadFiles(['ffmpeg', 'ffprobe'], {platform: 'linux-64', quiet: tr
 
 The following platform codes are available:
 
-## Windows
 **windows-32** (aliases: win, windows, win-32), **windows-64** (alias: win-64)
 
-## Linux
 **linux-32** (alias: linux), **linux-64**, **linux-armhf** (alias: linux-arm), **linux-armel**
 
-## OS X
 **osx-64** (aliases: mac, osx, mac-64)
 
 You can use aliases as your platform code argument in both CLI and programmatically.

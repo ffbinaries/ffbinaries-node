@@ -20,8 +20,7 @@ with `npm run lint` and `npm run test`.
 
 ## TODO
 
-* verify the downloaded archive is healthy before saving in cache
-* add `downloadBinariesIfMissing(components, destination, callback)`
+* add `downloadFilesIfNotPresent(components, destination, callback)`
 * global installs (place binaries in `/usr/local/bin` or `C:/ffmpeg`)
 * add preference to cache JSON for offline installs (`--offline`)
 * improve quality of tests
