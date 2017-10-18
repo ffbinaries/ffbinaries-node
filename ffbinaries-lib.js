@@ -232,7 +232,8 @@ function _downloadUrls (components, urls, opts, callback) {
       results.push({
         filename: filename,
         path: destinationDir,
-        status: 'File exists'
+        status: 'File exists',
+        code: 'FILE_EXISTS'
       });
       clearInterval(interval);
       return cb();
@@ -243,7 +244,8 @@ function _downloadUrls (components, urls, opts, callback) {
         results.push({
           filename: filename,
           path: destinationDir,
-          status: 'File extracted to destination (archive found in cache)'
+          status: 'File extracted to destination (archive found in cache)',
+          code: 'DONE_FROM_CACHE'
         });
         clearInterval(interval);
         return _extractZipToDestination(filename, cb);
@@ -251,21 +253,26 @@ function _downloadUrls (components, urls, opts, callback) {
         // Download the file and write in cache
         if (opts.quiet) clearInterval(interval);
 
+        var cacheFileTempName = LOCAL_CACHE_DIR + '/' + filename + '.part';
+        var cacheFileFinalName = LOCAL_CACHE_DIR + '/' + filename;
+
         request({url: url}, function (err, response, body) {
           totalFilesize = response.headers['content-length'];
           results.push({
             filename: filename,
             path: destinationDir,
             size: Math.floor(totalFilesize/1024/1024*1000)/1000 + 'MB',
-            status: 'File extracted to destination (downloaded from "' + url + '")'
+            status: 'File extracted to destination (downloaded from "' + url + '")',
+            code: 'DONE_CLEAN'
           });
 
+          fse.renameSync(cacheFileTempName, cacheFileFinalName);
           _extractZipToDestination(filename, cb);
         })
         .on('data', function (data) {
           runningTotal += data.length;
         })
-        .pipe(fse.createWriteStream(LOCAL_CACHE_DIR + '/' + filename/* + '.part'*/));
+        .pipe(fse.createWriteStream(cacheFileTempName));
       }
 
     }
