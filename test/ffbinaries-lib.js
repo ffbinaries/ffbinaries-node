@@ -172,7 +172,7 @@ describe('ffbinaries library', function() {
       var tickerFn = function () {};
       var tickerInterval = function () {};
 
-      ffbinaries.downloadFiles('ffplay', {platform: ffbinaries.detectPlatform(), quiet: true, destination: dest, tickerFn: tickerFn, tickerInterval: tickerInterval}, function (err, data) {
+      ffbinaries.downloadFiles('ffmpeg', {version: '3.2', platform: ffbinaries.detectPlatform(), quiet: true, destination: dest, tickerFn: tickerFn, tickerInterval: tickerInterval}, function (err, data) {
         expect(err).to.equal(null);
         expect(data.length).to.equal(1);
         expect(data[0].filename).to.exist;
@@ -183,7 +183,7 @@ describe('ffbinaries library', function() {
 
     it('should download multiple components without options', function(done) {
       this.timeout(120000);
-      ffbinaries.downloadFiles(['ffplay', 'ffprobe'], function (err, data) {
+      ffbinaries.downloadFiles(['ffmpeg', 'ffprobe'], function (err, data) {
         expect(err).to.equal(null);
         expect(data.length).to.equal(2);
         expect(data[0].filename).to.exist;
