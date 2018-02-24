@@ -330,7 +330,7 @@ function downloadFiles (components, opts, callback) {
 
 
 function clearCache () {
-  fse.removeSync(LOCAL_CACHE_DIR);
+  fse.emptyDirSync(LOCAL_CACHE_DIR);
 }
 
 module.exports = {

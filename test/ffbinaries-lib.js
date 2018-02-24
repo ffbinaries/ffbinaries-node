@@ -2,6 +2,7 @@ var expect = require('chai').expect;
 var ffbinaries = require('..');
 var os = require('os');
 var fs = require('fs-extra');
+var glob = require('glob');
 
 var LOCAL_CACHE_DIR = os.homedir() + '/.ffbinaries-cache';
 
@@ -157,15 +158,17 @@ describe('ffbinaries library', function() {
     });
   });
 
-  describe('downloadFiles (this will take a while)', function() {
-    // beforeEach(function wait(done){
-    //   this.timeout(5000);
-    //   console.log('      (waiting for 3 seconds before a download call)');
-    //   setTimeout(function () {
-    //     done();
-    //   }, 3000);
-    // });
+  describe('clearCache', function() {
+    it('should remove contents of .ffbinaries-cache directory', function() {
+      ffbinaries.clearCache();
+      var dirExists = fs.existsSync(LOCAL_CACHE_DIR);
+      var dirContents = glob.sync(LOCAL_CACHE_DIR + '/*.zip');
+      expect(dirExists).to.equal(true);
+      expect(dirContents.length).to.equal(0);
+    });
+  });
 
+  describe('downloadFiles (each test will take a while or time out after 2 minutes)', function() {
     it('should download a single file with options provided', function(done) {
       this.timeout(120000);
       var dest = __dirname + '/binaries';
@@ -249,14 +252,6 @@ describe('ffbinaries library', function() {
     //   });
     // });
 
-
   });
 
-  describe('clearCache', function() {
-    it('should remove .ffbinaries-cache directory', function() {
-      ffbinaries.clearCache();
-      var exists = fs.existsSync(LOCAL_CACHE_DIR);
-      expect(exists).to.equal(false);
-    });
-  });
 });
