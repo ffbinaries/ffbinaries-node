@@ -6,7 +6,7 @@ var request = require('request');
 var async = require('async');
 var extractZip = require('extract-zip');
 
-var API_URL = 'http://ffbinaries.com/api/v1';
+var API_URL = 'https://ffbinaries.com/api/v1';
 
 var LOCAL_CACHE_DIR = os.homedir() + '/.ffbinaries-cache';
 var RUNTIME_CACHE = {};
