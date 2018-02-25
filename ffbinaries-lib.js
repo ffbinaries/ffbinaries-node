@@ -6,7 +6,7 @@ var request = require('request');
 var async = require('async');
 var extractZip = require('extract-zip');
 
-var API_URL = 'http://ffbinaries.com/api/v1';
+var API_URL = 'https://ffbinaries.com/api/v1';
 
 var LOCAL_CACHE_DIR = os.homedir() + '/.ffbinaries-cache';
 var RUNTIME_CACHE = {};
@@ -185,35 +185,41 @@ function _downloadUrls (components, urls, opts, callback) {
     components = [components];
   }
 
+  // returns an array of objects like this: {component: 'ffmpeg', url: 'https://...'}
   if (typeof urls === 'object') {
-    urls = _.map(urls, function (v, k) {
-      return (!components || components && !Array.isArray(components) || components && Array.isArray(components) && components.indexOf(k) !== -1) ? v : null;
+    var remappedUrls = _.map(urls, function (v, k) {
+      return (!components || components && !Array.isArray(components) || components && Array.isArray(components) && components.indexOf(k) !== -1) ? {component: k, url: v} : null;
     });
-    urls = _.uniq(urls);
+    remappedUrls = _.compact(remappedUrls);
   }
 
   var destinationDir = opts.destination;
   var cacheDir = LOCAL_CACHE_DIR;
 
-  function _extractZipToDestination (filename, cb) {
-    var oldpath = LOCAL_CACHE_DIR + '/' + filename;
+  function _extractZipToDestination (zipFilename, cb) {
+    var oldpath = LOCAL_CACHE_DIR + '/' + zipFilename;
     extractZip(oldpath, { dir: destinationDir, defaultFileMode: parseInt('744', 8) }, cb);
   }
 
   var results = [];
 
-  async.each(urls, function (url, cb) {
-    if (!url) {
+  async.each(remappedUrls, function (urlObject, cb) {
+    if (!urlObject || !urlObject.url || !urlObject.component) {
       return cb();
     }
-    var filename = url.split('/').pop();
+
+    var url = urlObject.url;
+
+    var zipFilename = url.split('/').pop();
+    var binFilenameBase = urlObject.component;
+    var binFilename = getBinaryFilename(binFilenameBase, opts.platform);
     var runningTotal = 0;
     var totalFilesize;
 
     if (typeof opts.tickerFn === 'function') {
       opts.tickerInterval = parseInt(opts.tickerInterval, 10);
       var tickerInterval = (typeof opts.tickerInterval !== NaN) ? opts.tickerInterval : 1000;
-      var tickData = { filename: filename, progress: 0 };
+      var tickData = { filename: zipFilename, progress: 0 };
 
       // Schedule next ticks
       var interval = setInterval(function () {
@@ -226,11 +232,12 @@ function _downloadUrls (components, urls, opts, callback) {
       }, tickerInterval);
     }
 
-    // Check if file already downloaded in target directory
     try {
-      fse.accessSync(destinationDir + '/' + filename);
+      // Check if file already exists in target directory
+      fse.accessSync(destinationDir + '/' + binFilename);
+      // if the accessSync method doesn't throw we know the binary already exists
       results.push({
-        filename: filename,
+        filename: binFilename,
         path: destinationDir,
         status: 'File exists',
         code: 'FILE_EXISTS'
@@ -238,28 +245,28 @@ function _downloadUrls (components, urls, opts, callback) {
       clearInterval(interval);
       return cb();
     } catch (e) {
-      // Check if the file is already cached
+      // If there's no binary then check if the zip file is already in cache
       try {
-        fse.accessSync(LOCAL_CACHE_DIR + '/' + filename);
+        fse.accessSync(LOCAL_CACHE_DIR + '/' + zipFilename);
         results.push({
-          filename: filename,
+          filename: binFilename,
           path: destinationDir,
           status: 'File extracted to destination (archive found in cache)',
           code: 'DONE_FROM_CACHE'
         });
         clearInterval(interval);
-        return _extractZipToDestination(filename, cb);
+        return _extractZipToDestination(zipFilename, cb);
       } catch (e) {
-        // Download the file and write in cache
+        // If zip is not cached then download it and store in cache
         if (opts.quiet) clearInterval(interval);
 
-        var cacheFileTempName = LOCAL_CACHE_DIR + '/' + filename + '.part';
-        var cacheFileFinalName = LOCAL_CACHE_DIR + '/' + filename;
+        var cacheFileTempName = LOCAL_CACHE_DIR + '/' + zipFilename + '.part';
+        var cacheFileFinalName = LOCAL_CACHE_DIR + '/' + zipFilename;
 
         request({url: url}, function (err, response, body) {
           totalFilesize = response.headers['content-length'];
           results.push({
-            filename: filename,
+            filename: binFilename,
             path: destinationDir,
             size: Math.floor(totalFilesize/1024/1024*1000)/1000 + 'MB',
             status: 'File extracted to destination (downloaded from "' + url + '")',
@@ -267,14 +274,13 @@ function _downloadUrls (components, urls, opts, callback) {
           });
 
           fse.renameSync(cacheFileTempName, cacheFileFinalName);
-          _extractZipToDestination(filename, cb);
+          _extractZipToDestination(zipFilename, cb);
         })
         .on('data', function (data) {
           runningTotal += data.length;
         })
         .pipe(fse.createWriteStream(cacheFileTempName));
       }
-
     }
 
   }, function () {

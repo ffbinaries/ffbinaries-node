@@ -150,7 +150,7 @@ describe('ffbinaries library', function() {
     });
 
     it('should throw an error for non-string values', function(done) {
-      ffbinaries.getVersionData([1, 2, 3], function (err, data) {
+      ffbinaries.getVersionData([1, null, {}], function (err, data) {
         expect(err).to.be.ok;
 
         return done();
@@ -159,7 +159,7 @@ describe('ffbinaries library', function() {
   });
 
   describe('clearCache', function() {
-    it('should remove contents of .ffbinaries-cache directory', function() {
+    it('should remove contents of ~/.ffbinaries-cache directory', function() {
       ffbinaries.clearCache();
       var dirExists = fs.existsSync(LOCAL_CACHE_DIR);
       var dirContents = glob.sync(LOCAL_CACHE_DIR + '/*.zip');
@@ -169,6 +169,24 @@ describe('ffbinaries library', function() {
   });
 
   describe('downloadFiles (each test will take a while or time out after 2 minutes)', function() {
+    after(function () {
+      console.log('        (removing binaries downloaded by tests)');
+      // remove test/binaries directory
+      fs.removeSync(__dirname + '/binaries');
+
+      // remove linux/mac binaries in current working dir
+      fs.removeSync(process.cwd() + '/ffmpeg');
+      fs.removeSync(process.cwd() + '/ffplay');
+      fs.removeSync(process.cwd() + '/ffprobe');
+      fs.removeSync(process.cwd() + '/ffserver');
+
+      // remove win binaries in current working dir
+      fs.removeSync(process.cwd() + '/ffmpeg.exe');
+      fs.removeSync(process.cwd() + '/ffplay.exe');
+      fs.removeSync(process.cwd() + '/ffprobe.exe');
+      fs.removeSync(process.cwd() + '/ffserver.exe');
+    });
+
     it('should download a single file with options provided', function(done) {
       this.timeout(120000);
       var dest = __dirname + '/binaries';
@@ -227,8 +245,12 @@ describe('ffbinaries library', function() {
     it('should use cache for repeat requests', function(done) {
       this.timeout(3000);
       var dest = __dirname + '/binaries';
+      // remove the binaries from earlier tests to fall back to cache
+      // target directory will get recreated every time you execute downloadFiles
+      // so it's safe to just remove it
+      fs.removeSync(dest);
 
-      ffbinaries.downloadFiles('ffprobe', {quiet: true, destination: dest}, function (err, data) {
+      ffbinaries.downloadFiles('ffmpeg', {quiet: true, destination: dest}, function (err, data) {
         expect(err).to.equal(null);
         expect(data.length).to.equal(1);
         expect(data[0].filename).to.exist;
@@ -238,19 +260,20 @@ describe('ffbinaries library', function() {
       });
     });
 
-    // it('should inform of existing file', function(done) {
-    //   this.timeout(3000);
-    //   var dest = __dirname + '/binaries';
-    //
-    //   ffbinaries.downloadFiles('ffplay', {quiet: true, destination: dest}, function (err, data) {
-    //     expect(err).to.equal(null);
-    //     expect(data.length).to.equal(1);
-    //     expect(data[0].filename).to.exist;
-    //     expect(data[0].status.endsWith('exists')).to.be.ok;
-    //
-    //     return done();
-    //   });
-    // });
+    it('should indicate an existing file and not do anything', function(done) {
+      this.timeout(3000);
+      var dest = __dirname + '/binaries';
+
+      ffbinaries.downloadFiles('ffmpeg', {quiet: true, destination: dest}, function (err, data) {
+        expect(err).to.equal(null);
+        expect(data.length).to.equal(1);
+        expect(data[0].filename).to.exist;
+        expect(data[0].code).to.exist;
+        expect(data[0].code).to.equal('FILE_EXISTS');
+
+        return done();
+      });
+    });
 
   });
 

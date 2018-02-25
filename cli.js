@@ -78,6 +78,7 @@ function download(components, opts) {
 
   console.log('Components:', Array.isArray(components) ? components.join(', ') : 'all');
   console.log('Platform:', dlOpts.platform);
+  console.log('ffmpeg version:', dlOpts.version);
 
   ffbinaries.downloadFiles(components, dlOpts, function (err, data) {
     if (err) {
