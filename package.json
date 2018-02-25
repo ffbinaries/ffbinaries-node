@@ -38,9 +38,9 @@
   "homepage": "https://github.com/vot/ffbinaries-node",
   "dependencies": {
     "async": "^2.5.0",
-    "clarg": "0.0.3",
+    "clarg": "0.0.4",
     "extract-zip": "^1.6.5",
-    "fs-extra": "^4.0.2",
+    "fs-extra": "^5.0.0",
     "lodash": "^4.17.4",
     "request": "^2.83.0"
   },
