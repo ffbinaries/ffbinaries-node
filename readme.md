@@ -20,13 +20,37 @@ from [ffbinaries.com](http://ffbinaries.com).
 This module is cross-platform and can be used through CLI or as a Node module,
 (either as a build step or in a postinstall script).
 
+You can download whatever binaries you need during the build if you'd like
+to bundle the binaries with your distributable files or just download it on
+user's machine during initial setup process.
 
-**Version 1.0.0**
 
-* Updated syntax
-* Added unit tests
-* Improved error handling
-* Various small fixes
+## Change log
+
+**Version 1.0.5**
+
+* Updated dependencies
+* Switched API endpoints to HTTPS protocol
+* Fixed detection of binaries already existing in destination directory
+* Added clean up phase after tests
+
+
+**Version 1.0.4**
+
+* Fixed `clearCache` method to empty the cache directory instead of removing it
+(it used to cause a `ENOENT` error when executed before downloading binaries)
+
+
+**Version 1.0.3**
+
+* Preventing storage of incomplete archives in cache
+* Added status codes in `downloadFiles` method result
+
+
+**Version 1.0.2**
+
+* Improved support for incomplete arguments in downloadFiles
+* Added `getBinaryFilename(component, platform)`
 
 
 **Version 1.0.1**
@@ -36,16 +60,12 @@ This module is cross-platform and can be used through CLI or as a Node module,
 * Increased unit test coverage
 
 
-**Version 1.0.2**
+**Version 1.0.0**
 
-* Improved support for incomplete arguments in downloadFiles
-* Added `getBinaryFilename(component, platform)`
-
-
-**Version 1.0.3**
-
-* Preventing storage of incomplete archives in cache
-* Added status codes in `downloadFiles` method result
+* Updated syntax
+* Added unit tests
+* Improved error handling
+* Various small fixes
 
 
 ## Reporting issues
@@ -204,7 +224,7 @@ You can use aliases as your platform code argument in both CLI and programmatica
 | ffserver | v   | v     |         |
 | ffplay   | v   | v*    | v       |
 
-(* Only linux-32 and linux-64 builds of ffplay are currently available)
+(* Only linux-32 and linux-64 builds of ffplay 3.2 are currently available)
 
 
 ## Source of binaries
