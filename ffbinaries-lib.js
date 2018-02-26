@@ -4,6 +4,7 @@ var path = require('path');
 var _ = require('lodash');
 var request = require('request');
 var async = require('async');
+var childProcess = require('child_process');
 var extractZip = require('extract-zip');
 
 var API_URL = 'https://ffbinaries.com/api/v1';
@@ -400,7 +401,8 @@ function locateBinaries(components, opts) {
 
     if (result.isExecutable) {
       try {
-        result.version = execSync(result.path + ' -version').toString().split(' ')[2];
+        var binaryVersion = childProcess.execSync(result.path + ' -version');
+        result.version = binaryVersion.toString().split(' ')[2];
       } catch (err) {
         result.version = 'error';
       }
