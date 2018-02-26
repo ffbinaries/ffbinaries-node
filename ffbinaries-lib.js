@@ -298,7 +298,7 @@ function _downloadUrls (components, urls, opts, callback) {
  * @param {object}   opts
  * @param {function} callback
  */
-function downloadFiles (components, opts, callback) {
+function downloadBinaries (components, opts, callback) {
   // only callback provided: assign blank components and opts
   if (!callback && !opts && typeof components === 'function') {
     callback = components;
@@ -334,13 +334,92 @@ function downloadFiles (components, opts, callback) {
   });
 }
 
+/**
+ * Scans PATH to find local instances of the locateBinaries
+ * @param {array} components Components to look for (ffmpeg/ffplay/ffprobe/ffserver)
+ * @param {object} opts { additionalPaths: [], ensureExecutable: bool }
+ */
+function locateBinaries(components, opts) {
+  if (typeof components === 'string') {
+    components = [components];
+  }
+
+  if (typeof opts.additionalPaths === 'string'){
+    opts.additionalPaths = [opts.additionalPaths];
+  }
+
+  if (!Array.isArray(opts.additionalPaths)){
+    opts.additionalPaths = [];
+  }
+
+  var envPaths = process.env.PATH.split(path.delimiter);
+  var additionalPaths = opts.additionalPaths;
+  var cwdPath = process.cwd();
+
+  var allPaths = _.concat(
+    envPaths,
+    additionalPaths,
+    [cwdPath, cwdPath + '/bin', cwdPath + '/binaries']
+  );
+
+  var rtn = {};
+
+  _.each(components, function (comp) {
+    var binaryFilename = getBinaryFilename(comp);
+    // look for the filename in each path
+    // would make sense to go async given the potentially intense I/O activity
+
+    var result = {
+      found: false,
+      isExecutable: false,
+      path: null,
+      version: null
+    };
+
+    _.each(allPaths, function (path) {
+      if (!result.found) {
+        var pathToTest = path + '/' + binaryFilename;
+
+        if (fse.existsSync(pathToTest)) {
+          result.found = true;
+          result.path = pathToTest;
+
+          try {
+            fse.accessSync(pathToTest, fse.constants.X_OK);
+            result.isExecutable = true;
+          } catch (err) {
+            result.isExecutable = false;
+          }
+        }
+      }
+    });
+
+    // if (!result.isExecutable && opts.ensureExecutable) {
+    //   @TODO chmod here
+    // }
+
+    if (result.isExecutable) {
+      try {
+        result.version = execSync(result.path + ' -version').toString().split(' ')[2];
+      } catch (err) {
+        result.version = 'error';
+      }
+    }
+
+    rtn[comp] = result;
+  });
+
+  return rtn;
+}
 
 function clearCache () {
   fse.emptyDirSync(LOCAL_CACHE_DIR);
 }
 
 module.exports = {
-  downloadFiles: downloadFiles,
+  downloadFiles: downloadBinaries,
+  downloadBinaries: downloadBinaries,
+  locateBinaries: locateBinaries,
   getVersionData: getVersionData,
   listVersions: listVersions,
   listPlatforms: listPlatforms,
