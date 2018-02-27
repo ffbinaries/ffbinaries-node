@@ -336,32 +336,33 @@ function downloadBinaries (components, opts, callback) {
 }
 
 /**
- * Scans PATH to find local instances of the locateBinaries
+ * Checks the specified directory for existing copies of requested binaries.
+ * Also checks in PATH in case the binaries are already available on the machine.
+ *
+ * Returns the first match - provided paths will take precedence over env paths.
+ * Setting ensureExecutable option to true will run "chmod +x" on the file if needed.
+ *
  * @param {array} components Components to look for (ffmpeg/ffplay/ffprobe/ffserver)
- * @param {object} opts { additionalPaths: [], ensureExecutable: bool }
+ * @param {object} opts { paths: [], ensureExecutable: bool }
  */
-function locateBinaries(components, opts) {
+function locateBinariesSync(components, opts) {
   if (typeof components === 'string') {
     components = [components];
   }
 
-  if (typeof opts.additionalPaths === 'string'){
-    opts.additionalPaths = [opts.additionalPaths];
+  if (typeof opts.paths === 'string') {
+    opts.paths = [opts.paths];
   }
 
-  if (!Array.isArray(opts.additionalPaths)){
-    opts.additionalPaths = [];
+  if (!Array.isArray(opts.paths)) {
+    opts.paths = [];
   }
 
-  var envPaths = process.env.PATH.split(path.delimiter);
-  var additionalPaths = opts.additionalPaths;
+  var suggestedPaths = opts.paths;
+  var systemPaths = process.env.PATH.split(path.delimiter);
   var cwdPath = process.cwd();
 
-  var allPaths = _.concat(
-    envPaths,
-    additionalPaths,
-    [cwdPath, cwdPath + '/bin', cwdPath + '/binaries']
-  );
+  var allPaths = _.concat(suggestedPaths, systemPaths);
 
   var rtn = {};
 
@@ -390,22 +391,27 @@ function locateBinaries(components, opts) {
             result.isExecutable = true;
           } catch (err) {
             result.isExecutable = false;
+            result.version = 'error';
           }
         }
       }
     });
 
-    // if (!result.isExecutable && opts.ensureExecutable) {
-    //   @TODO chmod here
-    // }
+    // isExecutable will always be true on Windows
+    if (!result.isExecutable && opts.ensureExecutable) {
+      try {
+        childProcess.execSync('chmod +x ' + result.path);
+        result.isExecutable = true;
+      } catch (err) {}
+    }
 
     if (result.isExecutable) {
       try {
-        var binaryVersion = childProcess.execSync(result.path + ' -version');
-        result.version = binaryVersion.toString().split(' ')[2];
-      } catch (err) {
-        result.version = 'error';
-      }
+        var binaryVersionStdout = childProcess.execSync(result.path + ' -version');
+        var version = binaryVersionStdout.toString().split(' ')[2];
+        version = version.split('-')[0];
+        result.version = version;
+      } catch (err) {}
     }
 
     rtn[comp] = result;
@@ -419,9 +425,9 @@ function clearCache () {
 }
 
 module.exports = {
-  downloadFiles: downloadBinaries,
   downloadBinaries: downloadBinaries,
-  locateBinaries: locateBinaries,
+  downloadFiles: downloadBinaries,
+  locateBinariesSync: locateBinariesSync,
   getVersionData: getVersionData,
   listVersions: listVersions,
   listPlatforms: listPlatforms,

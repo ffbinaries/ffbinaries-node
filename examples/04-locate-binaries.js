@@ -6,10 +6,30 @@
 var ffbinaries = require('..');
 
 /**
- * Downloading all binaries for the platform on which the application is executed.
+ * Locates ffmpeg, ffplay and ffprobe binaries for the platform on which it's executed.
+ *
+ * Outputs something like this:
+ * {
+ *   ffmpeg:
+ *    { found: true,
+ *      isExecutable: true,
+ *      path: '/home/user/ffbinaries-node/examples/ffmpeg',
+ *      version: '3.4' },
+ *   ffplay:
+ *    { found: false,
+ *      isExecutable: false,
+ *      path: null,
+ *      version: null },
+ *   ffprobe:
+ *    { found: true,
+ *      isExecutable: false,
+ *      path: '/home/user/ffbinaries-node/examples/ffprobe',
+ *      version: 'error' }
+ * }
  */
+ 
 function locate() {
-  var results = ffbinaries.locateBinaries(['ffmpeg', 'ffplay', 'ffprobe'], {additionalPaths: [__dirname, __dirname + '/bin'] });
+  var results = ffbinaries.locateBinariesSync(['ffmpeg', 'ffplay', 'ffprobe'], {paths: [__dirname], ensureExecutable: true });
   console.log(results);
 }
 

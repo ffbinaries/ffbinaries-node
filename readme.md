@@ -27,6 +27,12 @@ user's machine during initial setup process.
 
 ## Change log
 
+**Version 1.0.6**
+
+* Added `locateBinariesSync` method to look for binaries and check their version
+* Updated references to HTTP in readme
+
+
 **Version 1.0.5**
 
 * Updated dependencies
@@ -172,6 +178,13 @@ There are also `ffbinaries help`, `ffbinaries versions` and `ffbinaries clearcac
 
 * `getBinaryFilename(component, platform)` resolves a filename of a binary
 for a given platform (appends ".exe" in Windows).
+
+* `locateBinariesSync(components, opts)` looks for binaries already existing
+in the system. Returns object with located binaries, their paths and versions.
+
+  `opts` parameter is an object that can specify these additional options:
+  * `paths` to provide locations to check in first
+  * `ensureExecutable` will set executable flag on the file if it's missing
 
 * `clearCache()` purges local cache
 
