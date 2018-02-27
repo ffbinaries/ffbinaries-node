@@ -15,7 +15,7 @@
 
 
 Downloads precompiled **ffmpeg, ffprobe, ffplay and ffserver binaries**
-from [ffbinaries.com](http://ffbinaries.com).
+from [ffbinaries.com](https://ffbinaries.com).
 
 This module is cross-platform and can be used through CLI or as a Node module,
 (either as a build step or in a postinstall script).
@@ -229,7 +229,7 @@ You can use aliases as your platform code argument in both CLI and programmatica
 
 ## Source of binaries
 
-The API providing data to the module is located at [ffbinaries.com](http://ffbinaries.com).
+The API providing data to the module is located at [ffbinaries.com](https://ffbinaries.com).
 The code is located in [ffbinaries-api repo](https://github.com/vot/ffbinaries-api).
 
 The binaries are hosted on GitHub as releases of [ffbinaries-prebuilt repo](https://github.com/vot/ffbinaries-prebuilt/releases).
