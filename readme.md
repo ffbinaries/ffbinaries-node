@@ -15,7 +15,7 @@
 
 
 Downloads precompiled **ffmpeg, ffprobe, ffplay and ffserver binaries**
-from [ffbinaries.com](http://ffbinaries.com).
+from [ffbinaries.com](https://ffbinaries.com).
 
 This module is cross-platform and can be used through CLI or as a Node module,
 (either as a build step or in a postinstall script).
@@ -26,6 +26,12 @@ user's machine during initial setup process.
 
 
 ## Change log
+
+**Version 1.0.6**
+
+* Added `locateBinariesSync` method to look for binaries and check their version
+* Changed HTTP to HTTPS in links in readme
+
 
 **Version 1.0.5**
 
@@ -173,6 +179,13 @@ There are also `ffbinaries help`, `ffbinaries versions` and `ffbinaries clearcac
 * `getBinaryFilename(component, platform)` resolves a filename of a binary
 for a given platform (appends ".exe" in Windows).
 
+* `locateBinariesSync(components, opts)` looks for binaries already existing
+in the system. Returns object with located binaries, their paths and versions.
+
+  `opts` parameter is an object that can specify these additional options:
+  * `paths` to provide locations to check in first
+  * `ensureExecutable` will set executable flag on the file if it's missing
+
 * `clearCache()` purges local cache
 
 
@@ -229,7 +242,7 @@ You can use aliases as your platform code argument in both CLI and programmatica
 
 ## Source of binaries
 
-The API providing data to the module is located at [ffbinaries.com](http://ffbinaries.com).
+The API providing data to the module is located at [ffbinaries.com](https://ffbinaries.com).
 The code is located in [ffbinaries-api repo](https://github.com/vot/ffbinaries-api).
 
 The binaries are hosted on GitHub as releases of [ffbinaries-prebuilt repo](https://github.com/vot/ffbinaries-prebuilt/releases).

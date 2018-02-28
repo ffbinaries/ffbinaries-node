@@ -4,6 +4,7 @@ var path = require('path');
 var _ = require('lodash');
 var request = require('request');
 var async = require('async');
+var childProcess = require('child_process');
 var extractZip = require('extract-zip');
 
 var API_URL = 'https://ffbinaries.com/api/v1';
@@ -298,7 +299,7 @@ function _downloadUrls (components, urls, opts, callback) {
  * @param {object}   opts
  * @param {function} callback
  */
-function downloadFiles (components, opts, callback) {
+function downloadBinaries (components, opts, callback) {
   // only callback provided: assign blank components and opts
   if (!callback && !opts && typeof components === 'function') {
     callback = components;
@@ -334,13 +335,98 @@ function downloadFiles (components, opts, callback) {
   });
 }
 
+/**
+ * Checks the specified directory for existing copies of requested binaries.
+ * Also checks in PATH in case the binaries are already available on the machine.
+ *
+ * Returns the first match - provided paths will take precedence over env paths.
+ * Setting ensureExecutable option to true will run "chmod +x" on the file if needed.
+ *
+ * @param {array} components Components to look for (ffmpeg/ffplay/ffprobe/ffserver)
+ * @param {object} opts { paths: [], ensureExecutable: bool }
+ */
+function locateBinariesSync(components, opts) {
+  if (typeof components === 'string') {
+    components = [components];
+  }
+
+  if (typeof opts.paths === 'string') {
+    opts.paths = [opts.paths];
+  }
+
+  if (!Array.isArray(opts.paths)) {
+    opts.paths = [];
+  }
+
+  var rtn = {};
+  var suggestedPaths = opts.paths;
+  var systemPaths = process.env.PATH.split(path.delimiter);
+  var allPaths = _.concat(suggestedPaths, systemPaths);
+
+  _.each(components, function (comp) {
+    var binaryFilename = getBinaryFilename(comp);
+    // look for component's filename in each path
+
+    var result = {
+      found: false,
+      isExecutable: false,
+      path: null,
+      version: null
+    };
+
+    // scan paths to find the currently checked component
+    _.each(allPaths, function (path) {
+      if (!result.found) {
+        var pathToTest = path + '/' + binaryFilename;
+
+        if (fse.existsSync(pathToTest)) {
+          result.found = true;
+          result.path = pathToTest;
+
+          // check if file is executable
+          try {
+            fse.accessSync(pathToTest, fse.constants.X_OK);
+            result.isExecutable = true;
+          } catch (err) {
+            result.isExecutable = false;
+            result.version = 'error';
+          }
+        }
+      }
+    });
+
+    // isExecutable will always be true on Windows
+    if (!result.isExecutable && opts.ensureExecutable) {
+      try {
+        childProcess.execSync('chmod +x ' + result.path);
+        result.isExecutable = true;
+      } catch (err) {}
+    }
+
+    // check version
+    if (result.isExecutable) {
+      try {
+        var binaryVersionStdout = childProcess.execSync(result.path + ' -version');
+        var version = binaryVersionStdout.toString().split(' ')[2];
+        version = version.split('-')[0];
+        result.version = version;
+      } catch (err) {}
+    }
+
+    rtn[comp] = result;
+  });
+
+  return rtn;
+}
 
 function clearCache () {
   fse.emptyDirSync(LOCAL_CACHE_DIR);
 }
 
 module.exports = {
-  downloadFiles: downloadFiles,
+  downloadBinaries: downloadBinaries,
+  downloadFiles: downloadBinaries,
+  locateBinariesSync: locateBinariesSync,
   getVersionData: getVersionData,
   listVersions: listVersions,
   listPlatforms: listPlatforms,

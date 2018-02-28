@@ -1,6 +1,6 @@
 {
   "name": "ffbinaries",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Download binaries for ffmpeg, ffprobe, ffserver and ffplay (cross-platform)",
   "main": "index.js",
   "bin": {
@@ -30,7 +30,7 @@
     "type": "git",
     "url": "https://github.com/vot/ffbinaries-node.git"
   },
-  "author": "Vot Z <http://vot-z.com>",
+  "author": "Vot Z <https://vot-z.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/vot/ffbinaries-node/issues"
