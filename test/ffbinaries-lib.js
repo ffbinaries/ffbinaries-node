@@ -3,6 +3,8 @@ var ffbinaries = require('..');
 var os = require('os');
 var fs = require('fs-extra');
 var glob = require('glob');
+var childProcess = require('child_process');
+var _ = require('lodash');
 
 var LOCAL_CACHE_DIR = os.homedir() + '/.ffbinaries-cache';
 
@@ -169,31 +171,13 @@ describe('ffbinaries library', function() {
   });
 
   describe('downloadFiles (each test will take a while or time out after 2 minutes)', function() {
-    after(function () {
-      console.log('        (removing binaries downloaded by tests)');
-      // remove test/binaries directory
-      fs.removeSync(__dirname + '/binaries');
-
-      // remove linux/mac binaries in current working dir
-      fs.removeSync(process.cwd() + '/ffmpeg');
-      fs.removeSync(process.cwd() + '/ffplay');
-      fs.removeSync(process.cwd() + '/ffprobe');
-      fs.removeSync(process.cwd() + '/ffserver');
-
-      // remove win binaries in current working dir
-      fs.removeSync(process.cwd() + '/ffmpeg.exe');
-      fs.removeSync(process.cwd() + '/ffplay.exe');
-      fs.removeSync(process.cwd() + '/ffprobe.exe');
-      fs.removeSync(process.cwd() + '/ffserver.exe');
-    });
-
-    it('should download a single file with options provided', function(done) {
+    it('should download a single file (ffmpeg@3.2, win-64) with options provided', function(done) {
       this.timeout(120000);
       var dest = __dirname + '/binaries';
       var tickerFn = function () {};
       var tickerInterval = function () {};
 
-      ffbinaries.downloadFiles('ffmpeg', {version: '3.2', platform: ffbinaries.detectPlatform(), quiet: true, destination: dest, tickerFn: tickerFn, tickerInterval: tickerInterval}, function (err, data) {
+      ffbinaries.downloadFiles('ffmpeg', {version: '3.2', platform: 'win-64', quiet: true, destination: dest, tickerFn: tickerFn, tickerInterval: tickerInterval}, function (err, data) {
         expect(err).to.equal(null);
         expect(data.length).to.equal(1);
         expect(data[0].filename).to.exist;
@@ -202,7 +186,7 @@ describe('ffbinaries library', function() {
       });
     });
 
-    it('should download multiple components without options', function(done) {
+    it('should download multiple components without options provided', function(done) {
       this.timeout(120000);
       ffbinaries.downloadFiles(['ffmpeg', 'ffprobe'], function (err, data) {
         expect(err).to.equal(null);
@@ -274,7 +258,78 @@ describe('ffbinaries library', function() {
         return done();
       });
     });
+  });
 
+
+  describe('locateBinariesSync', function() {
+    it('should locate ffmpeg binary in the current dir', function() {
+      var result = ffbinaries.locateBinariesSync('ffmpeg', {paths: process.cwd()});
+      expect(result.ffmpeg).to.exist;
+      expect(result.ffmpeg.found).to.equal(true);
+    });
+
+    it('should return version as "error" for a non-executable file', function() {
+      if (ffbinaries.detectPlatform().indexOf('win-') === 0) {
+        return;
+      }
+
+      childProcess.execSync('chmod -x ' + process.cwd() + '/ffmpeg');
+
+      var result = ffbinaries.locateBinariesSync('ffmpeg', {paths: process.cwd()});
+      expect(result.ffmpeg).to.exist;
+      expect(result.ffmpeg.found).to.equal(true);
+      expect(result.ffmpeg.isExecutable).to.equal(false);
+      expect(result.ffmpeg.path).to.exist;
+      expect(result.ffmpeg.version).to.equal('error');
+    });
+
+    it('should set chmod +x when "ensureExecutable" option is provided', function() {
+      if (ffbinaries.detectPlatform().indexOf('win-') === 0) {
+        return;
+      }
+
+      childProcess.execSync('chmod -x ' + process.cwd() + '/ffmpeg');
+
+      var result = ffbinaries.locateBinariesSync('ffmpeg', {paths: [process.cwd()], ensureExecutable: true});
+      expect(result.ffmpeg).to.exist;
+      expect(result.ffmpeg.found).to.equal(true);
+      expect(result.ffmpeg.isExecutable).to.equal(true);
+      expect(result.ffmpeg.path).to.exist;
+      expect(result.ffmpeg.version).to.not.equal('error');
+    });
+
+    it('should return missing binaries correctly', function() {
+      fs.removeSync(process.cwd() + '/ffplay');
+      fs.removeSync(process.cwd() + '/ffplay.exe');
+
+      var result = ffbinaries.locateBinariesSync(['ffmpeg', 'ffplay'], {paths: process.cwd()});
+      expect(result.ffmpeg).to.exist;
+
+      expect(result.ffplay).to.exist;
+      expect(result.ffplay.found).to.equal(false);
+      expect(result.ffplay.isExecutable).to.equal(false);
+      expect(result.ffplay.path).to.equal(null);
+      expect(result.ffplay.version).to.equal(null);
+    });
+  });
+
+
+  after(function () {
+    console.log('\nRemoving binaries downloaded by tests...');
+    // remove test/binaries directory
+    console.log('\x1b[2m' + '- Removing ' + __dirname + '/binaries' + '\x1b[0m');
+    fs.removeSync(__dirname + '/binaries');
+
+    // remove binaries in current working dir
+    var removalList = [
+      'ffmpeg', 'ffplay', 'ffprobe', 'ffserver',
+      'ffmpeg.exe', 'ffplay.exe', 'ffprobe.exe', 'ffserver.exe'
+    ];
+
+    _.each(removalList, function (filename) {
+      console.log('\x1b[2m' + '- Removing ' + process.cwd() + '/' + filename + '\x1b[0m');
+      fs.removeSync(process.cwd() + '/' + filename);
+    });
   });
 
 });
