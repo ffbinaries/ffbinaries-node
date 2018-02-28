@@ -358,18 +358,14 @@ function locateBinariesSync(components, opts) {
     opts.paths = [];
   }
 
+  var rtn = {};
   var suggestedPaths = opts.paths;
   var systemPaths = process.env.PATH.split(path.delimiter);
-  var cwdPath = process.cwd();
-
   var allPaths = _.concat(suggestedPaths, systemPaths);
-
-  var rtn = {};
 
   _.each(components, function (comp) {
     var binaryFilename = getBinaryFilename(comp);
-    // look for the filename in each path
-    // would make sense to go async given the potentially intense I/O activity
+    // look for component's filename in each path
 
     var result = {
       found: false,
@@ -378,6 +374,7 @@ function locateBinariesSync(components, opts) {
       version: null
     };
 
+    // scan paths to find the currently checked component
     _.each(allPaths, function (path) {
       if (!result.found) {
         var pathToTest = path + '/' + binaryFilename;
@@ -386,6 +383,7 @@ function locateBinariesSync(components, opts) {
           result.found = true;
           result.path = pathToTest;
 
+          // check if file is executable
           try {
             fse.accessSync(pathToTest, fse.constants.X_OK);
             result.isExecutable = true;
@@ -405,6 +403,7 @@ function locateBinariesSync(components, opts) {
       } catch (err) {}
     }
 
+    // check version
     if (result.isExecutable) {
       try {
         var binaryVersionStdout = childProcess.execSync(result.path + ' -version');

@@ -30,7 +30,7 @@ user's machine during initial setup process.
 **Version 1.0.6**
 
 * Added `locateBinariesSync` method to look for binaries and check their version
-* Updated references to HTTP in readme
+* Changed HTTP to HTTPS in links in readme
 
 
 **Version 1.0.5**
