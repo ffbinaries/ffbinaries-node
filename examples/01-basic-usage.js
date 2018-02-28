@@ -21,10 +21,10 @@ function example1(callback) {
 /**
  * Downloading all binaries for linux to a specified location
  */
-function example2 (callback) {
+function example2(callback) {
   var dest = __dirname + '/binaries';
 
-  ffbinaries.downloadFiles({destination: dest, platform: 'linux'}, function (err, data) {
+  ffbinaries.downloadFiles({ destination: dest, platform: 'linux' }, function (err, data) {
     console.log('Downloading binaries for linux:');
     console.log('err', err);
     console.log('data', data);
@@ -36,10 +36,10 @@ function example2 (callback) {
 /**
  * Downloading only ffmpeg binary for win-64 to a specified location
  */
-function example3 (callback) {
+function example3(callback) {
   var dest = __dirname + '/binaries';
 
-  ffbinaries.downloadFiles('ffmpeg', {platform: 'win-64', quiet: true, destination: dest}, function (err, data) {
+  ffbinaries.downloadFiles('ffmpeg', { platform: 'win-64', quiet: true, destination: dest }, function (err, data) {
     console.log('Downloading ffmpeg binary for win-64 to ' + dest + '.');
     console.log('err', err);
     console.log('data', data);
@@ -51,10 +51,10 @@ function example3 (callback) {
 /**
  * Downloading ffplay and ffprobe binaries for win-64 to a specified location
  */
-function example4 (callback) {
+function example4(callback) {
   var dest = __dirname + '/binaries';
 
-  ffbinaries.downloadFiles(['ffplay', 'ffprobe'], {platform: 'win-64', quiet: true, destination: dest}, function (err, data) {
+  ffbinaries.downloadFiles(['ffplay', 'ffprobe'], { platform: 'win-64', quiet: true, destination: dest }, function (err, data) {
     console.log('Downloading ffmpeg binary for win-64 to ' + dest + '.');
     console.log('err', err);
     console.log('data', data);

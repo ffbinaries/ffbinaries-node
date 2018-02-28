@@ -1,0 +1,10 @@
+{
+  "extends": "../.eslintrc.json",
+  "env": {
+    "node": true,
+    "es6": false
+  },
+  "rules": {
+    "no-unused-vars": 0
+  }
+}

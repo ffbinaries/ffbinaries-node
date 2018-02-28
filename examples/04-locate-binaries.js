@@ -27,9 +27,8 @@ var ffbinaries = require('..');
  *      version: 'error' }
  * }
  */
- 
 function locate() {
-  var results = ffbinaries.locateBinariesSync(['ffmpeg', 'ffplay', 'ffprobe'], {paths: [__dirname], ensureExecutable: true });
+  var results = ffbinaries.locateBinariesSync(['ffmpeg', 'ffplay', 'ffprobe'], { paths: [__dirname], ensureExecutable: true });
   console.log(results);
 }
 

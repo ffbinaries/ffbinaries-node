@@ -19,7 +19,7 @@ var errorMsgs = {
   incorrectVersionParam: '"version" parameter must be a string.'
 };
 
-function _ensureDirSync (dir) {
+function ensureDirSync(dir) {
   try {
     fse.accessSync(dir);
   } catch (e) {
@@ -27,12 +27,12 @@ function _ensureDirSync (dir) {
   }
 }
 
-_ensureDirSync(LOCAL_CACHE_DIR);
+ensureDirSync(LOCAL_CACHE_DIR);
 
 /**
  * Resolves the platform key based on input string
  */
-function resolvePlatform (input) {
+function resolvePlatform(input) {
   var rtn = null;
 
   switch (input) {
@@ -40,43 +40,44 @@ function resolvePlatform (input) {
     case 'osx':
     case 'mac-64':
     case 'osx-64':
-        rtn = 'osx-64';
-        break;
+      rtn = 'osx-64';
+      break;
 
     case 'linux':
     case 'linux-32':
-        rtn = 'linux-32';
-        break;
+      rtn = 'linux-32';
+      break;
 
     case 'linux-64':
-        rtn = 'linux-64';
-        break;
+      rtn = 'linux-64';
+      break;
 
     case 'linux-arm':
     case 'linux-armel':
-        rtn = 'linux-armel';
-        break;
+      rtn = 'linux-armel';
+      break;
 
     case 'linux-armhf':
-        rtn = 'linux-armhf';
-        break;
+      rtn = 'linux-armhf';
+      break;
 
     case 'win':
     case 'win-32':
     case 'windows':
     case 'windows-32':
-        rtn = 'windows-32';
-        break;
+      rtn = 'windows-32';
+      break;
 
     case 'win-64':
     case 'windows-64':
-        rtn = 'windows-64';
-        break;
+      rtn = 'windows-64';
+      break;
 
     default:
-        rtn = null;
-    }
-    return rtn;
+      rtn = null;
+  }
+
+  return rtn;
 }
 /**
  * Detects the platform of the machine the script is executed on.
@@ -84,7 +85,7 @@ function resolvePlatform (input) {
  *
  * @param {object} osinfo Contains "type" and "arch" properties
  */
-function detectPlatform (osinfo) {
+function detectPlatform(osinfo) {
   var inputIsValid = typeof osinfo === 'object' && typeof osinfo.type === 'string' && typeof osinfo.arch === 'string';
   var type = (inputIsValid ? osinfo.type : os.type()).toLowerCase();
   var arch = (inputIsValid ? osinfo.arch : os.arch()).toLowerCase();
@@ -94,14 +95,14 @@ function detectPlatform (osinfo) {
   }
 
   if (type === 'windows_nt') {
-    return arch == 'x64' ? 'windows-64' : 'windows-32';
+    return arch === 'x64' ? 'windows-64' : 'windows-32';
   }
 
   if (type === 'linux') {
     if (arch === 'arm' || arch === 'arm64') {
       return 'linux-armel';
     }
-    return arch == 'x64' ? 'linux-64' : 'linux-32';
+    return arch === 'x64' ? 'linux-64' : 'linux-32';
   }
 
   return null;
@@ -112,7 +113,7 @@ function detectPlatform (osinfo) {
  * @param {string} component "ffmpeg", "ffplay", "ffprobe" or "ffserver"
  * @param {platform} platform "ffmpeg", "ffplay", "ffprobe" or "ffserver"
  */
-function getBinaryFilename (component, platform) {
+function getBinaryFilename(component, platform) {
   var platformCode = resolvePlatform(platform);
   if (platformCode === 'windows-32' || platformCode === 'windows-64') {
     return component + '.exe';
@@ -125,29 +126,31 @@ function listPlatforms() {
 }
 
 function listVersions(callback) {
-  if (RUNTIME_CACHE['versions']) {
-    return callback(null, RUNTIME_CACHE['versionsAll']);
+  if (RUNTIME_CACHE.versionsAll) {
+    return callback(null, RUNTIME_CACHE.versionsAll);
   }
-  request({url: API_URL}, function (err, response, body) {
+  request({ url: API_URL }, function (err, response, body) {
     if (err) {
       return callback(errorMsgs.connectionIssues);
     }
 
+    var parsed;
+
     try {
-      var parsed = JSON.parse(body.toString());
+      parsed = JSON.parse(body.toString());
     } catch (e) {
       return callback(errorMsgs.parsingVersionList);
     }
 
     var versionsAll = Object.keys(parsed.versions);
-    RUNTIME_CACHE['versionsAll'] = versionsAll;
+    RUNTIME_CACHE.versionsAll = versionsAll;
     return callback(null, versionsAll);
   });
 }
 /**
  * Gets full data set from ffbinaries.com
  */
-function getVersionData (version, callback) {
+function getVersionData(version, callback) {
   if (RUNTIME_CACHE[version]) {
     return callback(null, RUNTIME_CACHE[version]);
   }
@@ -158,7 +161,7 @@ function getVersionData (version, callback) {
 
   var url = version ? '/version/' + version : '/latest';
 
-  request({url: API_URL + url}, function (err, response, body) {
+  request({ url: API_URL + url }, function (err, response, body) {
     if (err) {
       return callback(errorMsgs.connectionIssues);
     }
@@ -167,8 +170,10 @@ function getVersionData (version, callback) {
       return callback(errorMsgs.notFound);
     }
 
+    var parsed;
+
     try {
-      var parsed = JSON.parse(body.toString());
+      parsed = JSON.parse(body.toString());
     } catch (e) {
       return callback(errorMsgs.parsingVersionData);
     }
@@ -181,28 +186,29 @@ function getVersionData (version, callback) {
 /**
  * Download file(s) and save them in the specified directory
  */
-function _downloadUrls (components, urls, opts, callback) {
+function downloadUrls(components, urls, opts, callback) {
+  var destinationDir = opts.destination;
+  var results = [];
+  var remappedUrls;
+
   if (components && !Array.isArray(components)) {
     components = [components];
   }
 
   // returns an array of objects like this: {component: 'ffmpeg', url: 'https://...'}
   if (typeof urls === 'object') {
-    var remappedUrls = _.map(urls, function (v, k) {
-      return (!components || components && !Array.isArray(components) || components && Array.isArray(components) && components.indexOf(k) !== -1) ? {component: k, url: v} : null;
+    remappedUrls = _.map(urls, function (v, k) {
+      return (!components || components && !Array.isArray(components) || components && Array.isArray(components) && components.indexOf(k) !== -1) ? { component: k, url: v } : null;
     });
     remappedUrls = _.compact(remappedUrls);
   }
 
-  var destinationDir = opts.destination;
-  var cacheDir = LOCAL_CACHE_DIR;
 
-  function _extractZipToDestination (zipFilename, cb) {
+  function extractZipToDestination(zipFilename, cb) {
     var oldpath = LOCAL_CACHE_DIR + '/' + zipFilename;
     extractZip(oldpath, { dir: destinationDir, defaultFileMode: parseInt('744', 8) }, cb);
   }
 
-  var results = [];
 
   async.each(remappedUrls, function (urlObject, cb) {
     if (!urlObject || !urlObject.url || !urlObject.component) {
@@ -216,14 +222,15 @@ function _downloadUrls (components, urls, opts, callback) {
     var binFilename = getBinaryFilename(binFilenameBase, opts.platform);
     var runningTotal = 0;
     var totalFilesize;
+    var interval;
 
     if (typeof opts.tickerFn === 'function') {
       opts.tickerInterval = parseInt(opts.tickerInterval, 10);
-      var tickerInterval = (typeof opts.tickerInterval !== NaN) ? opts.tickerInterval : 1000;
+      var tickerInterval = (!Number.isNaN(opts.tickerInterval)) ? opts.tickerInterval : 1000;
       var tickData = { filename: zipFilename, progress: 0 };
 
       // Schedule next ticks
-      var interval = setInterval(function () {
+      interval = setInterval(function () {
         if (totalFilesize && runningTotal == totalFilesize) {
           return clearInterval(interval);
         }
@@ -245,7 +252,7 @@ function _downloadUrls (components, urls, opts, callback) {
       });
       clearInterval(interval);
       return cb();
-    } catch (e) {
+    } catch (errBinExists) {
       // If there's no binary then check if the zip file is already in cache
       try {
         fse.accessSync(LOCAL_CACHE_DIR + '/' + zipFilename);
@@ -256,38 +263,36 @@ function _downloadUrls (components, urls, opts, callback) {
           code: 'DONE_FROM_CACHE'
         });
         clearInterval(interval);
-        return _extractZipToDestination(zipFilename, cb);
-      } catch (e) {
+        return extractZipToDestination(zipFilename, cb);
+      } catch (errZipExists) {
         // If zip is not cached then download it and store in cache
         if (opts.quiet) clearInterval(interval);
 
         var cacheFileTempName = LOCAL_CACHE_DIR + '/' + zipFilename + '.part';
         var cacheFileFinalName = LOCAL_CACHE_DIR + '/' + zipFilename;
 
-        request({url: url}, function (err, response, body) {
+        request({ url: url }, function (err, response) {
           totalFilesize = response.headers['content-length'];
           results.push({
             filename: binFilename,
             path: destinationDir,
-            size: Math.floor(totalFilesize/1024/1024*1000)/1000 + 'MB',
+            size: Math.floor(totalFilesize / 1024 / 1024 * 1000) / 1000 + 'MB',
             status: 'File extracted to destination (downloaded from "' + url + '")',
             code: 'DONE_CLEAN'
           });
 
           fse.renameSync(cacheFileTempName, cacheFileFinalName);
-          _extractZipToDestination(zipFilename, cb);
+          extractZipToDestination(zipFilename, cb);
         })
-        .on('data', function (data) {
-          runningTotal += data.length;
-        })
-        .pipe(fse.createWriteStream(cacheFileTempName));
+          .on('data', function (data) {
+            runningTotal += data.length;
+          })
+          .pipe(fse.createWriteStream(cacheFileTempName));
       }
     }
-
   }, function () {
     return callback(null, results);
   });
-
 }
 
 /**
@@ -299,7 +304,7 @@ function _downloadUrls (components, urls, opts, callback) {
  * @param {object}   opts
  * @param {function} callback
  */
-function downloadBinaries (components, opts, callback) {
+function downloadBinaries(components, opts, callback) {
   // only callback provided: assign blank components and opts
   if (!callback && !opts && typeof components === 'function') {
     callback = components;
@@ -323,7 +328,7 @@ function downloadBinaries (components, opts, callback) {
   var platform = resolvePlatform(opts.platform) || detectPlatform();
 
   opts.destination = path.resolve(opts.destination || '.');
-  _ensureDirSync(opts.destination);
+  ensureDirSync(opts.destination);
 
   getVersionData(opts.version, function (err, data) {
     var urls = _.get(data, 'bin.' + platform);
@@ -331,7 +336,7 @@ function downloadBinaries (components, opts, callback) {
       return callback(err || 'No URLs!');
     }
 
-    _downloadUrls(components, urls, opts, callback);
+    downloadUrls(components, urls, opts, callback);
   });
 }
 
@@ -375,9 +380,9 @@ function locateBinariesSync(components, opts) {
     };
 
     // scan paths to find the currently checked component
-    _.each(allPaths, function (path) {
+    _.each(allPaths, function (currentPath) {
       if (!result.found) {
-        var pathToTest = path + '/' + binaryFilename;
+        var pathToTest = currentPath + '/' + binaryFilename;
 
         if (fse.existsSync(pathToTest)) {
           result.found = true;
@@ -419,7 +424,7 @@ function locateBinariesSync(components, opts) {
   return rtn;
 }
 
-function clearCache () {
+function clearCache() {
   fse.emptyDirSync(LOCAL_CACHE_DIR);
 }
 
