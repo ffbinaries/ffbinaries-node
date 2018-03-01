@@ -269,7 +269,7 @@ describe('ffbinaries library', function() {
     });
 
     it('should return version as "error" for a non-executable file', function() {
-      if (ffbinaries.detectPlatform().indexOf('win-') === 0) {
+      if (ffbinaries.detectPlatform().indexOf('windows-') === 0) {
         return;
       }
 
@@ -284,7 +284,7 @@ describe('ffbinaries library', function() {
     });
 
     it('should set chmod +x when "ensureExecutable" option is provided', function() {
-      if (ffbinaries.detectPlatform().indexOf('win-') === 0) {
+      if (ffbinaries.detectPlatform().indexOf('windows-') === 0) {
         return;
       }
 
