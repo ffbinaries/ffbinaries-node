@@ -27,6 +27,13 @@ user's machine during initial setup process.
 
 ## Change log
 
+**Version 1.0.7**
+
+* Looking for correct filename in `locateBinariesSync` on Windows
+* Fault tolerance + more precise conditions in `locateBinariesSync`
+
+
+
 **Version 1.0.6**
 
 * Added `locateBinariesSync` method to look for binaries and check their version

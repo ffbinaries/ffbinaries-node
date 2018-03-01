@@ -350,6 +350,8 @@ function locateBinariesSync(components, opts) {
     components = [components];
   }
 
+  opts = opts || {};
+
   if (typeof opts.paths === 'string') {
     opts.paths = [opts.paths];
   }
@@ -364,7 +366,7 @@ function locateBinariesSync(components, opts) {
   var allPaths = _.concat(suggestedPaths, systemPaths);
 
   _.each(components, function (comp) {
-    var binaryFilename = getBinaryFilename(comp);
+    var binaryFilename = getBinaryFilename(comp, detectPlatform());
     // look for component's filename in each path
 
     var result = {
@@ -396,7 +398,7 @@ function locateBinariesSync(components, opts) {
     });
 
     // isExecutable will always be true on Windows
-    if (!result.isExecutable && opts.ensureExecutable) {
+    if (result.found && !result.isExecutable && opts.ensureExecutable) {
       try {
         childProcess.execSync('chmod +x ' + result.path);
         result.isExecutable = true;
@@ -404,7 +406,7 @@ function locateBinariesSync(components, opts) {
     }
 
     // check version
-    if (result.isExecutable) {
+    if (result.found && result.isExecutable) {
       try {
         var binaryVersionStdout = childProcess.execSync(result.path + ' -version');
         var version = binaryVersionStdout.toString().split(' ')[2];
