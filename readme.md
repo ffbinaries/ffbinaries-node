@@ -27,11 +27,16 @@ user's machine during initial setup process.
 
 ## Change log
 
+**Version 1.0.8**
+
+* Added force mode to `downloadBinaries` method
+* Returning full version of components in `locateBinariesSync` method
+
+
 **Version 1.0.7**
 
 * Looking for correct filename in `locateBinariesSync` on Windows
 * Fault tolerance + more precise conditions in `locateBinariesSync`
-
 
 
 **Version 1.0.6**
@@ -57,12 +62,12 @@ user's machine during initial setup process.
 **Version 1.0.3**
 
 * Preventing storage of incomplete archives in cache
-* Added status codes in `downloadFiles` method result
+* Added status codes in `downloadBinaries` method result
 
 
 **Version 1.0.2**
 
-* Improved support for incomplete arguments in downloadFiles
+* Improved support for incomplete arguments in downloadBinaries
 * Added `getBinaryFilename(component, platform)`
 
 
@@ -165,12 +170,13 @@ There are also `ffbinaries help`, `ffbinaries versions` and `ffbinaries clearcac
 
 `ffbinaries` library exports the following methods:
 
-* `downloadFiles(platform, opts, callback)` downloads and extracts the requested binaries.
+* `downloadBinaries(platform, opts, callback)` downloads and extracts the requested binaries.
 
   The `opts` parameter is an object that can contain these optional parameters:
   * `destination`: the path where the binaries will be downloaded to. If not provided it will default to `.`.
   * `components`: an array of string values that describes which [components](#included-components) to download. If not provided it will default to all components available for the platform.
   * `version`: version of ffmpeg to download
+  * `force`: ignore check for existing binaries in the destination and overwrite them if necessary
   * `quiet`: suppress verbose logs
 
 * `getVersionData(version, callback)` fetches the full data set without downloading any binaries.
@@ -203,7 +209,7 @@ in the system. Returns object with located binaries, their paths and versions.
 ```
 var ffbinaries = require('ffbinaries');
 
-ffbinaries.downloadFiles(function () {
+ffbinaries.downloadBinaries(function () {
   console.log('Downloaded all binaries for current platform.');
 });
 ```
@@ -214,7 +220,7 @@ ffbinaries.downloadFiles(function () {
 var ffbinaries = require('ffbinaries');
 var dest = __dirname + '/binaries';
 
-ffbinaries.downloadFiles(['ffmpeg', 'ffprobe'], {platform: 'linux-64', quiet: true, destination: dest}, function () {
+ffbinaries.downloadBinaries(['ffmpeg', 'ffprobe'], {platform: 'linux-64', quiet: true, destination: dest}, function () {
   console.log('Downloaded ffplay and ffprobe binaries for linux-64 to ' + dest + '.');
 });
 ```
