@@ -234,6 +234,10 @@ function _downloadUrls (components, urls, opts, callback) {
     }
 
     try {
+      if (opts.force) {
+        throw 'Force mode specified - will overwrite existing binaries in target location';
+      }
+
       // Check if file already exists in target directory
       fse.accessSync(destinationDir + '/' + binFilename);
       // if the accessSync method doesn't throw we know the binary already exists
@@ -410,7 +414,6 @@ function locateBinariesSync(components, opts) {
       try {
         var binaryVersionStdout = childProcess.execSync(result.path + ' -version');
         var version = binaryVersionStdout.toString().split(' ')[2];
-        version = version.split('-')[0];
         result.version = version;
       } catch (err) {}
     }
