@@ -27,6 +27,11 @@ user's machine during initial setup process.
 
 ## Change log
 
+**Version 1.0.9**
+
+* Switched implementation of version checker (`spawn` instead of `exec`)
+
+
 **Version 1.0.8**
 
 * Added force mode to `downloadBinaries` method
