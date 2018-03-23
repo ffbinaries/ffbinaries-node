@@ -413,7 +413,7 @@ function locateBinariesSync(components, opts) {
     if (result.found && result.isExecutable) {
       var stdout = childProcess.spawnSync(result.path, ['-version']).stdout;
       // if stdout.length === 0, then we must have stderr instead
-      if (stdout.length) {
+      if (stdout && stdout.length) {
         result.version = stdout.toString().split(' ')[2];
       }
     }
