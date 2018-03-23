@@ -411,11 +411,11 @@ function locateBinariesSync(components, opts) {
 
     // check version
     if (result.found && result.isExecutable) {
-      try {
-        var binaryVersionStdout = childProcess.execSync(result.path + ' -version');
-        var version = binaryVersionStdout.toString().split(' ')[2];
-        result.version = version;
-      } catch (err) {}
+      var stdout = childProcess.spawnSync(result.path, ['-version']).stdout;
+      // if stdout.length === 0, then we must have stderr instead
+      if (stdout.length) {
+        result.version = stdout.toString().split(' ')[2];
+      }
     }
 
     rtn[comp] = result;
