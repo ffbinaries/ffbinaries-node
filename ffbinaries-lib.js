@@ -220,7 +220,7 @@ function _downloadUrls (components, urls, opts, callback) {
     if (typeof opts.tickerFn === 'function') {
       opts.tickerInterval = parseInt(opts.tickerInterval, 10);
       var tickerInterval = (typeof opts.tickerInterval !== NaN) ? opts.tickerInterval : 1000;
-      var tickData = { filename: zipFilename, progress: 0};
+      var tickData = { filename: zipFilename, progress: 0 };
 
       // Schedule next ticks
       var interval = setInterval(function () {
