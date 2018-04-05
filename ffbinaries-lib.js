@@ -220,14 +220,14 @@ function _downloadUrls (components, urls, opts, callback) {
     if (typeof opts.tickerFn === 'function') {
       opts.tickerInterval = parseInt(opts.tickerInterval, 10);
       var tickerInterval = (typeof opts.tickerInterval !== NaN) ? opts.tickerInterval : 1000;
-      var tickData = { filename: zipFilename, progress: 0 };
+      var tickData = { filename: zipFilename, progress: 0};
 
       // Schedule next ticks
       var interval = setInterval(function () {
         if (totalFilesize && runningTotal == totalFilesize) {
           return clearInterval(interval);
         }
-        tickData.progress = runningTotal;
+        tickData.progress = totalFilesize > -1 ? runningTotal/totalFilesize : 0;
 
         opts.tickerFn(tickData);
       }, tickerInterval);
@@ -269,7 +269,6 @@ function _downloadUrls (components, urls, opts, callback) {
         var cacheFileFinalName = LOCAL_CACHE_DIR + '/' + zipFilename;
 
         request({url: url}, function (err, response, body) {
-          totalFilesize = response.headers['content-length'];
           results.push({
             filename: binFilename,
             path: destinationDir,
@@ -280,6 +279,9 @@ function _downloadUrls (components, urls, opts, callback) {
 
           fse.renameSync(cacheFileTempName, cacheFileFinalName);
           _extractZipToDestination(zipFilename, cb);
+        })
+        .on('response', function(response) {
+          totalFilesize = response.headers['content-length'];
         })
         .on('data', function (data) {
           runningTotal += data.length;
