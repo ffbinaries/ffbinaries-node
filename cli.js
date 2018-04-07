@@ -56,7 +56,7 @@ function download(components, opts) {
   }
 
   function fnTicker (data) {
-    console.log('\x1b[2m' + data.filename + ': Received ' + Math.floor(data.progress/1024/1024*1000)/1000 + 'MB' + '\x1b[0m');
+    console.log('\x1b[2m' + data.filename + ': Downloading ' + (data.progress*100).toFixed(1) + '%' + '\x1b[0m');
   }
 
   var dlOpts = {
