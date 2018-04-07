@@ -3,6 +3,8 @@
  * ffmpeg version.
  */
 
+// in your code you should replace this line with
+// var ffbinaries = require('ffbinaries');
 var ffbinaries = require('..');
 
 ffbinaries.getVersionData('3.2', function (err, data) {
