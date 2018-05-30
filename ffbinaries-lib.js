@@ -9,7 +9,7 @@ var extractZip = require('extract-zip');
 
 var API_URL = 'https://ffbinaries.com/api/v1';
 
-var LOCAL_CACHE_DIR = os.homedir() + '/.ffbinaries-cache';
+var LOCAL_CACHE_DIR = os.tmpdir() + '/.ffbinaries-cache';
 var RUNTIME_CACHE = {};
 var errorMsgs = {
   connectionIssues: 'Couldn\'t connect to ffbinaries.com API. Check your Internet connection.',
@@ -19,7 +19,7 @@ var errorMsgs = {
   incorrectVersionParam: '"version" parameter must be a string.'
 };
 
-function _ensureDirSync (dir) {
+function _ensureDirSync(dir) {
   try {
     fse.accessSync(dir);
   } catch (e) {
@@ -32,7 +32,7 @@ _ensureDirSync(LOCAL_CACHE_DIR);
 /**
  * Resolves the platform key based on input string
  */
-function resolvePlatform (input) {
+function resolvePlatform(input) {
   var rtn = null;
 
   switch (input) {
@@ -40,43 +40,43 @@ function resolvePlatform (input) {
     case 'osx':
     case 'mac-64':
     case 'osx-64':
-        rtn = 'osx-64';
-        break;
+      rtn = 'osx-64';
+      break;
 
     case 'linux':
     case 'linux-32':
-        rtn = 'linux-32';
-        break;
+      rtn = 'linux-32';
+      break;
 
     case 'linux-64':
-        rtn = 'linux-64';
-        break;
+      rtn = 'linux-64';
+      break;
 
     case 'linux-arm':
     case 'linux-armel':
-        rtn = 'linux-armel';
-        break;
+      rtn = 'linux-armel';
+      break;
 
     case 'linux-armhf':
-        rtn = 'linux-armhf';
-        break;
+      rtn = 'linux-armhf';
+      break;
 
     case 'win':
     case 'win-32':
     case 'windows':
     case 'windows-32':
-        rtn = 'windows-32';
-        break;
+      rtn = 'windows-32';
+      break;
 
     case 'win-64':
     case 'windows-64':
-        rtn = 'windows-64';
-        break;
+      rtn = 'windows-64';
+      break;
 
     default:
-        rtn = null;
-    }
-    return rtn;
+      rtn = null;
+  }
+  return rtn;
 }
 /**
  * Detects the platform of the machine the script is executed on.
@@ -84,7 +84,7 @@ function resolvePlatform (input) {
  *
  * @param {object} osinfo Contains "type" and "arch" properties
  */
-function detectPlatform (osinfo) {
+function detectPlatform(osinfo) {
   var inputIsValid = typeof osinfo === 'object' && typeof osinfo.type === 'string' && typeof osinfo.arch === 'string';
   var type = (inputIsValid ? osinfo.type : os.type()).toLowerCase();
   var arch = (inputIsValid ? osinfo.arch : os.arch()).toLowerCase();
@@ -112,7 +112,7 @@ function detectPlatform (osinfo) {
  * @param {string} component "ffmpeg", "ffplay", "ffprobe" or "ffserver"
  * @param {platform} platform "ffmpeg", "ffplay", "ffprobe" or "ffserver"
  */
-function getBinaryFilename (component, platform) {
+function getBinaryFilename(component, platform) {
   var platformCode = resolvePlatform(platform);
   if (platformCode === 'windows-32' || platformCode === 'windows-64') {
     return component + '.exe';
@@ -128,7 +128,7 @@ function listVersions(callback) {
   if (RUNTIME_CACHE['versions']) {
     return callback(null, RUNTIME_CACHE['versionsAll']);
   }
-  request({url: API_URL}, function (err, response, body) {
+  request({ url: API_URL }, function (err, response, body) {
     if (err) {
       return callback(errorMsgs.connectionIssues);
     }
@@ -147,7 +147,7 @@ function listVersions(callback) {
 /**
  * Gets full data set from ffbinaries.com
  */
-function getVersionData (version, callback) {
+function getVersionData(version, callback) {
   if (RUNTIME_CACHE[version]) {
     return callback(null, RUNTIME_CACHE[version]);
   }
@@ -158,7 +158,7 @@ function getVersionData (version, callback) {
 
   var url = version ? '/version/' + version : '/latest';
 
-  request({url: API_URL + url}, function (err, response, body) {
+  request({ url: API_URL + url }, function (err, response, body) {
     if (err) {
       return callback(errorMsgs.connectionIssues);
     }
@@ -181,7 +181,7 @@ function getVersionData (version, callback) {
 /**
  * Download file(s) and save them in the specified directory
  */
-function _downloadUrls (components, urls, opts, callback) {
+function _downloadUrls(components, urls, opts, callback) {
   if (components && !Array.isArray(components)) {
     components = [components];
   }
@@ -189,7 +189,7 @@ function _downloadUrls (components, urls, opts, callback) {
   // returns an array of objects like this: {component: 'ffmpeg', url: 'https://...'}
   if (typeof urls === 'object') {
     var remappedUrls = _.map(urls, function (v, k) {
-      return (!components || components && !Array.isArray(components) || components && Array.isArray(components) && components.indexOf(k) !== -1) ? {component: k, url: v} : null;
+      return (!components || components && !Array.isArray(components) || components && Array.isArray(components) && components.indexOf(k) !== -1) ? { component: k, url: v } : null;
     });
     remappedUrls = _.compact(remappedUrls);
   }
@@ -197,7 +197,7 @@ function _downloadUrls (components, urls, opts, callback) {
   var destinationDir = opts.destination;
   var cacheDir = LOCAL_CACHE_DIR;
 
-  function _extractZipToDestination (zipFilename, cb) {
+  function _extractZipToDestination(zipFilename, cb) {
     var oldpath = LOCAL_CACHE_DIR + '/' + zipFilename;
     extractZip(oldpath, { dir: destinationDir, defaultFileMode: parseInt('744', 8) }, cb);
   }
@@ -227,7 +227,7 @@ function _downloadUrls (components, urls, opts, callback) {
         if (totalFilesize && runningTotal == totalFilesize) {
           return clearInterval(interval);
         }
-        tickData.progress = totalFilesize > -1 ? runningTotal/totalFilesize : 0;
+        tickData.progress = totalFilesize > -1 ? runningTotal / totalFilesize : 0;
 
         opts.tickerFn(tickData);
       }, tickerInterval);
@@ -268,11 +268,11 @@ function _downloadUrls (components, urls, opts, callback) {
         var cacheFileTempName = LOCAL_CACHE_DIR + '/' + zipFilename + '.part';
         var cacheFileFinalName = LOCAL_CACHE_DIR + '/' + zipFilename;
 
-        request({url: url}, function (err, response, body) {
+        request({ url: url }, function (err, response, body) {
           results.push({
             filename: binFilename,
             path: destinationDir,
-            size: Math.floor(totalFilesize/1024/1024*1000)/1000 + 'MB',
+            size: Math.floor(totalFilesize / 1024 / 1024 * 1000) / 1000 + 'MB',
             status: 'File extracted to destination (downloaded from "' + url + '")',
             code: 'DONE_CLEAN'
           });
@@ -280,13 +280,13 @@ function _downloadUrls (components, urls, opts, callback) {
           fse.renameSync(cacheFileTempName, cacheFileFinalName);
           _extractZipToDestination(zipFilename, cb);
         })
-        .on('response', function(response) {
-          totalFilesize = response.headers['content-length'];
-        })
-        .on('data', function (data) {
-          runningTotal += data.length;
-        })
-        .pipe(fse.createWriteStream(cacheFileTempName));
+          .on('response', function (response) {
+            totalFilesize = response.headers['content-length'];
+          })
+          .on('data', function (data) {
+            runningTotal += data.length;
+          })
+          .pipe(fse.createWriteStream(cacheFileTempName));
       }
     }
 
@@ -305,7 +305,7 @@ function _downloadUrls (components, urls, opts, callback) {
  * @param {object}   opts
  * @param {function} callback
  */
-function downloadBinaries (components, opts, callback) {
+function downloadBinaries(components, opts, callback) {
   // only callback provided: assign blank components and opts
   if (!callback && !opts && typeof components === 'function') {
     callback = components;
@@ -408,7 +408,7 @@ function locateBinariesSync(components, opts) {
       try {
         childProcess.execSync('chmod +x ' + result.path);
         result.isExecutable = true;
-      } catch (err) {}
+      } catch (err) { }
     }
 
     // check version
@@ -426,7 +426,7 @@ function locateBinariesSync(components, opts) {
   return rtn;
 }
 
-function clearCache () {
+function clearCache() {
   fse.emptyDirSync(LOCAL_CACHE_DIR);
 }
 
