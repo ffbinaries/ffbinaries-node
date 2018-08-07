@@ -3,6 +3,8 @@
  * of ffbinaries downloader module.
  */
 
+// in your code you should replace this line with
+// var ffbinaries = require('ffbinaries');
 var ffbinaries = require('..');
 
 /**
@@ -27,6 +29,7 @@ var ffbinaries = require('..');
  *      version: 'error' }
  * }
  */
+
 function locate() {
   var results = ffbinaries.locateBinariesSync(['ffmpeg', 'ffplay', 'ffprobe'], { paths: [__dirname], ensureExecutable: true });
   console.log(results);

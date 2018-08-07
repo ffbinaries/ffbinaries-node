@@ -27,6 +27,7 @@
     "no-mixed-operators": 0,
     "use-isnan": 0,
     "eqeqeq": 0,
-    "no-useless-concat": 1
+    "no-useless-concat": 1,
+    "object-curly-newline": 1
   }
 }

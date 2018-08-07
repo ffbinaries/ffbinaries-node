@@ -17,8 +17,8 @@
 Downloads precompiled **ffmpeg, ffprobe, ffplay and ffserver binaries**
 from [ffbinaries.com](https://ffbinaries.com).
 
-This module is cross-platform and can be used through CLI or as a Node module,
-(either as a build step or in a postinstall script).
+This module is cross-platform and can be used through CLI or as a Node module
+(i.e. as a build step or a part of app boot routine).
 
 You can download whatever binaries you need during the build if you'd like
 to bundle the binaries with your distributable files or just download it on
@@ -26,6 +26,28 @@ user's machine during initial setup process.
 
 
 ## Change log
+
+**Version 1.1.0**
+
+* `tickerFn` returns percentage instead of bytes and is documented
+
+
+**Version 1.0.9**
+
+* Switched implementation of version checker (`spawn` instead of `exec`)
+
+
+**Version 1.0.8**
+
+* Added force mode to `downloadBinaries` method
+* Returning full version of components in `locateBinariesSync` method
+
+
+**Version 1.0.7**
+
+* Looking for correct filename in `locateBinariesSync` on Windows
+* Fault tolerance + more precise conditions in `locateBinariesSync`
+
 
 **Version 1.0.6**
 
@@ -50,12 +72,12 @@ user's machine during initial setup process.
 **Version 1.0.3**
 
 * Preventing storage of incomplete archives in cache
-* Added status codes in `downloadFiles` method result
+* Added status codes in `downloadBinaries` method result
 
 
 **Version 1.0.2**
 
-* Improved support for incomplete arguments in downloadFiles
+* Improved support for incomplete arguments in downloadBinaries
 * Added `getBinaryFilename(component, platform)`
 
 
@@ -72,31 +94,6 @@ user's machine during initial setup process.
 * Added unit tests
 * Improved error handling
 * Various small fixes
-
-
-## Reporting issues
-
-If you're experiencing issues please update to the newest version and run `ffbinaries clearcache`.
-
-If that doesn't resolve it simply
-[raise an issue on GitHub](https://github.com/vot/ffbinaries-node/issues).
-
-Make sure to include the information about which version you're using,
-platform, the exact commands you're trying to execute and the output.
-
-
-## New syntax
-
-*New syntax got introduced in 1.0.0.*
-
-With the new syntax binaries to download are specified first (i.e. `ffmpeg` or `ffplay`).
-Platform is now a flag.
-
-This change applies to both [command line interface](#cli)
-and [programmatical usage](#programmatically).
-
-You can see the
-[old syntax documented in v0.1.8](https://github.com/vot/ffbinaries-node/blob/ccad244c9fb64e2d90a9c788bf3a726f9df15f10/readme.md#usage).
 
 
 # Usage
@@ -118,6 +115,7 @@ will be downloaded (see [Included components](#included-components) section).
 When installed globally with `npm i ffbinaries -g` this module will register
 itself on command line interface.
 
+
 ### Arguments
 
 CLI uses the following syntax:
@@ -135,17 +133,18 @@ Each flag can also be abbreviated in your scripts with `-p`, `-o`, `-q` and `-v`
 
 **Download all binaries for a specified platform**
 
-`ffbinaries -p=mac`
+`ffbinaries --platform=mac`
 
 
 **Download only ffplay for 64-bit Windows, quiet output**
 
-`ffbinaries ffplay -p=win-64 --quiet`
+`ffbinaries ffplay --platform=win-64 --quiet`
 
 
 **Download only ffmpeg and ffprobe, version 3.2 for 64-bit Linux, quiet output, save binaries in a specified directory**
 
-`ffbinaries ffmpeg ffprobe -p=linux-64 -q -v=3.2 --output=/usr/local/bin`
+`ffbinaries ffmpeg ffprobe -p=linux-64 -q -v=3.2 -o=/usr/local/bin`
+
 
 **Additional commands**
 
@@ -158,13 +157,16 @@ There are also `ffbinaries help`, `ffbinaries versions` and `ffbinaries clearcac
 
 `ffbinaries` library exports the following methods:
 
-* `downloadFiles(platform, opts, callback)` downloads and extracts the requested binaries.
+* `downloadBinaries(platform, opts, callback)` downloads and extracts the requested binaries.
 
   The `opts` parameter is an object that can contain these optional parameters:
   * `destination`: the path where the binaries will be downloaded to. If not provided it will default to `.`.
   * `components`: an array of string values that describes which [components](#included-components) to download. If not provided it will default to all components available for the platform.
   * `version`: version of ffmpeg to download
+  * `force`: ignore check for existing binaries in the destination and overwrite them if necessary
   * `quiet`: suppress verbose logs
+  * `tickerFn`: a progress-update function, triggered with percentage as argument at an interval until download is completed
+  * `tickerInterval`: frequency at which the ticker progress updates are issued (in ms; defaults to `1000`)
 
 * `getVersionData(version, callback)` fetches the full data set without downloading any binaries.
 
@@ -196,7 +198,7 @@ in the system. Returns object with located binaries, their paths and versions.
 ```
 var ffbinaries = require('ffbinaries');
 
-ffbinaries.downloadFiles(function () {
+ffbinaries.downloadBinaries(function () {
   console.log('Downloaded all binaries for current platform.');
 });
 ```
@@ -207,7 +209,7 @@ ffbinaries.downloadFiles(function () {
 var ffbinaries = require('ffbinaries');
 var dest = __dirname + '/binaries';
 
-ffbinaries.downloadFiles(['ffmpeg', 'ffprobe'], {platform: 'linux-64', quiet: true, destination: dest}, function () {
+ffbinaries.downloadBinaries(['ffmpeg', 'ffprobe'], {platform: 'linux-64', quiet: true, destination: dest}, function () {
   console.log('Downloaded ffplay and ffprobe binaries for linux-64 to ' + dest + '.');
 });
 ```
@@ -253,3 +255,14 @@ The binaries are hosted on GitHub as releases of [ffbinaries-prebuilt repo](http
 If you'd like to contribute to this project have a look at
 [contributing.md file](https://github.com/vot/ffbinaries-node/blob/master/contributing.md)
 for more information (including basic guidelines and a list of TODOs).
+
+
+## Reporting issues
+
+If you're experiencing issues please update to the newest version and run `ffbinaries clearcache`.
+
+If that doesn't resolve it simply
+[raise an issue on GitHub](https://github.com/vot/ffbinaries-node/issues).
+
+Make sure to include the information about which version you're using,
+platform, the exact commands you're trying to execute and the output.

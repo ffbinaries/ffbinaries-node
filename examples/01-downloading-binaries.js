@@ -3,6 +3,8 @@
  * of ffbinaries downloader module.
  */
 
+// in your code you should replace this line with
+// var ffbinaries = require('ffbinaries');
 var ffbinaries = require('..');
 
 /**
@@ -50,11 +52,15 @@ function example3(callback) {
 
 /**
  * Downloading ffplay and ffprobe binaries for win-64 to a specified location
+ * Uses tickerFn to display updates every second (default frequency)
  */
 function example4(callback) {
   var dest = __dirname + '/binaries';
+  function tickerFn(data) {
+    console.log('\x1b[2m' + data.filename + ': Downloading ' + (data.progress * 100).toFixed(1) + '%' + '\x1b[0m');
+  }
 
-  ffbinaries.downloadFiles(['ffplay', 'ffprobe'], { platform: 'win-64', quiet: true, destination: dest }, function (err, data) {
+  ffbinaries.downloadFiles(['ffplay', 'ffprobe'], { platform: 'win-64', quiet: true, destination: dest, tickerFn: tickerFn }, function (err, data) {
     console.log('Downloading ffmpeg binary for win-64 to ' + dest + '.');
     console.log('err', err);
     console.log('data', data);

@@ -170,14 +170,14 @@ describe('ffbinaries library', function () {
     });
   });
 
-  describe('downloadFiles (each test will take a while or time out after 2 minutes)', function () {
+  describe('downloadBinaries (each test will take a while or time out after 2 minutes)', function () {
     it('should download a single file (ffmpeg@3.2, win-64) with options provided', function (done) {
       this.timeout(120000);
       var dest = __dirname + '/binaries';
       var tickerFn = function () {};
       var tickerInterval = function () {};
 
-      ffbinaries.downloadFiles('ffmpeg', { version: '3.2', platform: 'win-64', quiet: true, destination: dest, tickerFn: tickerFn, tickerInterval: tickerInterval }, function (err, data) {
+      ffbinaries.downloadBinaries('ffmpeg', { version: '3.2', platform: 'win-64', quiet: true, destination: dest, tickerFn: tickerFn, tickerInterval: tickerInterval }, function (err, data) {
         expect(err).to.equal(null);
         expect(data.length).to.equal(1);
         expect(data[0].filename).to.exist;
@@ -188,7 +188,7 @@ describe('ffbinaries library', function () {
 
     it('should download multiple components without options provided', function (done) {
       this.timeout(120000);
-      ffbinaries.downloadFiles(['ffmpeg', 'ffprobe'], function (err, data) {
+      ffbinaries.downloadBinaries(['ffmpeg', 'ffprobe'], function (err, data) {
         expect(err).to.equal(null);
         expect(data.length).to.equal(2);
         expect(data[0].filename).to.exist;
@@ -200,7 +200,7 @@ describe('ffbinaries library', function () {
 
     it('should download all components if none are specified', function (done) {
       this.timeout(120000);
-      ffbinaries.downloadFiles(function (err, data) {
+      ffbinaries.downloadBinaries(function (err, data) {
         expect(err).to.equal(null);
         expect(data.length).to.be.at.least(3);
         expect(data[0].filename).to.exist;
@@ -215,7 +215,7 @@ describe('ffbinaries library', function () {
       this.timeout(120000);
       var dest = __dirname + '/binaries';
 
-      ffbinaries.downloadFiles({ destination: dest }, function (err, data) {
+      ffbinaries.downloadBinaries({ destination: dest }, function (err, data) {
         expect(err).to.equal(null);
         expect(data.length).to.be.at.least(3);
         expect(data[0].filename).to.exist;
@@ -230,11 +230,11 @@ describe('ffbinaries library', function () {
       this.timeout(3000);
       var dest = __dirname + '/binaries';
       // remove the binaries from earlier tests to fall back to cache
-      // target directory will get recreated every time you execute downloadFiles
+      // target directory will get recreated every time you execute downloadBinaries
       // so it's safe to just remove it
       fs.removeSync(dest);
 
-      ffbinaries.downloadFiles('ffmpeg', { quiet: true, destination: dest }, function (err, data) {
+      ffbinaries.downloadBinaries('ffmpeg', { quiet: true, destination: dest }, function (err, data) {
         expect(err).to.equal(null);
         expect(data.length).to.equal(1);
         expect(data[0].filename).to.exist;
@@ -248,12 +248,25 @@ describe('ffbinaries library', function () {
       this.timeout(3000);
       var dest = __dirname + '/binaries';
 
-      ffbinaries.downloadFiles('ffmpeg', { quiet: true, destination: dest }, function (err, data) {
+      ffbinaries.downloadBinaries('ffmpeg', { quiet: true, destination: dest }, function (err, data) {
         expect(err).to.equal(null);
         expect(data.length).to.equal(1);
         expect(data[0].filename).to.exist;
         expect(data[0].code).to.exist;
         expect(data[0].code).to.equal('FILE_EXISTS');
+
+        return done();
+      });
+    });
+
+    it('should ignore existing binaries with force option provided', function (done) {
+      this.timeout(5000);
+      ffbinaries.downloadBinaries('ffmpeg', { force: true }, function (err, data) {
+        expect(err).to.equal(null);
+        expect(data.length).to.equal(1);
+        expect(data[0].filename).to.exist;
+        expect(data[0].code).to.exist;
+        expect(data[0].code).to.equal('DONE_FROM_CACHE');
 
         return done();
       });
@@ -269,7 +282,7 @@ describe('ffbinaries library', function () {
     });
 
     it('should return version as "error" for a non-executable file', function () {
-      if (ffbinaries.detectPlatform().indexOf('win-') === 0) {
+      if (ffbinaries.detectPlatform().indexOf('windows-') === 0) {
         return;
       }
 
@@ -284,7 +297,7 @@ describe('ffbinaries library', function () {
     });
 
     it('should set chmod +x when "ensureExecutable" option is provided', function () {
-      if (ffbinaries.detectPlatform().indexOf('win-') === 0) {
+      if (ffbinaries.detectPlatform().indexOf('windows-') === 0) {
         return;
       }
 

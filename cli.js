@@ -67,7 +67,7 @@ function download(components, opts) {
   }
 
   function fnTicker(data) {
-    console.log('\x1b[2m' + data.filename + ': Received ' + Math.floor(data.progress / 1024 / 1024 * 1000) / 1000 + 'MB' + '\x1b[0m');
+    console.log('\x1b[2m' + data.filename + ': Downloading ' + (data.progress * 100).toFixed(1) + '%' + '\x1b[0m');
   }
 
   var dlOpts = {
@@ -89,7 +89,7 @@ function download(components, opts) {
 
   console.log('Components:', Array.isArray(components) ? components.join(', ') : 'all');
   console.log('Platform:', dlOpts.platform);
-  console.log('ffmpeg version:', dlOpts.version);
+  console.log('ffmpeg version:', dlOpts.version || '(latest)');
 
   ffbinaries.downloadFiles(components, dlOpts, function displayDownloadFilesResult(err, data) {
     if (err) {

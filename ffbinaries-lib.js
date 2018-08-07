@@ -234,13 +234,17 @@ function downloadUrls(components, urls, opts, callback) {
         if (totalFilesize && runningTotal == totalFilesize) {
           return clearInterval(interval);
         }
-        tickData.progress = runningTotal;
+        tickData.progress = totalFilesize > -1 ? runningTotal / totalFilesize : 0;
 
         opts.tickerFn(tickData);
       }, tickerInterval);
     }
 
     try {
+      if (opts.force) {
+        throw new Error('Force mode specified - will overwrite existing binaries in target location');
+      }
+
       // Check if file already exists in target directory
       fse.accessSync(destinationDir + '/' + binFilename);
       // if the accessSync method doesn't throw we know the binary already exists
@@ -271,8 +275,7 @@ function downloadUrls(components, urls, opts, callback) {
         var cacheFileTempName = LOCAL_CACHE_DIR + '/' + zipFilename + '.part';
         var cacheFileFinalName = LOCAL_CACHE_DIR + '/' + zipFilename;
 
-        request({ url: url }, function (err, response) {
-          totalFilesize = response.headers['content-length'];
+        request({ url: url }, function () {
           results.push({
             filename: binFilename,
             path: destinationDir,
@@ -284,6 +287,9 @@ function downloadUrls(components, urls, opts, callback) {
           fse.renameSync(cacheFileTempName, cacheFileFinalName);
           extractZipToDestination(zipFilename, cb);
         })
+          .on('response', function (response) {
+            totalFilesize = response.headers['content-length'];
+          })
           .on('data', function (data) {
             runningTotal += data.length;
           })
@@ -355,6 +361,8 @@ function locateBinariesSync(components, opts) {
     components = [components];
   }
 
+  opts = opts || {};
+
   if (typeof opts.paths === 'string') {
     opts.paths = [opts.paths];
   }
@@ -369,7 +377,7 @@ function locateBinariesSync(components, opts) {
   var allPaths = _.concat(suggestedPaths, systemPaths);
 
   _.each(components, function (comp) {
-    var binaryFilename = getBinaryFilename(comp);
+    var binaryFilename = getBinaryFilename(comp, detectPlatform());
     // look for component's filename in each path
 
     var result = {
@@ -401,7 +409,7 @@ function locateBinariesSync(components, opts) {
     });
 
     // isExecutable will always be true on Windows
-    if (!result.isExecutable && opts.ensureExecutable) {
+    if (result.found && !result.isExecutable && opts.ensureExecutable) {
       try {
         childProcess.execSync('chmod +x ' + result.path);
         result.isExecutable = true;
@@ -409,13 +417,12 @@ function locateBinariesSync(components, opts) {
     }
 
     // check version
-    if (result.isExecutable) {
-      try {
-        var binaryVersionStdout = childProcess.execSync(result.path + ' -version');
-        var version = binaryVersionStdout.toString().split(' ')[2];
-        version = version.split('-')[0];
-        result.version = version;
-      } catch (err) {}
+    if (result.found && result.isExecutable) {
+      var stdout = childProcess.spawnSync(result.path, ['-version']).stdout;
+      // if stdout.length === 0, then we must have stderr instead
+      if (stdout && stdout.length) {
+        result.version = stdout.toString().split(' ')[2];
+      }
     }
 
     rtn[comp] = result;
