@@ -202,10 +202,9 @@ describe('ffbinaries library', function () {
       this.timeout(120000);
       ffbinaries.downloadBinaries(function (err, data) {
         expect(err).to.equal(null);
-        expect(data.length).to.be.at.least(3);
+        expect(data.length).to.be.at.least(2);
         expect(data[0].filename).to.exist;
         expect(data[1].filename).to.exist;
-        expect(data[2].filename).to.exist;
 
         return done();
       });
@@ -217,10 +216,9 @@ describe('ffbinaries library', function () {
 
       ffbinaries.downloadBinaries({ destination: dest }, function (err, data) {
         expect(err).to.equal(null);
-        expect(data.length).to.be.at.least(3);
+        expect(data.length).to.be.at.least(2);
         expect(data[0].filename).to.exist;
         expect(data[1].filename).to.exist;
-        expect(data[2].filename).to.exist;
 
         return done();
       });
