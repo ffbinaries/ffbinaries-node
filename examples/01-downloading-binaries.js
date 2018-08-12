@@ -6,6 +6,7 @@
 // in your code you should replace this line with
 // var ffbinaries = require('ffbinaries');
 var ffbinaries = require('..');
+var path = require('path');
 
 /**
  * Downloading all binaries for the platform on which the application is executed.
@@ -13,10 +14,12 @@ var ffbinaries = require('..');
 function example1(callback) {
   var platform = ffbinaries.detectPlatform();
 
-  ffbinaries.downloadFiles(function (err, data) {
+  return ffbinaries.downloadFiles(function (err, data) {
     console.log('Downloading binaries for ' + platform + ':');
     console.log('err', err);
     console.log('data', data);
+
+    return callback(err, data);
   });
 }
 
@@ -24,7 +27,7 @@ function example1(callback) {
  * Downloading all binaries for linux to a specified location
  */
 function example2(callback) {
-  var dest = __dirname + '/binaries';
+  var dest = path.join(__dirname, '/binaries');
 
   ffbinaries.downloadFiles({ destination: dest, platform: 'linux' }, function (err, data) {
     console.log('Downloading binaries for linux:');
@@ -39,7 +42,7 @@ function example2(callback) {
  * Downloading only ffmpeg binary for win-64 to a specified location
  */
 function example3(callback) {
-  var dest = __dirname + '/binaries';
+  var dest = path.join(__dirname, '/binaries');
 
   ffbinaries.downloadFiles('ffmpeg', { platform: 'win-64', quiet: true, destination: dest }, function (err, data) {
     console.log('Downloading ffmpeg binary for win-64 to ' + dest + '.');
@@ -55,12 +58,20 @@ function example3(callback) {
  * Uses tickerFn to display updates every second (default frequency)
  */
 function example4(callback) {
-  var dest = __dirname + '/binaries';
   function tickerFn(data) {
-    console.log('\x1b[2m' + data.filename + ': Downloading ' + (data.progress * 100).toFixed(1) + '%' + '\x1b[0m');
+    console.log('\x1b[2m' + data.filename + ': Downloading ' + (data.progress * 100).toFixed(1) + '%\x1b[0m');
   }
 
-  ffbinaries.downloadFiles(['ffplay', 'ffprobe'], { platform: 'win-64', quiet: true, destination: dest, tickerFn: tickerFn }, function (err, data) {
+  var dest = path.join(__dirname, '/binaries');
+
+  var options = {
+    platform: 'win-64',
+    quiet: true,
+    destination: dest,
+    tickerFn: tickerFn
+  };
+
+  ffbinaries.downloadFiles(['ffplay', 'ffprobe'], options, function (err, data) {
     console.log('Downloading ffmpeg binary for win-64 to ' + dest + '.');
     console.log('err', err);
     console.log('data', data);

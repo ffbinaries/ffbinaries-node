@@ -1,12 +1,15 @@
 var expect = require('chai').expect;
 var ffbinaries = require('..');
 var os = require('os');
+var path = require('path');
 var fs = require('fs-extra');
 var glob = require('glob');
 var childProcess = require('child_process');
 var _ = require('lodash');
 
 var LOCAL_CACHE_DIR = os.homedir() + '/.ffbinaries-cache';
+
+function noop() {}
 
 describe('ffbinaries library', function () {
   describe('detectPlatform', function () {
@@ -173,11 +176,18 @@ describe('ffbinaries library', function () {
   describe('downloadBinaries (each test will take a while or time out after 2 minutes)', function () {
     it('should download a single file (ffmpeg@3.2, win-64) with options provided', function (done) {
       this.timeout(120000);
-      var dest = __dirname + '/binaries';
-      var tickerFn = function () {};
-      var tickerInterval = function () {};
+      var dest = path.join(__dirname, '/binaries');
 
-      ffbinaries.downloadBinaries('ffmpeg', { version: '3.2', platform: 'win-64', quiet: true, destination: dest, tickerFn: tickerFn, tickerInterval: tickerInterval }, function (err, data) {
+      var options = {
+        version: '3.2',
+        platform: 'win-64',
+        quiet: true,
+        destination: dest,
+        tickerFn: noop,
+        tickerInterval: noop
+      };
+
+      ffbinaries.downloadBinaries('ffmpeg', options, function (err, data) {
         expect(err).to.equal(null);
         expect(data.length).to.equal(1);
         expect(data[0].filename).to.exist;
@@ -212,7 +222,7 @@ describe('ffbinaries library', function () {
 
     it('should download all components if none are specified and options are provided as first argument', function (done) {
       this.timeout(120000);
-      var dest = __dirname + '/binaries';
+      var dest = path.join(__dirname, '/binaries');
 
       ffbinaries.downloadBinaries({ destination: dest }, function (err, data) {
         expect(err).to.equal(null);
@@ -226,7 +236,8 @@ describe('ffbinaries library', function () {
 
     it('should use cache for repeat requests', function (done) {
       this.timeout(3000);
-      var dest = __dirname + '/binaries';
+      var dest = path.join(__dirname, '/binaries');
+
       // remove the binaries from earlier tests to fall back to cache
       // target directory will get recreated every time you execute downloadBinaries
       // so it's safe to just remove it
@@ -244,7 +255,7 @@ describe('ffbinaries library', function () {
 
     it('should indicate an existing file and not do anything', function (done) {
       this.timeout(3000);
-      var dest = __dirname + '/binaries';
+      var dest = path.join(__dirname, '/binaries');
 
       ffbinaries.downloadBinaries('ffmpeg', { quiet: true, destination: dest }, function (err, data) {
         expect(err).to.equal(null);
@@ -328,8 +339,9 @@ describe('ffbinaries library', function () {
   after(function () {
     console.log('\nRemoving binaries downloaded by tests...');
     // remove test/binaries directory
-    console.log('\x1b[2m' + '- Removing ' + __dirname + '/binaries' + '\x1b[0m');
-    fs.removeSync(__dirname + '/binaries');
+    var dest = path.join(__dirname, '/binaries');
+    console.log('\x1b[2m- Removing ' + dest + '\x1b[0m');
+    fs.removeSync(dest);
 
     // remove binaries in current working dir
     var removalList = [
@@ -338,7 +350,7 @@ describe('ffbinaries library', function () {
     ];
 
     _.each(removalList, function (filename) {
-      console.log('\x1b[2m' + '- Removing ' + process.cwd() + '/' + filename + '\x1b[0m');
+      console.log('\x1b[2m- Removing ' + process.cwd() + '/' + filename + '\x1b[0m');
       fs.removeSync(process.cwd() + '/' + filename);
     });
   });
