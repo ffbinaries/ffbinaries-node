@@ -20,10 +20,7 @@ with `npm run lint` and `npm run test`.
 
 ## TODO
 
-* add `downloadFilesIfNotPresent(components, destination, callback)`
 * global installs (place binaries in `/usr/local/bin` or `C:/ffmpeg`)
-* add preference to cache JSON for offline installs (`--offline`)
-* improve quality of tests
 * proof-read and correct documentation where necessary
 * **[help needed]** recompile all binaries (all platforms; both with and without proprietary codecs)
 
