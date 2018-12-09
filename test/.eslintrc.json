@@ -1,0 +1,12 @@
+{
+  "extends": "../.eslintrc.json",
+  "env": {
+    "mocha": true,
+    "es6": false
+  },
+  "rules": {
+    "no-unused-expressions": 0,
+    "quote-props": 0,
+    "object-curly-newline": 1
+  }
+}

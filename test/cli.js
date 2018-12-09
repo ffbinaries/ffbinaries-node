@@ -7,9 +7,9 @@ var glob = require('glob');
 var LOCAL_CACHE_DIR = os.homedir() + '/.ffbinaries-cache';
 
 
-describe('ffbinaries CLI', function() {
-  describe('commands', function() {
-    it('help works', function(done) {
+describe('ffbinaries CLI', function () {
+  describe('commands', function () {
+    it('help works', function (done) {
       var ls = spawn('node', ['./cli.js', 'help']);
       var stdout = [];
       var stderr = [];
@@ -31,7 +31,7 @@ describe('ffbinaries CLI', function() {
       });
     });
 
-    it('clearcache works', function(done) {
+    it('clearcache works', function (done) {
       var ls = spawn('node', ['./cli.js', 'clearcache']);
       var stdout = [];
       var stderr = [];

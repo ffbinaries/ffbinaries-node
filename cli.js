@@ -1,13 +1,24 @@
 #!/usr/bin/env node
-console.log('ffbinaries downloader');
-console.log('------------------------------------');
-
 var ffbinaries = require('./ffbinaries-lib');
 var packageJson = require('./package.json');
 var _ = require('lodash');
 var cliArgs = require('clarg')();
 
-function displayHelp () {
+// gather info from CLI
+var dispatchMode = _.get(cliArgs, 'args.0');
+var dispatchComponents = _.get(cliArgs, 'args');
+
+var dispatchOpts = {
+  output: _.get(cliArgs, 'opts.output') || _.get(cliArgs, 'opts.o'),
+  quiet: _.get(cliArgs, 'opts.quiet') || _.get(cliArgs, 'opts.q'),
+  version: _.get(cliArgs, 'opts.version') || _.get(cliArgs, 'opts.v'),
+  platform: (_.get(cliArgs, 'opts.platform') || _.get(cliArgs, 'opts.p'))
+};
+
+console.log('ffbinaries downloader');
+console.log('------------------------------------');
+
+function displayHelp() {
   var lines = [
     '',
     'Downloads binaries for ffmpeg, ffprobe, ffplay and ffserver.',
@@ -33,15 +44,31 @@ function displayHelp () {
   console.log(lines.join('\n'));
 }
 
-function displayVersions () {
+function displayVersions() {
   console.log('ffbinaries downloader version:', packageJson.version);
-  ffbinaries.listVersions(function (err, versions) {
+  ffbinaries.listVersions(function displayVersionsResults(err, versions) {
     if (versions && Array.isArray(versions)) {
       console.log('Available ffmpeg versions:', versions.join(', '));
     } else {
       console.log('Couldn\'t retrieve list of versions from the server.');
     }
   });
+}
+
+function displayDownloadFilesResult(err, data) {
+  if (err) {
+    console.log('------------------------------------');
+    console.log('Download failed.');
+    console.log('------------------------------------');
+    console.log(err);
+    return process.exit(1);
+  }
+  console.log('Destination:', data[0].path);
+  console.log('Files downloaded:', _.map(data, 'filename').join(', '));
+
+  console.log('------------------------------------');
+  console.log('Binaries downloaded and extracted.');
+  console.log('------------------------------------');
 }
 
 function clearCache() {
@@ -55,8 +82,8 @@ function download(components, opts) {
     console.log('Platform not specified - downloading binaries for current platform.');
   }
 
-  function fnTicker (data) {
-    console.log('\x1b[2m' + data.filename + ': Downloading ' + (data.progress*100).toFixed(1) + '%' + '\x1b[0m');
+  function fnTicker(data) {
+    console.log('\x1b[2m' + data.filename + ': Downloading ' + (data.progress * 100).toFixed(1) + '%\x1b[0m');
   }
 
   var dlOpts = {
@@ -80,35 +107,12 @@ function download(components, opts) {
   console.log('Platform:', dlOpts.platform);
   console.log('ffmpeg version:', dlOpts.version || '(latest)');
 
-  ffbinaries.downloadFiles(components, dlOpts, function (err, data) {
-    if (err) {
-      console.log('------------------------------------');
-      console.log('Download failed.');
-      console.log('------------------------------------');
-      console.log(err);
-      return process.exit(1);
-    }
-    console.log('Destination:', data[0].path);
-    console.log('Files downloaded:', _.map(data, 'filename').join(', '));
-
-    console.log('------------------------------------');
-    console.log('Binaries downloaded and extracted.');
-    console.log('------------------------------------');
-  });
+  ffbinaries.downloadFiles(components, dlOpts, displayDownloadFilesResult);
 }
 
-
-// execute app
-var mode = _.get(cliArgs, 'args.0');
-var components = _.get(cliArgs, 'args');
-
-var opts = {
-  output: _.get(cliArgs, 'opts.output') || _.get(cliArgs, 'opts.o'),
-  quiet: _.get(cliArgs, 'opts.quiet') || _.get(cliArgs, 'opts.q'),
-  version: _.get(cliArgs, 'opts.version') || _.get(cliArgs, 'opts.v'),
-  platform: (_.get(cliArgs, 'opts.platform') || _.get(cliArgs, 'opts.p'))
-};
-
+/**
+ * Dispatches to the correct handler based on input from CLI
+ */
 function dispatch(m, c, o) {
   if (m === 'help' || m === 'info') {
     return displayHelp();
@@ -116,9 +120,8 @@ function dispatch(m, c, o) {
     return clearCache();
   } else if (m === 'version' || m === 'versions' || m === 'list') {
     return displayVersions();
-  } else {
-    return download(c, o);
   }
+  return download(c, o);
 }
 
-dispatch(mode, components, opts);
+dispatch(dispatchMode, dispatchComponents, dispatchOpts);

@@ -24,6 +24,6 @@ with `npm run lint` and `npm run test`.
 * proof-read and correct documentation where necessary
 * **[help needed]** recompile all binaries (all platforms; both with and without proprietary codecs)
 
-These are just a few items currently on the roadmap.
+These are just a few items currently planned.
 You don't have to restrict yourself to items on this list but you can
 treat them as a suggestion - any help is appreciated.
