@@ -27,6 +27,11 @@ user's machine during initial setup process.
 
 ## Change log
 
+**Version 1.1.1**
+
+* Fixed vulnerabilities by updating dependencies
+
+
 **Version 1.1.0**
 
 * `tickerFn` returns percentage instead of bytes and is documented

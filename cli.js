@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-var ffbinaries = require('./ffbinaries-lib');
-var packageJson = require('./package.json');
 var _ = require('lodash');
 var cliArgs = require('clarg')();
+var ffbinaries = require('./ffbinaries-lib');
+var packageJson = require('./package.json');
 
 // gather info from CLI
 var dispatchMode = _.get(cliArgs, 'args.0');
@@ -113,15 +113,20 @@ function download(components, opts) {
 /**
  * Dispatches to the correct handler based on input from CLI
  */
-function dispatch(m, c, o) {
-  if (m === 'help' || m === 'info') {
+function dispatch(mode, components, opts) {
+  if (mode === 'help' || mode === 'info') {
     return displayHelp();
-  } else if (m === 'clearcache') {
+  }
+
+  if (mode === 'clearcache') {
     return clearCache();
-  } else if (m === 'version' || m === 'versions' || m === 'list') {
+  }
+
+  if (mode === 'version' || mode === 'versions' || mode === 'list') {
     return displayVersions();
   }
-  return download(c, o);
+
+  return download(components, opts);
 }
 
 dispatch(dispatchMode, dispatchComponents, dispatchOpts);
