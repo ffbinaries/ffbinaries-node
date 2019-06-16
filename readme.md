@@ -27,6 +27,11 @@ user's machine during initial setup process.
 
 ## Change log
 
+**Version 1.1.2**
+
+* Updated package metadata
+
+
 **Version 1.1.1**
 
 * Fixed vulnerabilities by updating dependencies
@@ -258,8 +263,7 @@ The binaries are hosted on GitHub as releases of [ffbinaries-prebuilt repo](http
 ## Contributing
 
 If you'd like to contribute to this project have a look at
-[contributing.md file](https://github.com/vot/ffbinaries-node/blob/master/contributing.md)
-for more information (including basic guidelines and a list of TODOs).
+[contributing.md file](https://github.com/vot/ffbinaries-node/blob/master/contributing.md) for more information.
 
 
 ## Reporting issues
