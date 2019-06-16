@@ -1,7 +1,7 @@
 {
   "name": "ffbinaries",
-  "version": "1.1.1",
-  "description": "Download binaries for ffmpeg, ffprobe, ffserver and ffplay (cross-platform)",
+  "version": "1.1.2",
+  "description": "Download binaries for ffmpeg, ffprobe, ffserver and ffplay (Windows, macOS, Linux)",
   "main": "index.js",
   "bin": {
     "ffbinaries": "cli.js"
@@ -17,14 +17,22 @@
     "ffplay",
     "ffprobe",
     "bin",
+    "binary",
     "binaries",
     "static",
+    "compiled",
+    "precompiled",
+    "library",
     "cli",
     "audio",
     "video",
     "windows",
     "linux",
-    "mac"
+    "mac",
+    "os x",
+    "macos",
+    "download",
+    "install"
   ],
   "repository": {
     "type": "git",
@@ -35,7 +43,7 @@
   "bugs": {
     "url": "https://github.com/vot/ffbinaries-node/issues"
   },
-  "homepage": "https://github.com/vot/ffbinaries-node",
+  "homepage": "https://ffbinaries.com",
   "dependencies": {
     "async": "^2.6.1",
     "clarg": "0.0.4",

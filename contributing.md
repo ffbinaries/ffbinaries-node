@@ -20,9 +20,9 @@ with `npm run lint` and `npm run test`.
 
 ## TODO
 
-* global installs (place binaries in `/usr/local/bin` or `C:/ffmpeg`)
+* allow global installs (place binaries in `/usr/local/bin` or `C:/ffmpeg`)
 * proof-read and correct documentation where necessary
-* **[help needed]** recompile all binaries (all platforms; both with and without proprietary codecs)
+* **[help needed]** recompile all binaries (all platforms; both with and without proprietary codecs - see `ffbinaries-prebuilt` repo for more details)
 
 These are just a few items currently planned.
 You don't have to restrict yourself to items on this list but you can
