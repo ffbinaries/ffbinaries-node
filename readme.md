@@ -27,7 +27,12 @@ user's machine during initial setup process.
 
 ## Change log
 
-**Version 1.1.2**
+**Version 1.1.3**
+
+* Updated package dependencies
+
+
+**Version 1.1.3**
 
 * Updated package metadata
 
