@@ -32,7 +32,7 @@ user's machine during initial setup process.
 * Updated package dependencies
 
 
-**Version 1.1.3**
+**Version 1.1.2**
 
 * Updated package metadata
 
