@@ -1,11 +1,12 @@
 var expect = require('chai').expect;
-var ffbinaries = require('..');
 var os = require('os');
 var path = require('path');
 var fs = require('fs-extra');
 var glob = require('glob');
 var childProcess = require('child_process');
 var _ = require('lodash');
+
+var ffbinaries = require('..');
 
 var LOCAL_CACHE_DIR = os.homedir() + '/.ffbinaries-cache';
 
