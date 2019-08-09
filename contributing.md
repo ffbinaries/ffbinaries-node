@@ -1,29 +1,38 @@
 # Contributing
 
-First of all thanks for considering contributing to ffbinaries.
+First of all thank you for considering contributing to ffbinaries.
 
 If you'd like to help out with feel free to create a fork of this repo
 and raise a pull request.
 
-You can see a list of people who contributed [here](https://github.com/vot/ffbinaries-node/graphs/contributors).
+You can see a list of wonderful people who already contributed
+[here](https://github.com/vot/ffbinaries-node/graphs/contributors).
+
+If you don't know where to start just raise an issue describing the problem
+and I'll try to help you out.
+
+Any help is appreciated :)
 
 
 ## Contribution guidelines
 
 Your pull request will need to pass automated linting and testing
-to ensure nothing breaks.
-It would be greatly appreciated if the code you're submitting was unit tested too.
+to ensure existing functionality doesn't break.
+
+It would be greatly appreciated if the code you submit was unit tested too
+but it's not a requirement.
 
 You can check locally if your code lints correctly and unit tests are passing
 with `npm run lint` and `npm run test`.
 
 
-## TODO
+## Recompiling binaries (help needed)
 
-* allow global installs (place binaries in `/usr/local/bin` or `C:/ffmpeg`)
-* proof-read and correct documentation where necessary
-* **[help needed]** recompile all binaries (all platforms; both with and without proprietary codecs - see `ffbinaries-prebuilt` repo for more details)
+ffmpeg suite is notoriously difficult to compile.
 
-These are just a few items currently planned.
-You don't have to restrict yourself to items on this list but you can
-treat them as a suggestion - any help is appreciated.
+I'd like to recompile all binaries for all platforms and provide versions
+with and without proprietary codecs.
+
+If you'd like to help please see the open issues in
+[ffbinaries-prebuilt repo](https://github.com/vot/ffbinaries-prebuilt)
+for more details.

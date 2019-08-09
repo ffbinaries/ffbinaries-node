@@ -3,10 +3,11 @@
  * of ffbinaries downloader module.
  */
 
+var path = require('path');
+
 // in your code you should replace this line with
 // var ffbinaries = require('ffbinaries');
 var ffbinaries = require('..');
-var path = require('path');
 
 /**
  * Downloading all binaries for the platform on which the application is executed.
