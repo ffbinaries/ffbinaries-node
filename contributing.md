@@ -6,7 +6,7 @@ If you'd like to help out with feel free to create a fork of this repo
 and raise a pull request.
 
 You can see a list of wonderful people who already contributed
-[here](https://github.com/vot/ffbinaries-node/graphs/contributors).
+[here](https://github.com/ffbinaries/ffbinaries-node/graphs/contributors).
 
 If you don't know where to start just raise an issue describing the problem
 and I'll try to help you out.
@@ -34,5 +34,5 @@ I'd like to recompile all binaries for all platforms and provide versions
 with and without proprietary codecs.
 
 If you'd like to help please see the open issues in
-[ffbinaries-prebuilt repo](https://github.com/vot/ffbinaries-prebuilt)
+[ffbinaries-prebuilt repo](https://github.com/ffbinaries/ffbinaries-prebuilt)
 for more details.

@@ -36,12 +36,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/vot/ffbinaries-node.git"
+    "url": "https://github.com/ffbinaries/ffbinaries-node.git"
   },
   "author": "Vot Z <https://vot-z.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/vot/ffbinaries-node/issues"
+    "url": "https://github.com/ffbinaries/ffbinaries-node/issues"
   },
   "homepage": "https://ffbinaries.com",
   "dependencies": {

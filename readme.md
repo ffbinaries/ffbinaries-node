@@ -146,7 +146,7 @@ ffbinaries.downloadBinaries(['ffmpeg', 'ffprobe'], {platform: 'linux-64', quiet:
 });
 ```
 
-[See more examples](https://github.com/vot/ffbinaries-node/tree/master/examples).
+[See more examples](https://github.com/ffbinaries/ffbinaries-node/tree/master/examples).
 
 
 # Platforms
@@ -177,21 +177,21 @@ You can use aliases as your platform code argument in both CLI and programmatica
 ## Source of binaries
 
 The API providing data to the module is located at [ffbinaries.com](https://ffbinaries.com).
-The code is located in [ffbinaries-api repo](https://github.com/vot/ffbinaries-api).
+The code is located in [ffbinaries-api repo](https://github.com/ffbinaries/ffbinaries-api).
 
-The binaries are hosted on GitHub as releases of [ffbinaries-prebuilt repo](https://github.com/vot/ffbinaries-prebuilt/releases).
+The binaries are hosted on GitHub as releases of [ffbinaries-prebuilt repo](https://github.com/ffbinaries/ffbinaries-prebuilt/releases).
 
 
 ## Changelog
 
 History of changes can be found in
-[changelog.md file](https://github.com/vot/ffbinaries-node/blob/master/changelog.md).
+[changelog.md file](https://github.com/ffbinaries/ffbinaries-node/blob/master/changelog.md).
 
 
 ## Contributing
 
 If you'd like to contribute to this project have a look at
-[contributing.md file](https://github.com/vot/ffbinaries-node/blob/master/contributing.md) for more information.
+[contributing.md file](https://github.com/ffbinaries/ffbinaries-node/blob/master/contributing.md) for more information.
 
 
 ## Reporting issues
@@ -199,7 +199,7 @@ If you'd like to contribute to this project have a look at
 If you're experiencing issues please update to the newest version and run `ffbinaries clearcache`.
 
 If that doesn't resolve it simply
-[raise an issue on GitHub](https://github.com/vot/ffbinaries-node/issues).
+[raise an issue on GitHub](https://github.com/ffbinaries/ffbinaries-node/issues).
 
 Make sure to include the information about which version you're using,
 platform, the exact commands you're trying to execute and the output.
