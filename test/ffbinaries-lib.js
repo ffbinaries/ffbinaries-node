@@ -307,6 +307,7 @@ describe('ffbinaries library', function () {
     });
 
     it('should set chmod +x when "ensureExecutable" option is provided', function () {
+      // every .exe file is executable on windows
       if (ffbinaries.detectPlatform().indexOf('windows-') === 0) {
         return;
       }
@@ -314,6 +315,7 @@ describe('ffbinaries library', function () {
       childProcess.execSync('chmod -x ' + process.cwd() + '/ffmpeg');
 
       var result = ffbinaries.locateBinariesSync('ffmpeg', { paths: [process.cwd()], ensureExecutable: true });
+      console.log(result)
       expect(result.ffmpeg).to.exist;
       expect(result.ffmpeg.found).to.equal(true);
       expect(result.ffmpeg.isExecutable).to.equal(true);
