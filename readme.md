@@ -8,10 +8,10 @@
 [npm-url]: https://npmjs.org/package/ffbinaries
 [npm-img]: https://img.shields.io/npm/v/ffbinaries.svg
 [npm-dl-img]: https://img.shields.io/npm/dm/ffbinaries.svg
-[circle-img]: https://img.shields.io/circleci/project/github/vot/ffbinaries-node/master.svg
-[circle-url]: https://circleci.com/gh/vot/ffbinaries-node/tree/master
-[coveralls-img]: https://img.shields.io/coveralls/vot/ffbinaries-node.svg
-[coveralls-url]: https://coveralls.io/github/vot/ffbinaries-node
+[circle-img]: https://img.shields.io/circleci/project/github/ffbinaries/ffbinaries-node/master.svg
+[circle-url]: https://circleci.com/gh/ffbinaries/ffbinaries-node/tree/master
+[coveralls-img]: https://img.shields.io/coveralls/ffbinaries/ffbinaries-node.svg
+[coveralls-url]: https://coveralls.io/github/ffbinaries/ffbinaries-node
 
 
 Downloads precompiled **ffmpeg, ffprobe, ffplay and ffserver binaries**
