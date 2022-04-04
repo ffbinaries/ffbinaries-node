@@ -331,11 +331,13 @@ describe('ffbinaries library', function () {
       var result = ffbinaries.locateBinariesSync(['ffmpeg', 'ffplay'], { paths: process.cwd() });
       expect(result.ffmpeg).to.exist;
 
-      expect(result.ffplay).to.exist;
-      expect(result.ffplay.found).to.equal(false);
-      expect(result.ffplay.isExecutable).to.equal(false);
-      expect(result.ffplay.path).to.equal(null);
-      expect(result.ffplay.version).to.equal(null);
+      if (!result.ffplay.isSystem) {
+        expect(result.ffplay).to.exist;
+        expect(result.ffplay.found).to.equal(false);
+        expect(result.ffplay.isExecutable).to.equal(false);
+        expect(result.ffplay.path).to.equal(null);
+        expect(result.ffplay.version).to.equal(null);
+      }
     });
   });
 

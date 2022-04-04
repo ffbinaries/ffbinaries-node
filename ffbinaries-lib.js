@@ -386,6 +386,7 @@ function locateBinariesSync(components, opts) {
     var result = {
       found: false,
       isExecutable: false,
+      isSystem: false,
       path: null,
       version: null
     };
@@ -398,6 +399,12 @@ function locateBinariesSync(components, opts) {
         if (fse.existsSync(pathToTest)) {
           result.found = true;
           result.path = pathToTest;
+
+          var isOneOfSuggested = suggestedPaths.some(p => p === currentPath);
+
+          if (!isOneOfSuggested) {
+            result.isSystem = true;
+          }
 
           // check if file is executable
           try {
