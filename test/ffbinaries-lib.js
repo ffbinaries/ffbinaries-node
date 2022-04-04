@@ -323,8 +323,10 @@ describe('ffbinaries library', function () {
     });
 
     it('should return missing binaries correctly', function () {
-      fs.removeSync(process.cwd() + '/ffplay');
-      fs.removeSync(process.cwd() + '/ffplay.exe');
+      var ffplayPath = path.join(process.cwd(), '/ffplay');
+
+      fs.removeSync(ffplayPath);
+      fs.removeSync(ffplayPath + '.exe');
 
       var result = ffbinaries.locateBinariesSync(['ffmpeg', 'ffplay'], { paths: process.cwd() });
       expect(result.ffmpeg).to.exist;

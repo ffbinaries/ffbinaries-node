@@ -9,7 +9,7 @@ var extractZip = require('extract-zip');
 
 var API_URL = 'https://ffbinaries.com/api/v1';
 
-var LOCAL_CACHE_DIR = os.homedir() + '/.ffbinaries-cache';
+var LOCAL_CACHE_DIR = path.join(os.homedir() + '/.ffbinaries-cache');
 var RUNTIME_CACHE = {};
 var errorMsgs = {
   connectionIssues: 'Couldn\'t connect to ffbinaries.com API. Check your Internet connection.',
@@ -205,7 +205,7 @@ function downloadUrls(components, urls, opts, callback) {
 
 
   function extractZipToDestination(zipFilename, cb) {
-    var oldpath = LOCAL_CACHE_DIR + '/' + zipFilename;
+    var oldpath = path.join(LOCAL_CACHE_DIR, zipFilename);
     extractZip(oldpath, { dir: destinationDir, defaultFileMode: parseInt('744', 8) }, cb);
   }
 
@@ -246,7 +246,8 @@ function downloadUrls(components, urls, opts, callback) {
       }
 
       // Check if file already exists in target directory
-      fse.accessSync(destinationDir + '/' + binFilename);
+      var binPath = path.join(destinationDir, binFilename);
+      fse.accessSync(binPath);
       // if the accessSync method doesn't throw we know the binary already exists
       results.push({
         filename: binFilename,
@@ -257,9 +258,11 @@ function downloadUrls(components, urls, opts, callback) {
       clearInterval(interval);
       return cb();
     } catch (errBinExists) {
+      var zipPath = path.join(LOCAL_CACHE_DIR, zipFilename);
+
       // If there's no binary then check if the zip file is already in cache
       try {
-        fse.accessSync(LOCAL_CACHE_DIR + '/' + zipFilename);
+        fse.accessSync(zipPath);
         results.push({
           filename: binFilename,
           path: destinationDir,
@@ -272,8 +275,8 @@ function downloadUrls(components, urls, opts, callback) {
         // If zip is not cached then download it and store in cache
         if (opts.quiet) clearInterval(interval);
 
-        var cacheFileTempName = LOCAL_CACHE_DIR + '/' + zipFilename + '.part';
-        var cacheFileFinalName = LOCAL_CACHE_DIR + '/' + zipFilename;
+        var cacheFileTempName = zipPath + '.part';
+        var cacheFileFinalName = zipPath;
 
         request({ url: url }, function () {
           results.push({
@@ -390,7 +393,7 @@ function locateBinariesSync(components, opts) {
     // scan paths to find the currently checked component
     _.each(allPaths, function (currentPath) {
       if (!result.found) {
-        var pathToTest = currentPath + '/' + binaryFilename;
+        var pathToTest = path.join(currentPath, binaryFilename);
 
         if (fse.existsSync(pathToTest)) {
           result.found = true;
