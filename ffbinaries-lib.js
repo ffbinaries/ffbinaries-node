@@ -219,7 +219,7 @@ function downloadUrls(components, urls, opts, callback) {
 
     var zipFilename = url.split('/').pop();
     var binFilenameBase = urlObject.component;
-    var binFilename = getBinaryFilename(binFilenameBase, opts.platform);
+    var binFilename = getBinaryFilename(binFilenameBase, opts.platform || detectPlatform());
     var runningTotal = 0;
     var totalFilesize;
     var interval;
