@@ -248,7 +248,7 @@ describe('ffbinaries library', function () {
         expect(err).to.equal(null);
         expect(data.length).to.equal(1);
         expect(data[0].filename).to.exist;
-        expect(data[0].status.endsWith('(archive found in cache)')).to.be.ok;
+        expect(data[0].code).to.equal('DONE_FROM_CACHE');
 
         return done();
       });
