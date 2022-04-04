@@ -149,7 +149,7 @@ describe('ffbinaries library', function () {
 
     it('should throw an error for non-existent versions', function (done) {
       ffbinaries.getVersionData('potato', function (err) {
-        expect(err).to.be.ok;
+        expect(err).to.not.be.null;
 
         return done();
       });
