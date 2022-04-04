@@ -356,8 +356,10 @@ describe('ffbinaries library', function () {
     ];
 
     _.each(removalList, function (filename) {
-      console.log('\x1b[2m- Removing ' + process.cwd() + '/' + filename + '\x1b[0m');
-      fs.removeSync(process.cwd() + '/' + filename);
+      var binPath = path.join(process.cwd(), filename);
+
+      console.log('\x1b[2m- Removing ' + binPath + '\x1b[0m');
+      fs.removeSync(binPath);
     });
   });
 });
