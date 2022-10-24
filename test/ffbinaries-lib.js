@@ -149,7 +149,7 @@ describe('ffbinaries library', function () {
 
     it('should throw an error for non-existent versions', function (done) {
       ffbinaries.getVersionData('potato', function (err) {
-        expect(err).to.be.ok;
+        expect(err).to.not.be.null;
 
         return done();
       });
@@ -248,7 +248,7 @@ describe('ffbinaries library', function () {
         expect(err).to.equal(null);
         expect(data.length).to.equal(1);
         expect(data[0].filename).to.exist;
-        expect(data[0].status.endsWith('(archive found in cache)')).to.be.ok;
+        expect(data[0].code).to.equal('DONE_FROM_CACHE');
 
         return done();
       });
@@ -323,17 +323,21 @@ describe('ffbinaries library', function () {
     });
 
     it('should return missing binaries correctly', function () {
-      fs.removeSync(process.cwd() + '/ffplay');
-      fs.removeSync(process.cwd() + '/ffplay.exe');
+      var ffplayPath = path.join(process.cwd(), '/ffplay');
+
+      fs.removeSync(ffplayPath);
+      fs.removeSync(ffplayPath + '.exe');
 
       var result = ffbinaries.locateBinariesSync(['ffmpeg', 'ffplay'], { paths: process.cwd() });
       expect(result.ffmpeg).to.exist;
 
-      expect(result.ffplay).to.exist;
-      expect(result.ffplay.found).to.equal(false);
-      expect(result.ffplay.isExecutable).to.equal(false);
-      expect(result.ffplay.path).to.equal(null);
-      expect(result.ffplay.version).to.equal(null);
+      if (!result.ffplay.isSystem) {
+        expect(result.ffplay).to.exist;
+        expect(result.ffplay.found).to.equal(false);
+        expect(result.ffplay.isExecutable).to.equal(false);
+        expect(result.ffplay.path).to.equal(null);
+        expect(result.ffplay.version).to.equal(null);
+      }
     });
   });
 
@@ -352,8 +356,10 @@ describe('ffbinaries library', function () {
     ];
 
     _.each(removalList, function (filename) {
-      console.log('\x1b[2m- Removing ' + process.cwd() + '/' + filename + '\x1b[0m');
-      fs.removeSync(process.cwd() + '/' + filename);
+      var binPath = path.join(process.cwd(), filename);
+
+      console.log('\x1b[2m- Removing ' + binPath + '\x1b[0m');
+      fs.removeSync(binPath);
     });
   });
 });
