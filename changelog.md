@@ -1,5 +1,10 @@
 # ffbinaries changelog
 
+**Version 1.1.5**
+
+* Fixed an issue with cross-platform paths (thank you @shpingalet007 for the fix!)
+
+
 **Version 1.1.4**
 
 * Fixed vulnerabilities by updating dependencies
