@@ -1,5 +1,5 @@
 {
-  "name": "ffbinaries",
+  "name": "ffbinaries-plus",
   "version": "1.1.5",
   "description": "Download binaries for ffmpeg, ffprobe, ffserver and ffplay (Windows, macOS, Linux)",
   "main": "index.js",
@@ -36,12 +36,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ffbinaries/ffbinaries-node.git"
+    "url": "https://github.com/RENOMIZER/ffbinaries-node.git"
   },
   "author": "Vot Z <https://vot-z.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ffbinaries/ffbinaries-node/issues"
+    "url": "https://github.com/RENOMIZER/ffbinaries-node/issues"
   },
   "homepage": "https://ffbinaries.com",
   "dependencies": {

@@ -13,6 +13,7 @@
 [coveralls-img]: https://img.shields.io/coveralls/ffbinaries/ffbinaries-node.svg
 [coveralls-url]: https://coveralls.io/github/ffbinaries/ffbinaries-node
 
+#### (This fork replaces `request` dependency with `axios` since the first has been deprecated)
 
 Downloads precompiled **ffmpeg, ffprobe, ffplay and ffserver binaries**
 from [ffbinaries.com](https://ffbinaries.com).
