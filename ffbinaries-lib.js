@@ -61,6 +61,10 @@ function resolvePlatform(input) {
       rtn = 'linux-armhf';
       break;
 
+    case 'linux-arm64':
+      rtn = 'linux-arm64';
+      break;
+
     case 'win':
     case 'win-32':
     case 'windows':
@@ -99,9 +103,8 @@ function detectPlatform(osinfo) {
   }
 
   if (type === 'linux') {
-    if (arch === 'arm' || arch === 'arm64') {
-      return 'linux-armel';
-    }
+    if (arch === 'arm') return 'linux-armel';
+    if (arch === 'arm64') return 'linux-arm64';
     return arch === 'x64' ? 'linux-64' : 'linux-32';
   }
 
@@ -122,7 +125,7 @@ function getBinaryFilename(component, platform) {
 }
 
 function listPlatforms() {
-  return ['osx-64', 'linux-32', 'linux-64', 'linux-armel', 'linux-armhf', 'windows-32', 'windows-64'];
+  return ['osx-64', 'linux-32', 'linux-64', 'linux-armel', 'linux-armhf', 'linux-arm64', 'windows-32', 'windows-64'];
 }
 
 function listVersions(callback) {
