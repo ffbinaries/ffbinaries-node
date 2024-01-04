@@ -126,10 +126,10 @@ describe('ffbinaries library', function () {
   });
 
   describe('listPlatforms', function () {
-    it('should return 7 platforms in an array', function () {
+    it('should return 8 platforms in an array', function () {
       var platforms = ffbinaries.listPlatforms();
       expect(Array.isArray(platforms)).to.equal(true);
-      expect(platforms.length).to.equal(7);
+      expect(platforms.length).to.equal(8);
     });
   });
 
