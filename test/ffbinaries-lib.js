@@ -60,6 +60,12 @@ describe('ffbinaries library', function () {
       var platform = ffbinaries.detectPlatform(osinfo);
       expect(platform).to.equal('linux-armel');
     });
+
+    it('should detect Linux (ARM64)', function () {
+      var osinfo = { type: 'linux', arch: 'arm64' };
+      var platform = ffbinaries.detectPlatform(osinfo);
+      expect(platform).to.equal('linux-arm64');
+    });
   });
 
   describe('resolvePlatform', function () {
@@ -80,6 +86,7 @@ describe('ffbinaries library', function () {
         'linux-arm': 'linux-armel',
         'linux-armel': 'linux-armel',
         'linux-armhf': 'linux-armhf',
+        'linux-arm64': 'linux-arm64',
         'win': 'windows-32',
         'win-32': 'windows-32',
         'windows': 'windows-32',
@@ -119,10 +126,10 @@ describe('ffbinaries library', function () {
   });
 
   describe('listPlatforms', function () {
-    it('should return 7 platforms in an array', function () {
+    it('should return 8 platforms in an array', function () {
       var platforms = ffbinaries.listPlatforms();
       expect(Array.isArray(platforms)).to.equal(true);
-      expect(platforms.length).to.equal(7);
+      expect(platforms.length).to.equal(8);
     });
   });
 
