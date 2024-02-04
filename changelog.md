@@ -1,5 +1,10 @@
 # ffbinaries changelog
 
+**Version 1.1.6**
+
+* Fixed an issue where ARM64 architecture wasn't correctly detected by the module (thanks to @aaronjamt for the fix)
+
+
 **Version 1.1.5**
 
 * Fixed an issue with paths construction (cross-platform support - thanks to @shpingalet007 for the fix)
