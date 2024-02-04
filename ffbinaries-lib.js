@@ -2,7 +2,7 @@ var os = require('os');
 var fse = require('fs-extra');
 var path = require('path');
 var _ = require('lodash');
-var request = require('request');
+var axios = require('axios');
 var async = require('async');
 var childProcess = require('child_process');
 var extractZip = require('extract-zip');
@@ -132,23 +132,23 @@ function listVersions(callback) {
   if (RUNTIME_CACHE.versionsAll) {
     return callback(null, RUNTIME_CACHE.versionsAll);
   }
-  request({ url: API_URL }, function (err, response, body) {
-    if (err) {
-      return callback(errorMsgs.connectionIssues);
-    }
+  axios.get(API_URL)
+    .then((response) => {
+      var parsed;
 
-    var parsed;
+      try {
+        parsed = response.data;
+      } catch (e) {
+        return callback(errorMsgs.parsingVersionList);
+      }
 
-    try {
-      parsed = JSON.parse(body.toString());
-    } catch (e) {
-      return callback(errorMsgs.parsingVersionList);
-    }
-
-    var versionsAll = Object.keys(parsed.versions);
-    RUNTIME_CACHE.versionsAll = versionsAll;
-    return callback(null, versionsAll);
-  });
+      var versionsAll = Object.keys(parsed.versions);
+      RUNTIME_CACHE.versionsAll = versionsAll;
+      return callback(null, versionsAll);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 }
 /**
  * Gets full data set from ffbinaries.com
@@ -164,26 +164,24 @@ function getVersionData(version, callback) {
 
   var url = version ? '/version/' + version : '/latest';
 
-  request({ url: API_URL + url }, function (err, response, body) {
-    if (err) {
-      return callback(errorMsgs.connectionIssues);
-    }
+  axios.get(API_URL + url)
+    .then((response) => {
+      if (response.status === '404') {
+        return callback(errorMsgs.notFound);
+      }
 
-    if (body === '404') {
-      return callback(errorMsgs.notFound);
-    }
+      var parsed;
 
-    var parsed;
+      try {
+        parsed = response.data;
+      } catch (e) {
+        return callback(errorMsgs.parsingVersionData);
+      }
 
-    try {
-      parsed = JSON.parse(body.toString());
-    } catch (e) {
-      return callback(errorMsgs.parsingVersionData);
-    }
-
-    RUNTIME_CACHE[version] = parsed;
-    return callback(null, parsed);
-  });
+      RUNTIME_CACHE[version] = parsed;
+      return callback(null, parsed);
+    })
+    .catch(() => callback(errorMsgs.connectionIssues));
 }
 
 /**
@@ -281,25 +279,31 @@ function downloadUrls(components, urls, opts, callback) {
         var cacheFileTempName = zipPath + '.part';
         var cacheFileFinalName = zipPath;
 
-        request({ url: url }, function () {
-          results.push({
-            filename: binFilename,
-            path: destinationDir,
-            size: Math.floor(totalFilesize / 1024 / 1024 * 1000) / 1000 + 'MB',
-            status: 'File extracted to destination (downloaded from "' + url + '")',
-            code: 'DONE_CLEAN'
-          });
-
-          fse.renameSync(cacheFileTempName, cacheFileFinalName);
-          extractZipToDestination(zipFilename, cb);
+        axios.get(url, {
+          responseType: 'arraybuffer',
+          onDownloadProgress: (e) => {
+            runningTotal = e.loaded;
+          }
         })
-          .on('response', function (response) {
+          .then((response) => {
             totalFilesize = response.headers['content-length'];
+
+            var fileData = Buffer.from(response.data, 'binary');
+
+            fse.writeFileSync(cacheFileTempName, fileData);
           })
-          .on('data', function (data) {
-            runningTotal += data.length;
-          })
-          .pipe(fse.createWriteStream(cacheFileTempName));
+          .finally(() => {
+            results.push({
+              filename: binFilename,
+              path: destinationDir,
+              size: Math.floor(totalFilesize / 1024 / 1024 * 1000) / 1000 + 'MB',
+              status: 'File extracted to destination (downloaded from "' + url + '")',
+              code: 'DONE_CLEAN'
+            });
+
+            fse.renameSync(cacheFileTempName, cacheFileFinalName);
+            extractZipToDestination(zipFilename, cb);
+          });
       }
     }
   }, function () {
